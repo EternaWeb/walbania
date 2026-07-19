@@ -25,11 +25,6 @@ import {
   Youtube,
   Linkedin,
   Music2,
-  MessageCircle,
-  Map,
-  Headphones,
-  Compass,
-  Clock3,
   type LucideIcon,
 } from "lucide-react";
 import { useRef, useState, useEffect, useCallback } from "react";
@@ -83,7 +78,8 @@ const collections = [
     ribbon: null,
     icon: Heart,
     detail: "Private stays · Made for two",
-    description: "Slow coastal days, romantic hideaways and thoughtful experiences designed for two.",
+    description:
+      "Slow coastal days, romantic hideaways and thoughtful experiences designed for two.",
   },
   {
     label: "Family Travel",
@@ -91,7 +87,8 @@ const collections = [
     ribbon: "Popular",
     icon: Users,
     detail: "Flexible days · All ages",
-    description: "Easy-paced itineraries with family-friendly stays, transfers and memorable activities.",
+    description:
+      "Easy-paced itineraries with family-friendly stays, transfers and memorable activities.",
   },
   {
     label: "Hiking",
@@ -99,7 +96,8 @@ const collections = [
     ribbon: null,
     icon: Mountain,
     detail: "Guided routes · Local experts",
-    description: "Walk Albania's wildest trails with expert guides, characterful lodges and luggage support.",
+    description:
+      "Walk Albania's wildest trails with expert guides, characterful lodges and luggage support.",
   },
   {
     label: "Summer Secrets",
@@ -107,7 +105,8 @@ const collections = [
     ribbon: "New",
     icon: Sun,
     detail: "Hidden coast · Local access",
-    description: "Quiet coves, small seaside towns and warm summer evenings away from the obvious routes.",
+    description:
+      "Quiet coves, small seaside towns and warm summer evenings away from the obvious routes.",
   },
 ];
 
@@ -446,118 +445,222 @@ function FAQ() {
 
 function PostFaqSections() {
   const localize = useLocalize();
-  const steps = [
+  const travelerServices = [
+    "Tailor-made holidays",
+    "Private departures",
+    "Small-group journeys",
+    "Local experiences",
+    "In-country assistance",
+  ];
+  const partnerServices = [
+    "Destination management",
+    "Accommodation sourcing",
+    "Transport and guides",
+    "Group logistics",
+    "Custom program production",
+  ];
+  const workStories = [
     {
-      icon: MessageCircle,
-      number: "01",
-      title: "Tell us what matters",
-      copy: "Share your pace, interests and non-negotiables. A short conversation is enough to begin.",
+      type: "Journey case study",
+      title: "From Peaks to the Riviera",
+      meta: ["10 days", "Private journey", "Theth · Berat · Himarë"],
+      image:
+        "https://images.unsplash.com/photo-1601581875309-fafbf2d3ed3a?auto=format&fit=crop&w=1600&q=88",
+      alt: "Mountain landscape on an Albania journey",
+      copy: "A north-to-south journey designed around contrast: high mountain paths, Ottoman stone towns and long, quiet days beside the Ionian Sea. The route balances movement with unhurried stays, connecting three distinct Albanian worlds without making the journey feel rushed.",
     },
     {
-      icon: Map,
-      number: "02",
-      title: "Shape the journey",
-      copy: "We connect stays, routes and local experiences into one clear, personal itinerary.",
+      type: "Destination project",
+      title: "The Albanian Alps, beyond the trail",
+      meta: ["Seasonal program", "Northern Albania", "Village-led"],
+      image:
+        "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=88",
+      alt: "High mountain peaks in the Albanian Alps",
+      copy: "A seasonal program built with mountain villages, independent guides and family-run stays. Familiar hiking routes are combined with slower local encounters and lesser-used paths, spreading each journey across more communities while keeping the landscape at its heart.",
     },
     {
-      icon: Headphones,
-      number: "03",
-      title: "Travel with support",
-      copy: "Our Albania-based team stays close before departure and throughout your trip.",
+      type: "Client story",
+      title: "A family’s first Albania summer",
+      meta: ["8 days", "2 adults · 2 children", "Central and south"],
+      image:
+        "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?auto=format&fit=crop&w=1600&q=88",
+      alt: "A family enjoying a summer journey together",
+      copy: "The brief was simple: swimming, history and enough freedom for every day to feel like a holiday. We paired characterful family stays with short transfers, a private food experience and beaches where the children could set the pace.",
+      quote:
+        "It felt adventurous without ever feeling difficult — exactly what we hoped Albania would be.",
     },
   ];
-
-  const reasons = [
+  const articles = [
     {
-      icon: Compass,
-      title: "Local by design",
-      copy: "Independent places, trusted guides and routes chosen by people who know Albania.",
+      category: "Field notes",
+      date: "July 12, 2026",
+      readTime: "8 min read",
+      title: "The road south: a slower guide to the Albanian Riviera",
+      image:
+        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=88",
+      alt: "Clear blue water along the Albanian Riviera",
+      copy: "Leave room between the famous beaches for hillside villages, quiet coves and long lunches overlooking the Ionian Sea.",
     },
     {
-      icon: Clock3,
-      title: "Time well spent",
-      copy: "Realistic pacing, simple transfers and enough room for the moments you cannot schedule.",
+      category: "Seasonal guide",
+      date: "June 24, 2026",
+      readTime: "6 min read",
+      title: "When to walk the Accursed Mountains",
+      image:
+        "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1200&q=86",
+      alt: "Hikers walking a mountain trail",
+      copy: "How snow, heat and village rhythms change the experience of Albania’s most dramatic trails.",
     },
     {
-      icon: ShieldCheck,
-      title: "One team throughout",
-      copy: "A single point of contact from your first idea until you are safely home.",
+      category: "Food and culture",
+      date: "May 30, 2026",
+      readTime: "7 min read",
+      title: "What to eat between Tirana and Gjirokastër",
+      image:
+        "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=86",
+      alt: "A table filled with regional dishes",
+      copy: "A road journey through bakeries, family tables, mountain herbs and the regional dishes worth slowing down for.",
     },
   ];
 
   return localize(
-    <div className="post-faq-sections">
-      <section className="universal-section universal-section-stone">
-        <div className="page-inset universal-section-inner">
-          <div className="universal-heading-row">
-            <div>
-              <p className="universal-eyebrow">How it works</p>
-              <h2>Trips shaped around you</h2>
-            </div>
-            <p>
-              Start with a feeling, a date or a place. We turn it into a journey that feels easy,
-              considered and completely yours.
-            </p>
-          </div>
-          <div className="journey-step-grid">
-            {steps.map(({ icon: Icon, number, title, copy }) => (
-              <article key={title} className="journey-step">
-                <div className="journey-step-top">
-                  <span className="universal-icon">
-                    <Icon size={20} strokeWidth={1.7} />
-                  </span>
-                  <span>{number}</span>
-                </div>
-                <h3>{title}</h3>
-                <p>{copy}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+    <div className="editorial-showcase">
+      <section id="services" className="editorial-chapter services-chapter">
+        <div className="page-inset editorial-chapter-inner">
+          <header className="editorial-chapter-header">
+            <p className="editorial-kicker">Services</p>
+            <h2>Travel design for people. Albania expertise for partners.</h2>
+          </header>
 
-      <section className="universal-section universal-section-sage">
-        <div className="page-inset universal-section-inner">
-          <div className="universal-centered-heading">
-            <p className="universal-eyebrow">The WonderAlbania difference</p>
-            <h2>Thoughtful travel, without the guesswork</h2>
-            <p>Useful expertise, honest recommendations and support that stays human.</p>
-          </div>
-          <div className="travel-reason-grid">
-            {reasons.map(({ icon: Icon, title, copy }) => (
-              <article key={title} className="travel-reason-card">
-                <span className="universal-icon">
-                  <Icon size={21} strokeWidth={1.7} />
-                </span>
-                <h3>{title}</h3>
-                <p>{copy}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="universal-section universal-section-stone">
-        <div className="page-inset universal-section-inner">
-          <div className="planning-cta">
-            <div>
-              <p className="universal-eyebrow">Your Albania starts here</p>
-              <h2>Bring us the idea. We will build the rest.</h2>
-            </div>
-            <div className="planning-cta-copy">
-              <p>
-                Tell us when you want to travel and what you want the trip to feel like. We will
-                reply with a clear next step.
-              </p>
-              <div className="planning-cta-actions">
-                <a href="#get-ideas" className="planning-primary-button">
-                  Start planning
-                  <ArrowUpRight size={16} />
-                </a>
-                <a href="mailto:hello@wonderalbania.com" className="planning-text-link">
-                  hello@wonderalbania.com
-                </a>
+          <div className="services-editorial-grid">
+            <article className="service-editorial-panel">
+              <div className="service-panel-heading">
+                <span>01</span>
+                <p>For travelers</p>
               </div>
+              <h3>Personal journeys, shaped from the inside.</h3>
+              <p className="service-intro">
+                We design Albania around the people taking the trip — their pace, interests,
+                priorities and appetite for discovery.
+              </p>
+              <ol className="service-list">
+                {travelerServices.map((service, index) => (
+                  <li key={service}>
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    {service}
+                  </li>
+                ))}
+              </ol>
+            </article>
+
+            <figure className="services-editorial-image">
+              <img
+                src="https://images.unsplash.com/photo-1601581875309-fafbf2d3ed3a?auto=format&fit=crop&w=1200&q=88"
+                alt="An expansive Albanian landscape"
+              />
+              <figcaption>Local knowledge, translated into journeys.</figcaption>
+            </figure>
+
+            <article className="service-editorial-panel">
+              <div className="service-panel-heading">
+                <span>02</span>
+                <p>For partners</p>
+              </div>
+              <h3>Destination expertise that works on the ground.</h3>
+              <p className="service-intro">
+                We help agencies, organizations and group leaders deliver thoughtful Albanian
+                programs with dependable local operations.
+              </p>
+              <ol className="service-list">
+                {partnerServices.map((service, index) => (
+                  <li key={service}>
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    {service}
+                  </li>
+                ))}
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="our-work" className="editorial-chapter work-chapter">
+        <div className="page-inset editorial-chapter-inner">
+          <header className="editorial-chapter-header work-chapter-header">
+            <p className="editorial-kicker">Selected work</p>
+            <h2>Journeys, places and stories we have helped shape.</h2>
+          </header>
+
+          <div className="work-story-list">
+            {workStories.map((story, index) => (
+              <article
+                key={story.title}
+                className={`work-story${index % 2 === 1 ? " work-story-reverse" : ""}`}
+              >
+                <figure className="work-story-image">
+                  <img src={story.image} alt={story.alt} />
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                </figure>
+                <div className="work-story-copy">
+                  <p className="editorial-kicker">{story.type}</p>
+                  <h3>{story.title}</h3>
+                  <ul className="work-story-meta" aria-label={`${story.title} details`}>
+                    {story.meta.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  <p className="work-story-description">{story.copy}</p>
+                  {story.quote && <blockquote>“{story.quote}”</blockquote>}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="journal" className="editorial-chapter articles-chapter">
+        <div className="page-inset editorial-chapter-inner">
+          <header className="editorial-chapter-header articles-chapter-header">
+            <p className="editorial-kicker">Journal</p>
+            <h2>Notes from Albania.</h2>
+            <p>
+              Field observations, seasonal advice and the places worth taking time to understand.
+            </p>
+          </header>
+
+          <div className="article-editorial-grid">
+            <article className="article-feature">
+              <figure>
+                <img src={articles[0].image} alt={articles[0].alt} />
+              </figure>
+              <div className="article-copy">
+                <div className="article-meta">
+                  <span>{articles[0].category}</span>
+                  <span>{articles[0].readTime}</span>
+                  <time>{articles[0].date}</time>
+                </div>
+                <h3>{articles[0].title}</h3>
+                <p>{articles[0].copy}</p>
+              </div>
+            </article>
+
+            <div className="article-supporting-list">
+              {articles.slice(1).map((article) => (
+                <article key={article.title} className="article-supporting">
+                  <figure>
+                    <img src={article.image} alt={article.alt} />
+                  </figure>
+                  <div className="article-copy">
+                    <div className="article-meta">
+                      <span>{article.category}</span>
+                      <span>{article.readTime}</span>
+                      <time>{article.date}</time>
+                    </div>
+                    <h3>{article.title}</h3>
+                    <p>{article.copy}</p>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </div>

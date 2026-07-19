@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TourRouteImport } from './routes/tour'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TourRoute = TourRouteImport.update({
+  id: '/tour',
+  path: '/tour',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -26,31 +32,42 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tour': typeof TourRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tour': typeof TourRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tour': typeof TourRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sitemap.xml'
+  fullPaths: '/' | '/sitemap.xml' | '/tour'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sitemap.xml'
-  id: '__root__' | '/' | '/sitemap.xml'
+  to: '/' | '/sitemap.xml' | '/tour'
+  id: '__root__' | '/' | '/sitemap.xml' | '/tour'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TourRoute: typeof TourRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tour': {
+      id: '/tour'
+      path: '/tour'
+      fullPath: '/tour'
+      preLoaderRoute: typeof TourRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TourRoute: TourRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,0 +1,194 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand: var(--brand);
+  --color-brand-soft: var(--brand-soft);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --brand: #434DFF;
+  --brand-soft: #E6E8FF;
+  --muted: #F4F4F5;
+  --muted-foreground: #6B7280;
+  --border: #E5E7EB;
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html, body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: "Inter", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@utility page-inset {
+  padding-left: 16px;
+  padding-right: 16px;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  @media (min-width: 768px) {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+@utility page-max {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@utility font-italic-inter {
+  font-style: italic;
+  font-weight: 500;
+}
+
+@utility btn-brand {
+  border-radius: 20px;
+  padding: 8px 22px;
+  background: white;
+  color: #434DFF;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+  &:hover { background: #E6E8FF; }
+}
+
+@utility icon-chip {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background: rgba(217, 217, 217, 0.4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  &:hover { background: rgba(217, 217, 217, 0.7); }
+}
+
+@utility arrow-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  align-items: center;
+  justify-content: center;
+  color: #111;
+  cursor: pointer;
+  z-index: 10;
+  transition: background-color 0.2s;
+  &:hover { background: #E6E8FF; }
+}
+
+@utility pill {
+  border-radius: 9999px;
+  padding: 6px 16px;
+  background: #E6E8FF;
+  color: #434DFF;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  &:hover { background: #d4d8ff; }
+}
+
+@utility ribbon {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #434DFF;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  z-index: 2;
+}
+
+@utility card-zoom-img {
+  transition: transform 0.5s ease;
+}
+
+@utility scroll-hide {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.card-zoom { cursor: pointer; }
+.card-zoom:hover .card-zoom-img { transform: scale(1.08); }
+
+/* Travelers Love Us — stacked images that fan out on hover */
+.tly-stack {
+  position: relative;
+  width: 140px;
+  height: 180px;
+}
+.tly-card {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 120px;
+  height: 160px;
+  margin-left: -60px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tly-card-0 { transform: rotate(-6deg) translateX(0); z-index: 1; }
+.tly-card-1 { transform: rotate(0deg) translateX(0); z-index: 2; }
+.tly-card-2 { transform: rotate(6deg) translateX(0); z-index: 1; }
+.tly-stack:hover .tly-card-0 { transform: rotate(-8deg) translateX(-140px); }
+.tly-stack:hover .tly-card-2 { transform: rotate(8deg) translateX(140px); }
+
+@media (max-width: 640px) {
+  .tly-stack:hover .tly-card-0 { transform: rotate(-8deg) translateX(-90px); }
+  .tly-stack:hover .tly-card-2 { transform: rotate(8deg) translateX(90px); }
+}
+
+/* Not sure where to go — auto-scrolling marquee */
+.marquee { overflow: hidden; }
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+          mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+.marquee-track {
+  display: flex;
+  gap: 14px;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+.marquee:hover .marquee-track { animation-duration: 80s; }
+.marquee-item {
+  width: 130px;
+  height: 170px;
+  flex-shrink: 0;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+@media (max-width: 768px) {
+  .marquee-item { width: 110px; height: 145px; }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}

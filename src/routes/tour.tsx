@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   Accessibility,
   BadgeCheck,
-  CalendarDays,
   Camera,
   Car,
   Check,
@@ -12,7 +11,6 @@ import {
   Clock3,
   Facebook,
   Globe2,
-  Heart,
   Instagram,
   Languages,
   Linkedin,
@@ -25,6 +23,7 @@ import {
   Search,
   Share2,
   ShieldCheck,
+  Sparkles,
   Star,
   Sun,
   ThermometerSun,
@@ -175,20 +174,23 @@ const relatedTours = [
   {
     title: "Blue Eye & Gjirokastër",
     meta: "Full day · Culture",
-    price: "Sample from €—",
+    price: "From €95 per person",
     image: images.town,
+    ribbon: "Popular",
   },
   {
     title: "Llogara Sunset Escape",
     meta: "5 hours · Nature",
-    price: "Sample from €—",
+    price: "From €75 per person",
     image: images.mountains,
+    ribbon: "New",
   },
   {
     title: "Ksamil by Private Boat",
     meta: "4 hours · Sea",
-    price: "Sample from €—",
+    price: "From €110 per person",
     image: images.boat,
+    ribbon: "-15%",
   },
 ];
 
@@ -221,6 +223,9 @@ function Header() {
             <button type="button" className="icon-chip" aria-label="Search">
               <Search size={18} />
             </button>
+            <button type="button" className="icon-chip" aria-label="AI">
+              <Sparkles size={18} fill="black" />
+            </button>
             <button type="button" className="icon-chip" aria-label="Menu">
               <Menu size={18} strokeWidth={2.5} />
             </button>
@@ -228,6 +233,65 @@ function Header() {
         </div>
       </header>
     </>
+  );
+}
+
+function BookingCalendar() {
+  const [viewMonth, setViewMonth] = useState(() => new Date(Date.UTC(2026, 8, 1)));
+  const [selectedDate, setSelectedDate] = useState("2026-09-16");
+  const year = viewMonth.getUTCFullYear();
+  const month = viewMonth.getUTCMonth();
+  const firstDay = new Date(Date.UTC(year, month, 1)).getUTCDay();
+  const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  const monthLabel = viewMonth.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+
+  const changeMonth = (offset: number) => {
+    setViewMonth(new Date(Date.UTC(year, month + offset, 1)));
+  };
+
+  return (
+    <div className="booking-calendar" aria-label="Choose a tour date">
+      <div className="calendar-header">
+        <button type="button" onClick={() => changeMonth(-1)} aria-label="Previous month">
+          <ChevronLeft size={17} />
+        </button>
+        <strong>{monthLabel}</strong>
+        <button type="button" onClick={() => changeMonth(1)} aria-label="Next month">
+          <ChevronRight size={17} />
+        </button>
+      </div>
+      <div className="calendar-weekdays" aria-hidden="true">
+        {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
+          <span key={`${day}-${index}`}>{day}</span>
+        ))}
+      </div>
+      <div className="calendar-days">
+        {Array.from({ length: firstDay }).map((_, index) => (
+          <span key={`empty-${index}`} />
+        ))}
+        {Array.from({ length: daysInMonth }, (_, index) => {
+          const day = index + 1;
+          const value = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+          const selected = value === selectedDate;
+          return (
+            <button
+              type="button"
+              className={selected ? "is-selected" : ""}
+              aria-label={`${monthLabel} ${day}`}
+              aria-pressed={selected}
+              key={value}
+              onClick={() => setSelectedDate(value)}
+            >
+              {day}
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -246,12 +310,7 @@ function BookingCard({ mobile = false }: { mobile?: boolean }) {
         </div>
         <span className="discount-chip">Save 15%</span>
       </div>
-      <div className="booking-field">
-        <span>
-          <CalendarDays size={18} /> Select a date
-        </span>
-        <ChevronDown size={18} />
-      </div>
+      <BookingCalendar />
       <div className="booking-field">
         <span>
           <Users size={18} /> 2 travellers
@@ -273,8 +332,48 @@ function BookingCard({ mobile = false }: { mobile?: boolean }) {
         <span>
           <Phone size={17} /> Local support
         </span>
+        <a className="booking-policy" href="#support">
+          View cancellation policy
+        </a>
       </div>
     </aside>
+  );
+}
+
+function NativeShareButton() {
+  const [copied, setCopied] = useState(false);
+
+  const shareTour = async () => {
+    const shareData = {
+      title: "Riviera secrets: villages, bays & blue water",
+      text: "A private day along Albania’s wild southern coast with WonderAlbania.",
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        return;
+      }
+
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      className="square-button"
+      aria-label={copied ? "Tour link copied" : "Share tour"}
+      title={copied ? "Link copied" : "Share tour"}
+      onClick={() => void shareTour()}
+    >
+      <Share2 size={18} />
+    </button>
   );
 }
 
@@ -447,40 +546,36 @@ function TourPage() {
           <div className="hero-grid">
             <div className="hero-visual">
               <img src={images.hero} alt="White coastal village beside clear blue water" />
-              <div className="hero-badge">Local favourite</div>
-              <a className="photo-count" href="#gallery">
-                View 5 photos
-              </a>
+              <div className="hero-ribbons">
+                <div className="hero-badge">Local favourite</div>
+                <a className="photo-count" href="#gallery">
+                  View 5 photos
+                </a>
+              </div>
             </div>
             <div className="hero-copy">
-              <div className="location-label">
-                <MapPin size={16} /> Albanian Riviera · Southern Albania
+              <div className="hero-info-row">
+                <div className="location-label">
+                  <MapPin size={16} /> Albanian Riviera · Southern Albania
+                </div>
+                <span className="rating">
+                  <Star size={17} fill="currentColor" /> 4.9
+                </span>
+                <a href="#reviews">128 traveller reviews</a>
+                <span>
+                  <Clock3 size={17} /> 8 hours
+                </span>
               </div>
               <h1>Riviera secrets: villages, bays & blue water</h1>
               <p className="hero-intro">
                 A private day along Albania’s wild southern coast, pairing hidden beaches, stone
                 villages and lunch with a local family.
               </p>
-              <div className="hero-meta">
-                <span className="rating">
-                  <Star size={17} fill="currentColor" /> 4.9
-                </span>
-                <a href="#reviews">128 traveller reviews</a>
-                <span className="meta-divider" />
-                <span>
-                  <Clock3 size={17} /> 8 hours
-                </span>
-              </div>
               <div className="hero-actions">
                 <a className="primary-button hero-book" href="#booking">
-                  See dates
+                  Check availability
                 </a>
-                <button type="button" className="secondary-button">
-                  <Heart size={18} /> Save
-                </button>
-                <button type="button" className="square-button" aria-label="Share tour">
-                  <Share2 size={18} />
-                </button>
+                <NativeShareButton />
               </div>
             </div>
           </div>
@@ -752,25 +847,6 @@ function TourPage() {
                 ))}
               </div>
             </section>
-
-            <section className="safety-card">
-              <div className="safety-icon">
-                <ShieldCheck size={24} />
-              </div>
-              <div>
-                <span className="eyebrow">Safety & flexibility</span>
-                <h2>Travel with calm, local support.</h2>
-                <p>
-                  Your guide adapts the route to road and sea conditions. Emergency support is
-                  available during your tour, and recommended travel insurance is shown before
-                  confirmation.
-                </p>
-                <div className="safety-links">
-                  <a href="#support">Read safety information</a>
-                  <a href="#support">View cancellation policy</a>
-                </div>
-              </div>
-            </section>
           </div>
           <div id="booking" className="booking-column">
             <BookingCard />
@@ -779,28 +855,19 @@ function TourPage() {
 
         <BookingCard mobile />
 
-        <section id="related" className="related-section">
-          <div className="tour-container">
+        <section id="related" className="related-section tour-container">
+          <div className="related-panel">
             <SectionHeading eyebrow="Keep exploring" title="More ways to see Albania" />
-            <div className="related-grid">
+            <div className="related-track">
               {relatedTours.map((tour) => (
-                <article className="tour-card" key={tour.title}>
-                  <div className="tour-image">
-                    <img src={tour.image} alt="" />
-                    <button type="button" aria-label={`Save ${tour.title}`}>
-                      <Heart size={18} />
-                    </button>
+                <article className="index-tour-card card-zoom" key={tour.title}>
+                  <div className="index-tour-image">
+                    <img className="card-zoom-img" src={tour.image} alt={tour.title} />
+                    <span className="ribbon">{tour.ribbon}</span>
                   </div>
-                  <div className="tour-card-copy">
-                    <span>{tour.meta}</span>
-                    <h3>{tour.title}</h3>
-                    <div>
-                      <b>{tour.price}</b>
-                      <span>
-                        <Star size={14} fill="currentColor" /> 4.9
-                      </span>
-                    </div>
-                  </div>
+                  <span>{tour.meta}</span>
+                  <a href="/tour">{tour.title}</a>
+                  <p>{tour.price}</p>
                 </article>
               ))}
             </div>

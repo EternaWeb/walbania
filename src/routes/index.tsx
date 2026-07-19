@@ -3,7 +3,6 @@ import {
   Globe,
   Search,
   Sparkles,
-  Menu,
   ChevronLeft,
   ChevronRight,
   Mountain,
@@ -27,6 +26,7 @@ import {
 } from "lucide-react";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { LocaleLocationModal } from "../components/LocaleLocationModal";
+import { SiteMenu } from "../components/SiteMenu";
 import { SiteLocaleProvider, useLocalize, useSiteLocale } from "../i18n";
 import type { SiteLocale } from "../i18n";
 
@@ -724,9 +724,7 @@ function Index() {
             <button aria-label="AI" className="icon-chip">
               <Sparkles size={18} fill="black" />
             </button>
-            <button aria-label="Menu" className="icon-chip">
-              <Menu size={18} strokeWidth={2.5} />
-            </button>
+            <SiteMenu />
           </div>
         </div>
       </header>

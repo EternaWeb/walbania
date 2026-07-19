@@ -14,7 +14,6 @@ import {
   Languages,
   Linkedin,
   MapPin,
-  Menu,
   Minus,
   Mountain,
   Navigation,
@@ -36,6 +35,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import type { TouchEvent } from "react";
 import { LocaleLocationModal } from "../components/LocaleLocationModal";
+import { SiteMenu } from "../components/SiteMenu";
 import { SiteLocaleProvider, translate, useLocalize, useSiteLocale } from "../i18n";
 import type { SiteLocale } from "../i18n";
 
@@ -256,9 +256,7 @@ function Header() {
             <button type="button" className="icon-chip" aria-label="AI">
               <Sparkles size={18} fill="black" />
             </button>
-            <button type="button" className="icon-chip" aria-label="Menu">
-              <Menu size={18} strokeWidth={2.5} />
-            </button>
+            <SiteMenu />
           </div>
         </div>
       </header>

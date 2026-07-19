@@ -1,4 +1,4 @@
-import { Check, ChevronRight, Globe2, LoaderCircle, MapPin, X } from "lucide-react";
+import { Check, ChevronRight, Globe, LoaderCircle, MapPin, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { localizedPath, useLocalize, useSiteLocale } from "../i18n";
 import type { SiteLocale } from "../i18n";
@@ -130,7 +130,7 @@ export function LocaleLocationModal({ className = "icon-chip" }: { className?: s
         aria-label="Language and location"
         onClick={openModal}
       >
-        <Globe2 size={18} />
+        <Globe size={18} />
       </button>
       {open && (
         <div className="preference-overlay" role="presentation" onMouseDown={() => setOpen(false)}>

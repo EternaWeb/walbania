@@ -2,9 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   Globe,
   Search,
+  Sparkle,
   Sparkles,
   ChevronLeft,
   ChevronRight,
+  ArrowUpRight,
   Mountain,
   Users,
   Heart,
@@ -23,6 +25,12 @@ import {
   Youtube,
   Linkedin,
   Music2,
+  MessageCircle,
+  Map,
+  Headphones,
+  Compass,
+  Clock3,
+  type LucideIcon,
 } from "lucide-react";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { LocaleLocationModal } from "../components/LocaleLocationModal";
@@ -73,21 +81,33 @@ const collections = [
     label: "Couples Travel",
     img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800&q=80",
     ribbon: null,
+    icon: Heart,
+    detail: "Private stays · Made for two",
+    description: "Slow coastal days, romantic hideaways and thoughtful experiences designed for two.",
   },
   {
     label: "Family Travel",
     img: "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?w=800&q=80",
     ribbon: "Popular",
+    icon: Users,
+    detail: "Flexible days · All ages",
+    description: "Easy-paced itineraries with family-friendly stays, transfers and memorable activities.",
   },
   {
     label: "Hiking",
     img: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=80",
     ribbon: null,
+    icon: Mountain,
+    detail: "Guided routes · Local experts",
+    description: "Walk Albania's wildest trails with expert guides, characterful lodges and luggage support.",
   },
   {
     label: "Summer Secrets",
     img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
     ribbon: "New",
+    icon: Sun,
+    detail: "Hidden coast · Local access",
+    description: "Quiet coves, small seaside towns and warm summer evenings away from the obvious routes.",
   },
 ];
 
@@ -255,13 +275,7 @@ function TravelersLoveUs() {
         style={{ background: "#E6E8FF", borderRadius: 20 }}
       >
         <h2 className="text-center text-3xl md:text-4xl">
-          {locale === "fr" ? (
-            "Nos voyageurs nous adorent"
-          ) : (
-            <>
-              Travelers <em className="font-italic-inter">Love</em> Us
-            </>
-          )}
+          {locale === "fr" ? "Nos voyageurs nous adorent" : "Travelers Love Us"}
         </h2>
 
         <div className="mt-10 flex justify-center">
@@ -321,25 +335,40 @@ function CollectionCard({
   label,
   img,
   ribbon,
+  icon: Icon,
+  detail,
+  description,
 }: {
   label: string;
   img: string;
   ribbon: string | null;
+  icon: LucideIcon;
+  detail: string;
+  description: string;
 }) {
   const localize = useLocalize();
   return localize(
-    <div className="card-zoom px-2 flex flex-col items-center">
-      <div
-        className="relative w-full overflow-hidden"
-        style={{ borderRadius: 20, aspectRatio: "3/4" }}
-      >
+    <article className="collection-card">
+      <div className="collection-card-media">
         <img src={img} alt={label} className="card-zoom-img w-full h-full object-cover" />
         {ribbon && <span className="ribbon">{ribbon}</span>}
+        <div className="collection-card-overlay">
+          <span className="collection-card-icon">
+            <Icon size={18} strokeWidth={1.8} />
+          </span>
+          <span className="collection-card-detail">{detail}</span>
+          <h3>{label}</h3>
+          <p>{description}</p>
+          <a href="#" className="collection-card-button">
+            Explore
+            <ArrowUpRight size={15} />
+          </a>
+        </div>
       </div>
-      <a href="#" className="mt-3 text-sm">
+      <a href="#" className="collection-card-mobile-label">
         {label}
       </a>
-    </div>,
+    </article>,
   );
 }
 
@@ -392,13 +421,7 @@ function FAQ() {
   return localize(
     <section className="page-inset py-16 bg-white">
       <h2 className="text-center text-3xl md:text-4xl mb-10">
-        {locale === "fr" ? (
-          "Questions fréquentes"
-        ) : (
-          <>
-            Frequently <em className="font-italic-inter">Asked</em> Questions
-          </>
-        )}
+        {locale === "fr" ? "Questions fréquentes" : "Frequently Asked Questions"}
       </h2>
       <div className="max-w-3xl mx-auto divide-y" style={{ borderColor: "#E5E7EB" }}>
         {faqs.map((f, i) => (
@@ -418,6 +441,128 @@ function FAQ() {
         ))}
       </div>
     </section>,
+  );
+}
+
+function PostFaqSections() {
+  const localize = useLocalize();
+  const steps = [
+    {
+      icon: MessageCircle,
+      number: "01",
+      title: "Tell us what matters",
+      copy: "Share your pace, interests and non-negotiables. A short conversation is enough to begin.",
+    },
+    {
+      icon: Map,
+      number: "02",
+      title: "Shape the journey",
+      copy: "We connect stays, routes and local experiences into one clear, personal itinerary.",
+    },
+    {
+      icon: Headphones,
+      number: "03",
+      title: "Travel with support",
+      copy: "Our Albania-based team stays close before departure and throughout your trip.",
+    },
+  ];
+
+  const reasons = [
+    {
+      icon: Compass,
+      title: "Local by design",
+      copy: "Independent places, trusted guides and routes chosen by people who know Albania.",
+    },
+    {
+      icon: Clock3,
+      title: "Time well spent",
+      copy: "Realistic pacing, simple transfers and enough room for the moments you cannot schedule.",
+    },
+    {
+      icon: ShieldCheck,
+      title: "One team throughout",
+      copy: "A single point of contact from your first idea until you are safely home.",
+    },
+  ];
+
+  return localize(
+    <div className="post-faq-sections">
+      <section className="universal-section universal-section-stone">
+        <div className="page-inset universal-section-inner">
+          <div className="universal-heading-row">
+            <div>
+              <p className="universal-eyebrow">How it works</p>
+              <h2>Trips shaped around you</h2>
+            </div>
+            <p>
+              Start with a feeling, a date or a place. We turn it into a journey that feels easy,
+              considered and completely yours.
+            </p>
+          </div>
+          <div className="journey-step-grid">
+            {steps.map(({ icon: Icon, number, title, copy }) => (
+              <article key={title} className="journey-step">
+                <div className="journey-step-top">
+                  <span className="universal-icon">
+                    <Icon size={20} strokeWidth={1.7} />
+                  </span>
+                  <span>{number}</span>
+                </div>
+                <h3>{title}</h3>
+                <p>{copy}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="universal-section universal-section-sage">
+        <div className="page-inset universal-section-inner">
+          <div className="universal-centered-heading">
+            <p className="universal-eyebrow">The WonderAlbania difference</p>
+            <h2>Thoughtful travel, without the guesswork</h2>
+            <p>Useful expertise, honest recommendations and support that stays human.</p>
+          </div>
+          <div className="travel-reason-grid">
+            {reasons.map(({ icon: Icon, title, copy }) => (
+              <article key={title} className="travel-reason-card">
+                <span className="universal-icon">
+                  <Icon size={21} strokeWidth={1.7} />
+                </span>
+                <h3>{title}</h3>
+                <p>{copy}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="universal-section universal-section-stone">
+        <div className="page-inset universal-section-inner">
+          <div className="planning-cta">
+            <div>
+              <p className="universal-eyebrow">Your Albania starts here</p>
+              <h2>Bring us the idea. We will build the rest.</h2>
+            </div>
+            <div className="planning-cta-copy">
+              <p>
+                Tell us when you want to travel and what you want the trip to feel like. We will
+                reply with a clear next step.
+              </p>
+              <div className="planning-cta-actions">
+                <a href="#get-ideas" className="planning-primary-button">
+                  Start planning
+                  <ArrowUpRight size={16} />
+                </a>
+                <a href="mailto:hello@wonderalbania.com" className="planning-text-link">
+                  hello@wonderalbania.com
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>,
   );
 }
 
@@ -764,12 +909,14 @@ function LazyHeroVideo() {
 function Index() {
   const locale = useSiteLocale();
   const localize = useLocalize();
+  const [selectedKind, setSelectedKind] = useState("Hiking Alps");
+  const [selectedGroup, setSelectedGroup] = useState("Family");
   return localize(
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="index-page min-h-screen bg-background text-foreground">
       {/* Top blue bar */}
       <div style={{ background: "#434DFF" }} className="w-full">
         <div className="page-inset py-2 text-xs">
-          <a href="#" className="text-white underline underline-offset-2">
+          <a href="#" className="talk-with-us-link underline underline-offset-2">
             Talk with Us
           </a>
         </div>
@@ -800,7 +947,7 @@ function Index() {
               <Search size={18} />
             </button>
             <button aria-label="AI" className="icon-chip">
-              <Sparkles size={18} fill="black" />
+              <Sparkle size={19} fill="black" strokeWidth={1.7} />
             </button>
             <SiteMenu />
           </div>
@@ -815,15 +962,9 @@ function Index() {
       {/* Our Holiday Collections */}
       <section className="page-inset py-14 md:py-20">
         <h2 className="text-center text-3xl md:text-4xl mb-8 md:mb-12">
-          {locale === "fr" ? (
-            "Nos collections de séjours"
-          ) : (
-            <>
-              Our <em className="font-italic-inter">Holiday</em> Collections
-            </>
-          )}
+          {locale === "fr" ? "Nos collections de séjours" : "Our Holiday Collections"}
         </h2>
-        <div className="hidden md:grid grid-cols-4 gap-5">
+        <div className="collection-desktop-grid hidden md:grid grid-cols-4 gap-4">
           {collections.map((c) => (
             <CollectionCard key={c.label} {...c} />
           ))}
@@ -858,33 +999,49 @@ function Index() {
       {/* Experiences for you */}
       <section className="py-14 md:py-20 page-max">
         <h2 className="text-center text-3xl md:text-4xl mb-8">Experiences for you</h2>
-        <div className="max-w-3xl mx-auto px-4 space-y-3">
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <span className="text-sm text-muted-foreground mr-2">What kind?</span>
-            {[
-              { label: "Hiking Alps", Icon: Mountain },
-              { label: "Beach", Icon: Waves },
-              { label: "Cultural", Icon: Camera },
-              { label: "Foodie", Icon: Utensils },
-            ].map(({ label, Icon }) => (
-              <button key={label} className="pill inline-flex items-center gap-1.5">
-                <Icon size={14} />
-                {label}
-              </button>
-            ))}
+        <div className="experience-filters max-w-3xl mx-auto">
+          <div className="experience-filter-row">
+            <span className="experience-filter-label">What kind?</span>
+            <div className="experience-filter-scroll scroll-hide">
+              {[
+                { label: "Hiking Alps", Icon: Mountain },
+                { label: "Beach", Icon: Waves },
+                { label: "Cultural", Icon: Camera },
+                { label: "Foodie", Icon: Utensils },
+              ].map(({ label, Icon }) => (
+                <button
+                  key={label}
+                  type="button"
+                  aria-pressed={selectedKind === label}
+                  onClick={() => setSelectedKind(label)}
+                  className={`experience-filter-pill${selectedKind === label ? " is-selected" : ""}`}
+                >
+                  <Icon size={14} />
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <span className="text-sm text-muted-foreground mr-2">Who is going?</span>
-            {[
-              { label: "Family", Icon: Users },
-              { label: "Couple", Icon: Heart },
-              { label: "Friends", Icon: Sparkles },
-            ].map(({ label, Icon }) => (
-              <button key={label} className="pill inline-flex items-center gap-1.5">
-                <Icon size={14} />
-                {label}
-              </button>
-            ))}
+          <div className="experience-filter-row">
+            <span className="experience-filter-label">Who is going?</span>
+            <div className="experience-filter-scroll scroll-hide">
+              {[
+                { label: "Family", Icon: Users },
+                { label: "Couple", Icon: Heart },
+                { label: "Friends", Icon: Sparkles },
+              ].map(({ label, Icon }) => (
+                <button
+                  key={label}
+                  type="button"
+                  aria-pressed={selectedGroup === label}
+                  onClick={() => setSelectedGroup(label)}
+                  className={`experience-filter-pill${selectedGroup === label ? " is-selected" : ""}`}
+                >
+                  <Icon size={14} />
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -910,6 +1067,7 @@ function Index() {
 
       <NotSure />
       <FAQ />
+      <PostFaqSections />
       <SiteFooter />
     </div>,
   );

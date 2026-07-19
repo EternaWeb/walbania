@@ -175,6 +175,11 @@ h2 {
 }
 .page-max { max-width: 1440px; margin-inline: auto; }
 .font-italic-inter { font-style: italic; font-weight: 500; }
+.talk-with-us-link { color: #fff !important; }
+.index-page h2 em {
+  color: inherit;
+  font-style: normal;
+}
 .btn-brand {
   border-radius: 20px;
   padding: 8px 22px;
@@ -437,6 +442,226 @@ h2 {
   cursor: pointer;
 }
 .pill:hover { background: #d4d8ff; }
+
+.collection-desktop-grid {
+  max-width: 1020px;
+  margin-inline: auto;
+}
+
+.collection-card {
+  min-width: 0;
+}
+
+.collection-card-media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--soft);
+}
+
+.collection-card-media > img {
+  transition: transform .6s cubic-bezier(.22, 1, .36, 1);
+}
+
+.collection-card-media::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(7, 8, 7, .04) 24%, rgba(7, 8, 7, .92) 100%);
+  opacity: .48;
+  transition: opacity .35s ease;
+  pointer-events: none;
+}
+
+.collection-card-overlay {
+  position: absolute;
+  z-index: 3;
+  inset: auto 18px 18px;
+  color: white;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .35s ease, transform .35s ease;
+}
+
+.collection-card-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 14px;
+  border: 1px solid rgba(255, 255, 255, .48);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .12);
+  backdrop-filter: blur(8px);
+}
+
+.collection-card-detail {
+  display: block;
+  color: rgba(255, 255, 255, .72);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.collection-card-overlay h3 {
+  margin-top: 7px;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.collection-card-overlay p {
+  margin-top: 9px;
+  color: rgba(255, 255, 255, .82);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.collection-card-button {
+  width: fit-content;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 15px;
+  padding: 0 15px;
+  border-radius: 999px;
+  background: white;
+  color: #111;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.collection-card-mobile-label {
+  display: none;
+}
+
+.collection-card .ribbon {
+  z-index: 4;
+  background: rgba(255, 255, 255, .92);
+  color: #111;
+}
+
+@media (min-width: 768px) {
+  .collection-card:hover .collection-card-media::after,
+  .collection-card:focus-within .collection-card-media::after {
+    opacity: .96;
+  }
+
+  .collection-card:hover .collection-card-overlay,
+  .collection-card:focus-within .collection-card-overlay {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .collection-card:hover .collection-card-media > img,
+  .collection-card:focus-within .collection-card-media > img {
+    transform: scale(1.06);
+  }
+}
+
+.experience-filters {
+  display: grid;
+  gap: 10px;
+  padding-inline: 16px;
+}
+
+.experience-filter-row {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.experience-filter-label {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.experience-filter-scroll {
+  min-width: 0;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x proximity;
+}
+
+.experience-filter-pill {
+  min-height: 34px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #efefec;
+  color: #171717;
+  cursor: pointer;
+  font-size: 13px;
+  scroll-snap-align: start;
+  transition: background-color .2s ease, transform .2s ease;
+}
+
+.experience-filter-pill:hover {
+  background: #e2e5da;
+}
+
+.experience-filter-pill.is-selected {
+  background: #ccdAB8;
+}
+
+.experience-filter-pill:active {
+  transform: scale(.97);
+}
+
+@media (min-width: 768px) {
+  .experience-filter-row {
+    justify-content: center;
+  }
+
+  .experience-filter-scroll {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 767px) {
+  .collection-card {
+    padding-inline: 8px;
+    text-align: center;
+  }
+
+  .collection-card-media {
+    aspect-ratio: 3 / 4;
+    border-radius: 20px;
+  }
+
+  .collection-card-media::after,
+  .collection-card-overlay {
+    display: none;
+  }
+
+  .collection-card-mobile-label {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 14px;
+  }
+
+  .experience-filters {
+    padding-inline: 12px;
+  }
+
+  .experience-filter-scroll {
+    margin-right: -12px;
+    padding-right: 12px;
+  }
+}
+
 .ribbon {
   position: absolute;
   top: 12px;
@@ -454,6 +679,223 @@ h2 {
 .card-zoom:hover .card-zoom-img { transform: scale(1.08); }
 .scroll-hide { scrollbar-width: none; }
 .scroll-hide::-webkit-scrollbar { display: none; }
+
+.universal-section {
+  color: #171716;
+}
+
+.universal-section-stone {
+  background: #dcdbd8;
+}
+
+.universal-section-sage {
+  background: #ccdab8;
+}
+
+.universal-section-inner {
+  padding-block: 78px;
+}
+
+.universal-heading-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, .7fr);
+  gap: 70px;
+  align-items: end;
+}
+
+.universal-heading-row h2,
+.universal-centered-heading h2,
+.planning-cta h2 {
+  margin-top: 9px;
+  max-width: 760px;
+  font-size: clamp(34px, 4.1vw, 58px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -.045em;
+}
+
+.universal-heading-row > p,
+.universal-centered-heading > p:last-child,
+.planning-cta-copy > p {
+  color: rgba(23, 23, 22, .68);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.universal-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.journey-step-grid,
+.travel-reason-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 48px;
+}
+
+.journey-step,
+.travel-reason-card {
+  min-height: 246px;
+  padding: 26px;
+  border-radius: 18px;
+}
+
+.journey-step {
+  border: 1px solid rgba(23, 23, 22, .13);
+  background: rgba(255, 255, 255, .2);
+}
+
+.journey-step-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(23, 23, 22, .54);
+  font-size: 11px;
+}
+
+.universal-icon {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .62);
+  color: #171716;
+}
+
+.journey-step h3,
+.travel-reason-card h3 {
+  margin-top: 47px;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -.025em;
+}
+
+.journey-step p,
+.travel-reason-card p {
+  margin-top: 10px;
+  max-width: 330px;
+  color: rgba(23, 23, 22, .66);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.universal-centered-heading {
+  max-width: 780px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.universal-centered-heading > p:last-child {
+  max-width: 530px;
+  margin: 18px auto 0;
+}
+
+.travel-reason-card {
+  background: rgba(255, 255, 255, .52);
+}
+
+.planning-cta {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, .7fr);
+  gap: 80px;
+  align-items: end;
+  padding: 58px;
+  border-radius: 22px;
+  background: #1b1c19;
+  color: white;
+}
+
+.planning-cta .universal-eyebrow,
+.planning-cta h2 {
+  color: white;
+}
+
+.planning-cta-copy > p {
+  color: rgba(255, 255, 255, .68);
+}
+
+.planning-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 17px;
+  margin-top: 25px;
+}
+
+.planning-primary-button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: white;
+  color: #171716;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.planning-text-link {
+  color: white;
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 820px) {
+  .universal-heading-row,
+  .planning-cta {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .journey-step-grid,
+  .travel-reason-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .journey-step,
+  .travel-reason-card {
+    min-height: 220px;
+  }
+}
+
+@media (max-width: 600px) {
+  .universal-section-inner {
+    padding-block: 58px;
+  }
+
+  .universal-heading-row h2,
+  .universal-centered-heading h2,
+  .planning-cta h2 {
+    font-size: 35px;
+  }
+
+  .journey-step-grid,
+  .travel-reason-grid {
+    margin-top: 34px;
+  }
+
+  .journey-step,
+  .travel-reason-card {
+    min-height: 0;
+    padding: 22px;
+  }
+
+  .journey-step h3,
+  .travel-reason-card h3 {
+    margin-top: 34px;
+  }
+
+  .planning-cta {
+    padding: 34px 24px;
+  }
+}
 
 .tly-stack { position: relative; width: 140px; height: 180px; }
 .tly-card {

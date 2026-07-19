@@ -16,7 +16,17 @@ export default defineConfig({
       // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
       server: { entry: "server" },
     }),
-    nitro(),
+    nitro({
+      preset: "cloudflare-module",
+      output: {
+        dir: "dist",
+      },
+      rollupConfig: {
+        output: {
+          entryFileNames: "index.js",
+        },
+      },
+    }),
     viteReact(),
   ],
 });

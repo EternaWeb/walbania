@@ -32,10 +32,15 @@ import {
   X,
   Youtube,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { TouchEvent } from "react";
 import { LocaleLocationModal } from "../components/LocaleLocationModal";
 import { SiteMenu } from "../components/SiteMenu";
+import {
+  TourItineraryMap,
+  type TourItineraryStop,
+  type TourRouteGeometry,
+} from "../components/TourItineraryMap";
 import { SiteLocaleProvider, translate, useLocalize, useSiteLocale } from "../i18n";
 import type { SiteLocale } from "../i18n";
 
@@ -123,41 +128,104 @@ const highlights = [
 
 const itinerary = [
   {
+    id: "sarande-pickup",
+    sequence: 1,
     time: "08:30",
     place: "Sarandë",
     duration: "30 min",
     text: "Meet your local guide at your hotel and settle into a private, air-conditioned vehicle.",
     tag: "Pickup",
+    location: {
+      id: "sarande-centre",
+      label: "Sarandë city centre",
+      coordinates: [20.0065258, 39.8752198],
+      osmReference: "relation/1255541",
+    },
   },
   {
+    id: "porto-palermo-castle",
+    sequence: 2,
     time: "09:30",
     place: "Porto Palermo",
     duration: "1 hr 15 min",
     text: "Explore the triangular fortress and hear the stories behind one of Albania’s most dramatic bays.",
     tag: "History",
+    location: {
+      id: "porto-palermo-castle",
+      label: "Porto Palermo Castle",
+      coordinates: [19.79071, 40.062179],
+      osmReference: "way/86825930",
+    },
   },
   {
+    id: "himare-waterfront",
+    sequence: 3,
     time: "11:15",
     place: "Himarë",
     duration: "2 hr",
     text: "Swim, stroll the seafront and enjoy an unhurried lunch made with produce from the coast.",
     tag: "Swim & lunch",
+    location: {
+      id: "himare-waterfront",
+      label: "Himarë waterfront",
+      coordinates: [19.7472977, 40.102163],
+      osmReference: "relation/1255539",
+    },
   },
   {
+    id: "old-qeparo",
+    sequence: 4,
     time: "14:15",
     place: "Qeparo village",
     duration: "1 hr 15 min",
     text: "Climb into the old village for slate roofs, mountain air and wide views across the Ionian Sea.",
     tag: "Village walk",
+    location: {
+      id: "old-qeparo",
+      label: "Old Qeparo",
+      coordinates: [19.8267781, 40.0678221],
+      osmReference: "node/713605143",
+    },
   },
   {
+    id: "borsh-castle-viewpoint",
+    sequence: 5,
     time: "16:30",
     place: "Borsh viewpoint",
     duration: "45 min",
     text: "Pause for coffee and a final panorama before the relaxed drive back to Sarandë.",
     tag: "Viewpoint",
+    location: {
+      id: "borsh-castle-viewpoint",
+      label: "Borsh Castle viewpoint",
+      coordinates: [19.8561846, 40.069896],
+      osmReference: "way/1124215012",
+    },
   },
-];
+] satisfies readonly TourItineraryStop[];
+
+const demoRouteGeometry = {
+  type: "LineString",
+  coordinates: [
+    [20.0065258, 39.8752198],
+    [19.9905, 39.912],
+    [19.956, 39.956],
+    [19.914, 40.006],
+    [19.8561846, 40.069896],
+    [19.8267781, 40.0678221],
+    [19.79071, 40.062179],
+    [19.766, 40.084],
+    [19.7472977, 40.102163],
+    [19.766, 40.084],
+    [19.79071, 40.062179],
+    [19.8267781, 40.0678221],
+    [19.8561846, 40.069896],
+    [19.914, 40.006],
+    [19.956, 39.956],
+    [19.9905, 39.912],
+    [20.0065258, 39.8752198],
+  ],
+} satisfies TourRouteGeometry;
 
 const included = [
   "Private return transport",
@@ -581,6 +649,61 @@ function Gallery() {
 
 function TourContent() {
   const localize = useLocalize();
+  const [activeStopId, setActiveStopId] = useState(itinerary[0].id);
+  const stopElementsRef = useRef(new Map<string, HTMLElement>());
+  const suppressObserverUntilRef = useRef(0);
+
+  const selectTimelineStop = useCallback((stopId: string) => {
+    setActiveStopId(stopId);
+  }, []);
+
+  const selectMapStop = useCallback((stopId: string) => {
+    suppressObserverUntilRef.current = Date.now() + 900;
+    setActiveStopId(stopId);
+    const stopElement = stopElementsRef.current.get(stopId);
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    stopElement?.scrollIntoView({
+      behavior: reducedMotion ? "auto" : "smooth",
+      block: "center",
+    });
+    stopElement?.focus({ preventScroll: true });
+  }, []);
+
+  useEffect(() => {
+    const desktopQuery = window.matchMedia("(min-width: 821px)");
+    let observer: IntersectionObserver | null = null;
+
+    const observeStops = () => {
+      observer?.disconnect();
+      observer = null;
+      if (!desktopQuery.matches) return;
+
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (Date.now() < suppressObserverUntilRef.current) return;
+          const mostVisible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+          const stopId = (mostVisible?.target as HTMLElement | undefined)?.dataset.stopId;
+          if (stopId) setActiveStopId(stopId);
+        },
+        {
+          rootMargin: "-24% 0px -54% 0px",
+          threshold: [0.1, 0.35, 0.65],
+        },
+      );
+
+      stopElementsRef.current.forEach((element) => observer?.observe(element));
+    };
+
+    observeStops();
+    desktopQuery.addEventListener("change", observeStops);
+    return () => {
+      observer?.disconnect();
+      desktopQuery.removeEventListener("change", observeStops);
+    };
+  }, []);
+
   return localize(
     <div className="tour-page">
       <Header />
@@ -676,59 +799,78 @@ function TourContent() {
                 title="The full itinerary"
                 text="Times are a guide. Your host keeps the day flexible for weather, traffic and the best local moments."
               />
-              <div className="itinerary">
-                {itinerary.map((stop, index) => (
-                  <article className="itinerary-stop" key={stop.place}>
-                    <div className="timeline-marker">
-                      <span>{String(index + 1).padStart(2, "0")}</span>
+              <div className="itinerary-experience">
+                <div className="itinerary">
+                  {itinerary.map((stop) => {
+                    const isActive = stop.id === activeStopId;
+                    return (
+                      <article
+                        ref={(element) => {
+                          if (element) stopElementsRef.current.set(stop.id, element);
+                          else stopElementsRef.current.delete(stop.id);
+                        }}
+                        className={`itinerary-stop${isActive ? " is-active" : ""}`}
+                        key={stop.id}
+                        data-stop-id={stop.id}
+                        role="button"
+                        tabIndex={0}
+                        aria-current={isActive ? "step" : undefined}
+                        aria-label={`Show stop ${stop.sequence}, ${stop.place}, on the map`}
+                        onClick={() => selectTimelineStop(stop.id)}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            selectTimelineStop(stop.id);
+                          }
+                        }}
+                      >
+                        <div className="timeline-marker">
+                          <span>{String(stop.sequence).padStart(2, "0")}</span>
+                        </div>
+                        <div className="itinerary-time">
+                          <strong>{stop.time}</strong>
+                          <span>{stop.duration}</span>
+                        </div>
+                        <div className="itinerary-copy">
+                          <span className="tag">{stop.tag}</span>
+                          <h3>{stop.place}</h3>
+                          <p>{stop.text}</p>
+                          <span className="coordinate">
+                            <MapPin size={14} /> {stop.location?.label ?? "Location pending"}
+                          </span>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+
+                <div id="map" className="itinerary-map-column">
+                  <TourItineraryMap
+                    stops={itinerary}
+                    activeStopId={activeStopId}
+                    onStopSelect={selectMapStop}
+                    routeGeometry={demoRouteGeometry}
+                  />
+                  <div className="itinerary-route-context">
+                    <div>
+                      <span className="eyebrow">The route</span>
+                      <strong>Coastline, connected.</strong>
                     </div>
-                    <div className="itinerary-time">
-                      <strong>{stop.time}</strong>
-                      <span>{stop.duration}</span>
-                    </div>
-                    <div className="itinerary-copy">
-                      <span className="tag">{stop.tag}</span>
-                      <h3>{stop.place}</h3>
-                      <p>{stop.text}</p>
-                      <span className="coordinate">
-                        <MapPin size={14} /> Southern Albania route
+                    <p>
+                      An interactive route overview connecting every stop. It is not intended for
+                      turn-by-turn navigation.
+                    </p>
+                    <div className="itinerary-route-stats">
+                      <span>
+                        <Navigation size={16} />
+                        <b>112 km</b> return route
+                      </span>
+                      <span>
+                        <Clock3 size={16} />
+                        <b>8 hours</b> door to door
                       </span>
                     </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-
-            <section id="map" className="map-card">
-              <div className="map-art" aria-label="Illustrative tour route map">
-                <div className="map-coast coast-a" />
-                <div className="map-coast coast-b" />
-                <div className="route-line" />
-                {["Sarandë", "Porto Palermo", "Himarë", "Qeparo"].map((label, index) => (
-                  <div className={`map-pin map-pin-${index + 1}`} key={label}>
-                    <span>{index + 1}</span>
-                    <b>{label}</b>
                   </div>
-                ))}
-              </div>
-              <div className="map-copy">
-                <span className="eyebrow">The route</span>
-                <h2>Coastline, connected.</h2>
-                <p>
-                  An illustrative route from Sarandë through the Riviera’s villages, beaches and
-                  historic bays.
-                </p>
-                <div className="route-stat">
-                  <Navigation size={18} />
-                  <span>
-                    <b>112 km</b> return route
-                  </span>
-                </div>
-                <div className="route-stat">
-                  <Clock3 size={18} />
-                  <span>
-                    <b>8 hours</b> door to door
-                  </span>
                 </div>
               </div>
             </section>

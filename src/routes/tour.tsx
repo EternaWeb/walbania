@@ -10,7 +10,6 @@ import {
   ChevronRight,
   Clock3,
   Facebook,
-  Globe2,
   Instagram,
   Languages,
   Linkedin,
@@ -36,9 +35,41 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { TouchEvent } from "react";
+import { LocaleLocationModal } from "../components/LocaleLocationModal";
+import { SiteLocaleProvider, translate, useLocalize, useSiteLocale } from "../i18n";
+import type { SiteLocale } from "../i18n";
 
 export const Route = createFileRoute("/tour")({
-  component: TourPage,
+  head: () => ({
+    meta: [
+      { title: "Albanian Riviera Private Tour | WonderAlbania" },
+      {
+        name: "description",
+        content:
+          "A private day along Albania’s southern Riviera, with hidden beaches, stone villages, Porto Palermo and a local lunch.",
+      },
+      { property: "og:title", content: "Albanian Riviera Private Tour | WonderAlbania" },
+      {
+        property: "og:description",
+        content: "Villages, bays and blue water on a private day through southern Albania.",
+      },
+      { name: "twitter:title", content: "Albanian Riviera Private Tour | WonderAlbania" },
+      {
+        name: "twitter:description",
+        content: "Villages, bays and blue water on a private day through southern Albania.",
+      },
+      { property: "og:locale", content: "en_US" },
+      { property: "og:locale:alternate", content: "fr_FR" },
+      { property: "og:url", content: "https://wonderalbania.com/tour" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://wonderalbania.com/tour" },
+      { rel: "alternate", hrefLang: "en", href: "https://wonderalbania.com/tour" },
+      { rel: "alternate", hrefLang: "fr", href: "https://wonderalbania.com/fr/tour" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://wonderalbania.com/tour" },
+    ],
+  }),
+  component: () => <TourPage locale="en" />,
 });
 
 const images = {
@@ -195,7 +226,8 @@ const relatedTours = [
 ];
 
 function Header() {
-  return (
+  const localize = useLocalize();
+  return localize(
     <>
       <div className="tour-contact-bar">
         <div className="page-inset py-2 text-xs">
@@ -217,9 +249,7 @@ function Header() {
             <img src="/weblogo.png" alt="WonderAlbania" />
           </a>
           <div className="tour-header-tools">
-            <button type="button" className="icon-chip" aria-label="Language">
-              <Globe2 size={18} />
-            </button>
+            <LocaleLocationModal />
             <button type="button" className="icon-chip" aria-label="Search">
               <Search size={18} />
             </button>
@@ -232,18 +262,20 @@ function Header() {
           </div>
         </div>
       </header>
-    </>
+    </>,
   );
 }
 
 function BookingCalendar() {
+  const locale = useSiteLocale();
+  const localize = useLocalize();
   const [viewMonth, setViewMonth] = useState(() => new Date(Date.UTC(2026, 8, 1)));
   const [selectedDate, setSelectedDate] = useState("2026-09-16");
   const year = viewMonth.getUTCFullYear();
   const month = viewMonth.getUTCMonth();
   const firstDay = new Date(Date.UTC(year, month, 1)).getUTCDay();
   const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
-  const monthLabel = viewMonth.toLocaleDateString("en-US", {
+  const monthLabel = viewMonth.toLocaleDateString(locale === "fr" ? "fr-FR" : "en-US", {
     month: "long",
     year: "numeric",
     timeZone: "UTC",
@@ -253,7 +285,7 @@ function BookingCalendar() {
     setViewMonth(new Date(Date.UTC(year, month + offset, 1)));
   };
 
-  return (
+  return localize(
     <div className="booking-calendar" aria-label="Choose a tour date">
       <div className="calendar-header">
         <button type="button" onClick={() => changeMonth(-1)} aria-label="Previous month">
@@ -265,7 +297,10 @@ function BookingCalendar() {
         </button>
       </div>
       <div className="calendar-weekdays" aria-hidden="true">
-        {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
+        {(locale === "fr"
+          ? ["D", "L", "M", "M", "J", "V", "S"]
+          : ["S", "M", "T", "W", "T", "F", "S"]
+        ).map((day, index) => (
           <span key={`${day}-${index}`}>{day}</span>
         ))}
       </div>
@@ -291,12 +326,13 @@ function BookingCalendar() {
           );
         })}
       </div>
-    </div>
+    </div>,
   );
 }
 
 function BookingCard({ mobile = false }: { mobile?: boolean }) {
-  return (
+  const localize = useLocalize();
+  return localize(
     <aside
       className={mobile ? "booking-card booking-card-mobile" : "booking-card"}
       aria-label="Booking preview"
@@ -336,17 +372,22 @@ function BookingCard({ mobile = false }: { mobile?: boolean }) {
           View cancellation policy
         </a>
       </div>
-    </aside>
+    </aside>,
   );
 }
 
 function NativeShareButton() {
+  const locale = useSiteLocale();
+  const localize = useLocalize();
   const [copied, setCopied] = useState(false);
 
   const shareTour = async () => {
     const shareData = {
-      title: "Riviera secrets: villages, bays & blue water",
-      text: "A private day along Albania’s wild southern coast with WonderAlbania.",
+      title: translate(locale, "Riviera secrets: villages, bays & blue water"),
+      text: translate(
+        locale,
+        "A private day along Albania’s wild southern coast with WonderAlbania.",
+      ),
       url: window.location.href,
     };
 
@@ -364,7 +405,7 @@ function NativeShareButton() {
     }
   };
 
-  return (
+  return localize(
     <button
       type="button"
       className="square-button"
@@ -373,7 +414,7 @@ function NativeShareButton() {
       onClick={() => void shareTour()}
     >
       <Share2 size={18} />
-    </button>
+    </button>,
   );
 }
 
@@ -386,22 +427,24 @@ function SectionHeading({
   title: React.ReactNode;
   text?: string;
 }) {
-  return (
+  const localize = useLocalize();
+  return localize(
     <div className="section-heading">
       {eyebrow && <span className="eyebrow">{eyebrow}</span>}
       <h2>{title}</h2>
       {text && <p>{text}</p>}
-    </div>
+    </div>,
   );
 }
 
 function HighlightsCarousel() {
+  const localize = useLocalize();
   const trackRef = useRef<HTMLDivElement>(null);
   const scroll = (direction: number) => {
     trackRef.current?.scrollBy({ left: direction * 520, behavior: "smooth" });
   };
 
-  return (
+  return localize(
     <div className="highlight-shell">
       <div ref={trackRef} className="highlight-track">
         {highlights.map(({ icon: Icon, label, text }) => (
@@ -422,11 +465,12 @@ function HighlightsCarousel() {
           <ChevronRight size={18} />
         </button>
       </div>
-    </div>
+    </div>,
   );
 }
 
 function Gallery() {
+  const localize = useLocalize();
   const [expanded, setExpanded] = useState(false);
   const [active, setActive] = useState<number | null>(null);
   const touchStart = useRef<number | null>(null);
@@ -467,7 +511,7 @@ function Gallery() {
     touchStart.current = null;
   };
 
-  return (
+  return localize(
     <section id="gallery" className="content-section tour-gallery">
       <div className="gallery-heading-row">
         <SectionHeading eyebrow="Tour gallery" title="Five views from the journey" />
@@ -533,12 +577,13 @@ function Gallery() {
           </button>
         </div>
       )}
-    </section>
+    </section>,
   );
 }
 
-function TourPage() {
-  return (
+function TourContent() {
+  const localize = useLocalize();
+  return localize(
     <div className="tour-page">
       <Header />
       <main>
@@ -875,12 +920,13 @@ function TourPage() {
         </section>
       </main>
       <Footer />
-    </div>
+    </div>,
   );
 }
 
 function Footer() {
-  return (
+  const localize = useLocalize();
+  return localize(
     <footer id="support" className="site-footer">
       <div className="tour-container newsletter">
         <div>
@@ -936,6 +982,14 @@ function Footer() {
           </a>
         </div>
       </div>
-    </footer>
+    </footer>,
+  );
+}
+
+export function TourPage({ locale }: { locale: SiteLocale }) {
+  return (
+    <SiteLocaleProvider locale={locale}>
+      <TourContent />
+    </SiteLocaleProvider>
   );
 }

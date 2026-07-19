@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TourRouteImport } from './routes/tour'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as FrRouteImport } from './routes/fr'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FrTourRouteImport } from './routes/fr_.tour'
 
 const TourRoute = TourRouteImport.update({
   id: '/tour',
@@ -23,40 +25,58 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FrRoute = FrRouteImport.update({
+  id: '/fr',
+  path: '/fr',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FrTourRoute = FrTourRouteImport.update({
+  id: '/fr_/tour',
+  path: '/fr/tour',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/fr': typeof FrRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tour': typeof TourRoute
+  '/fr/tour': typeof FrTourRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/fr': typeof FrRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tour': typeof TourRoute
+  '/fr/tour': typeof FrTourRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/fr': typeof FrRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tour': typeof TourRoute
+  '/fr_/tour': typeof FrTourRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sitemap.xml' | '/tour'
+  fullPaths: '/' | '/fr' | '/sitemap.xml' | '/tour' | '/fr/tour'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sitemap.xml' | '/tour'
-  id: '__root__' | '/' | '/sitemap.xml' | '/tour'
+  to: '/' | '/fr' | '/sitemap.xml' | '/tour' | '/fr/tour'
+  id: '__root__' | '/' | '/fr' | '/sitemap.xml' | '/tour' | '/fr_/tour'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FrRoute: typeof FrRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TourRoute: typeof TourRoute
+  FrTourRoute: typeof FrTourRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,6 +95,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/fr': {
+      id: '/fr'
+      path: '/fr'
+      fullPath: '/fr'
+      preLoaderRoute: typeof FrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -82,13 +109,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/fr_/tour': {
+      id: '/fr_/tour'
+      path: '/fr/tour'
+      fullPath: '/fr/tour'
+      preLoaderRoute: typeof FrTourRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FrRoute: FrRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TourRoute: TourRoute,
+  FrTourRoute: FrTourRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

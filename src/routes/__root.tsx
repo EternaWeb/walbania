@@ -1,9 +1,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
-  Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -12,12 +12,22 @@ import type { ReactNode } from "react";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const isFrench = pathname === "/fr" || pathname.startsWith("/fr/");
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold">404</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Page not found.</p>
-        <Link to="/" className="mt-6 inline-block btn-brand" style={{ background: "#434DFF", color: "white" }}>Go home</Link>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {isFrench ? "Page introuvable." : "Page not found."}
+        </p>
+        <a
+          href={isFrench ? "/fr/" : "/"}
+          className="mt-6 inline-block btn-brand"
+          style={{ background: "#434DFF", color: "white" }}
+        >
+          {isFrench ? "Retour à l’accueil" : "Go home"}
+        </a>
       </div>
     </div>
   );
@@ -25,11 +35,24 @@ function NotFoundComponent() {
 
 function ErrorComponent({ reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const isFrench = pathname === "/fr" || pathname.startsWith("/fr/");
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold">This page didn't load</h1>
-        <button onClick={() => { router.invalidate(); reset(); }} className="mt-4 btn-brand" style={{ background: "#434DFF", color: "white" }}>Try again</button>
+        <h1 className="text-xl font-semibold">
+          {isFrench ? "Cette page ne s’est pas chargée" : "This page didn't load"}
+        </h1>
+        <button
+          onClick={() => {
+            router.invalidate();
+            reset();
+          }}
+          className="mt-4 btn-brand"
+          style={{ background: "#434DFF", color: "white" }}
+        >
+          {isFrench ? "Réessayer" : "Try again"}
+        </button>
       </div>
     </div>
   );
@@ -40,10 +63,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "WonderAlbania — Discover Albania in Wonder" },
-      { name: "description", content: "Curated Albania holidays: couples, family, hiking and summer escapes. All-inclusive deals and unforgettable experiences." },
-      { property: "og:title", content: "WonderAlbania — Discover Albania in Wonder" },
-      { property: "og:description", content: "Curated Albania holidays: couples, family, hiking and summer escapes." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -52,7 +71,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -62,10 +84,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const locale = pathname === "/fr" || pathname.startsWith("/fr/") ? "fr" : "en";
   return (
-    <html lang="en">
-      <head><HeadContent /></head>
-      <body>{children}<Scripts /></body>
+    <html lang={locale}>
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <Scripts />
+      </body>
     </html>
   );
 }

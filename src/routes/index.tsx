@@ -756,6 +756,7 @@ function LazyHeroVideo() {
       >
         {videoSrc && <source src={videoSrc} type="video/mp4" />}
       </video>
+      <span className="index-hero-film" aria-hidden="true" />
     </div>
   );
 }

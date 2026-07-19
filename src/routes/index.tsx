@@ -63,7 +63,10 @@ export const Route = createFileRoute("/")({
   component: () => <HomePage locale="en" />,
 });
 
-const HERO_IMG = "https://images.unsplash.com/photo-1601581875309-fafbf2d3ed3a?w=1800&q=80";
+const HERO_POSTER = "https://images.unsplash.com/photo-1601581875309-fafbf2d3ed3a?w=1800&q=80";
+const HERO_VIDEO_DESKTOP = "/videos/hero-1080.mp4";
+// Replace this with /videos/hero-720.mp4 when the mobile export is available.
+const HERO_VIDEO_MOBILE = HERO_VIDEO_DESKTOP;
 
 const collections = [
   {
@@ -683,6 +686,80 @@ function SiteFooter() {
   );
 }
 
+function LazyHeroVideo() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const loadVideo = () => {
+      const isMobile = window.matchMedia("(max-width: 767px)").matches;
+      setVideoSrc(isMobile ? HERO_VIDEO_MOBILE : HERO_VIDEO_DESKTOP);
+    };
+
+    if (!("IntersectionObserver" in window)) {
+      loadVideo();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        loadVideo();
+        observer.disconnect();
+      },
+      { rootMargin: "240px 0px" },
+    );
+
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!videoSrc) return;
+    videoRef.current?.load();
+  }, [videoSrc]);
+
+  const revealVideo = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    setIsReady(true);
+    void video.play().catch(() => {
+      // The poster remains visible if a browser blocks autoplay.
+    });
+  };
+
+  return (
+    <div className="index-hero-media">
+      <img
+        src={HERO_POSTER}
+        alt="Discover Albania"
+        className="index-hero-poster"
+        loading="eager"
+        fetchPriority="high"
+      />
+      <video
+        ref={videoRef}
+        className={`index-hero-video${isReady ? " is-ready" : ""}`}
+        muted
+        loop
+        playsInline
+        autoPlay
+        preload="none"
+        poster={HERO_POSTER}
+        aria-hidden="true"
+        tabIndex={-1}
+        onCanPlayThrough={revealVideo}
+      >
+        {videoSrc && <source src={videoSrc} type="video/mp4" />}
+      </video>
+    </div>
+  );
+}
+
 function Index() {
   const locale = useSiteLocale();
   const localize = useLocalize();
@@ -731,12 +808,7 @@ function Index() {
 
       {/* Hero */}
       <section className="px-[10px] page-max">
-        <div
-          className="w-full overflow-hidden bg-muted"
-          style={{ borderRadius: 15, height: "min(70vh, 500px)" }}
-        >
-          <img src={HERO_IMG} alt="Discover Albania" className="w-full h-full object-cover" />
-        </div>
+        <LazyHeroVideo />
       </section>
 
       {/* Our Holiday Collections */}

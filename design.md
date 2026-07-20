@@ -28,8 +28,8 @@ It applies to public discovery pages, search, tours, booking, support, and futur
 
 | Role | Token/value | Usage |
 | --- | --- | --- |
-| Brand | `#434DFF` | Primary actions, active states, links, key emphasis |
-| Brand soft | `#E6E8FF` | Gentle panels, selected chips, hover surfaces |
+| Brand | `#1F2528` | Primary actions, active states, links, key emphasis |
+| Brand soft | `#CCDAB8` | Gentle panels, selected chips, hover surfaces |
 | Background | `#FFFFFF` | Primary canvas and logo surfaces |
 | Foreground | `#0A0A0A` | Main text and high-emphasis icons |
 | Muted | `#F4F4F5` | Quiet fills, skeletons, disabled backgrounds |

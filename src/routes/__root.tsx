@@ -24,7 +24,7 @@ function NotFoundComponent() {
         <a
           href={isFrench ? "/fr/" : "/"}
           className="mt-6 inline-block btn-brand"
-          style={{ background: "#434DFF", color: "white" }}
+          style={{ background: "#1F2528", color: "white" }}
         >
           {isFrench ? "Retour à l’accueil" : "Go home"}
         </a>
@@ -49,7 +49,7 @@ function ErrorComponent({ reset }: { error: Error; reset: () => void }) {
             reset();
           }}
           className="mt-4 btn-brand"
-          style={{ background: "#434DFF", color: "white" }}
+          style={{ background: "#1F2528", color: "white" }}
         >
           {isFrench ? "Réessayer" : "Try again"}
         </button>

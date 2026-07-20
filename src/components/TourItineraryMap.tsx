@@ -66,7 +66,7 @@ type MarkerProperties = {
 };
 
 const DEFAULT_STYLE_URL = "/maps/wonder-albania.json";
-const BRAND = "#434DFF";
+const BRAND = "#1F2528";
 const INK = "#0A0A0A";
 const MAP_COPY = {
   en: {

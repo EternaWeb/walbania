@@ -271,7 +271,7 @@ function TravelersLoveUs() {
     <section className="page-inset pb-14 md:pb-20">
       <div
         className="mx-auto py-14 md:py-16 px-6"
-        style={{ background: "#E6E8FF", borderRadius: 20 }}
+        style={{ background: "#CCDAB8", borderRadius: 20 }}
       >
         <h2 className="text-center text-3xl md:text-4xl">
           {locale === "fr" ? "Nos voyageurs nous adorent" : "Travelers Love Us"}
@@ -292,7 +292,7 @@ function TravelersLoveUs() {
           adventure activities." <span className="not-italic">— Andre, France</span>
         </p>
         <div className="flex justify-center mt-6">
-          <button className="btn-brand" style={{ background: "#434DFF", color: "white" }}>
+          <button className="btn-brand" style={{ background: "#1F2528", color: "white" }}>
             Read Reviews
           </button>
         </div>
@@ -380,7 +380,7 @@ function NotSure() {
     <section className="page-inset pb-14">
       <div
         className="py-14 md:py-16 px-4 relative overflow-hidden"
-        style={{ background: "#434DFF", borderRadius: 24 }}
+        style={{ background: "#1F2528", borderRadius: 24 }}
       >
         <p className="text-center text-white/80 text-sm">Get wonderful ideas</p>
         <h2 className="text-center text-white text-3xl md:text-5xl mt-1">Not sure where to go?</h2>
@@ -462,13 +462,13 @@ function SiteFooter() {
             <input
               type="email"
               placeholder="your@email.com"
-              className="flex-1 px-4 py-3 rounded-full border text-sm outline-none focus:border-[#434DFF]"
+              className="flex-1 px-4 py-3 rounded-full border text-sm outline-none focus:border-[#1F2528]"
               style={{ borderColor: "#E5E7EB" }}
             />
             <button
               type="submit"
               className="btn-brand"
-              style={{ background: "#434DFF", color: "white" }}
+              style={{ background: "#1F2528", color: "white" }}
             >
               Subscribe
             </button>
@@ -488,12 +488,12 @@ function SiteFooter() {
             <div className="mt-5 space-y-2 text-muted-foreground">
               <p>Rr. Deshmoret e 4 Shkurtit, Tirana, Albania</p>
               <p>
-                <a href="mailto:hello@wonderalbania.com" className="hover:text-[#434DFF]">
+                <a href="mailto:hello@wonderalbania.com" className="hover:text-[#1F2528]">
                   hello@wonderalbania.com
                 </a>
               </p>
               <p>
-                <a href="tel:+355691234567" className="hover:text-[#434DFF]">
+                <a href="tel:+355691234567" className="hover:text-[#1F2528]">
                   +355 69 123 45 67
                 </a>
               </p>
@@ -504,27 +504,27 @@ function SiteFooter() {
             <h4 className="font-semibold mb-4">Explore</h4>
             <ul className="space-y-2 text-muted-foreground">
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Destinations
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Offers
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Experiences
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Collections
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Group Travel
                 </a>
               </li>
@@ -535,27 +535,27 @@ function SiteFooter() {
             <h4 className="font-semibold mb-4">Company</h4>
             <ul className="space-y-2 text-muted-foreground">
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   About Us
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Our Team
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Careers
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Press
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Contact
                 </a>
               </li>
@@ -566,27 +566,27 @@ function SiteFooter() {
             <h4 className="font-semibold mb-4">Support</h4>
             <ul className="space-y-2 text-muted-foreground">
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Help Center
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Travel Insurance
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Booking Terms
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Cancellations
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Sustainability
                 </a>
               </li>
@@ -597,27 +597,27 @@ function SiteFooter() {
             <h4 className="font-semibold mb-4">Legal</h4>
             <ul className="space-y-2 text-muted-foreground">
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Terms of Service
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Cookie Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   GDPR
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-[#434DFF]">
+                <a href="#" className="hover:text-[#1F2528]">
                   Modern Slavery
                 </a>
               </li>
@@ -643,7 +643,7 @@ function SiteFooter() {
                 className="flex items-center gap-2 px-4 py-2 rounded-full border text-xs text-muted-foreground"
                 style={{ borderColor: "#E5E7EB" }}
               >
-                <I size={14} className="text-[#434DFF]" />
+                <I size={14} className="text-[#1F2528]" />
                 <span>{label}</span>
               </div>
             ))}
@@ -791,7 +791,7 @@ function Index() {
   return localize(
     <div className="index-page min-h-screen bg-background text-foreground">
       {/* Top blue bar */}
-      <div style={{ background: "#434DFF" }} className="w-full">
+      <div style={{ background: "#1F2528" }} className="w-full">
         <div className="page-inset py-2 text-xs">
           <a href="#" className="talk-with-us-link underline underline-offset-2">
             Talk with Us
@@ -803,13 +803,13 @@ function Index() {
       <header className="page-inset py-4">
         <div className="flex items-center justify-between gap-4">
           <nav className="hidden md:flex items-center gap-6 text-sm flex-1">
-            <a href="#" className="hover:text-[#434DFF]">
+            <a href="#" className="hover:text-[#1F2528]">
               About
             </a>
-            <a href="#" className="hover:text-[#434DFF]">
+            <a href="#" className="hover:text-[#1F2528]">
               Offers
             </a>
-            <a href="#" className="hover:text-[#434DFF]">
+            <a href="#" className="hover:text-[#1F2528]">
               Destinations
             </a>
           </nav>

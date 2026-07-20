@@ -32,3 +32,8 @@ dist-ssr
 *.sw?
 
 .vercel
+
+# Local secrets
+.env
+.env.*
+!.env.example

@@ -1,6 +1,11 @@
 import { Check, ChevronRight, Globe, LoaderCircle, MapPin, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { localizedPath, useLocalize, useSiteLocale } from "../i18n";
+import {
+  localizedPath,
+  useLocaleAlternatePaths,
+  useLocalize,
+  useSiteLocale,
+} from "../i18n";
 import type { SiteLocale } from "../i18n";
 
 const LOCALE_KEY = "wonderalbania-locale";
@@ -15,17 +20,22 @@ function saveLocale(locale: SiteLocale) {
   document.cookie = `wonderalbania_locale=${locale}; Max-Age=31536000; Path=/; SameSite=Lax`;
 }
 
-function moveToLocale(locale: SiteLocale) {
-  const path = localizedPath(window.location.pathname, locale);
-  window.location.assign(`${path}${window.location.search}${window.location.hash}`);
-}
-
 export function LocaleLocationModal({ className = "icon-chip" }: { className?: string }) {
   const locale = useSiteLocale();
+  const alternatePaths = useLocaleAlternatePaths();
   const localize = useLocalize();
   const [open, setOpen] = useState(false);
   const [location, setLocation] = useState("Detect location");
   const [detecting, setDetecting] = useState(false);
+
+  const moveToLocale = useCallback(
+    (nextLocale: SiteLocale) => {
+      const path =
+        alternatePaths?.[nextLocale] ?? localizedPath(window.location.pathname, nextLocale);
+      window.location.assign(`${path}${window.location.search}${window.location.hash}`);
+    },
+    [alternatePaths],
+  );
 
   useEffect(() => {
     const savedLocation = window.localStorage.getItem(locationKey(locale));
@@ -49,7 +59,7 @@ export function LocaleLocationModal({ className = "icon-chip" }: { className?: s
     const initialLocale: SiteLocale = browserPrefersFrench ? "fr" : "en";
     saveLocale(initialLocale);
     if (initialLocale !== locale) moveToLocale(initialLocale);
-  }, [locale]);
+  }, [locale, moveToLocale]);
 
   useEffect(() => {
     if (!open) return;

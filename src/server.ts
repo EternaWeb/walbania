@@ -96,6 +96,20 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
+function applyRouteSecurityHeaders(request: Request, response: Response) {
+  const pathname = new URL(request.url).pathname;
+  if (!pathname.startsWith("/admin") && !pathname.startsWith("/api/admin")) return response;
+  const headers = new Headers(response.headers);
+  headers.set("X-Robots-Tag", "noindex, nofollow, noarchive, nosnippet");
+  headers.set("Cache-Control", "private, no-store, max-age=0");
+  headers.set("Vary", "Cookie");
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
@@ -104,7 +118,10 @@ export default {
 
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
+      return applyRouteSecurityHeaders(
+        request,
+        await normalizeCatastrophicSsrResponse(response),
+      );
     } catch (error) {
       console.error(error);
       return new Response(renderErrorPage(), {

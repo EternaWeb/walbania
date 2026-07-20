@@ -349,20 +349,33 @@ const french: Record<string, string> = {
   "4.8": "4,8",
 };
 
-const LocaleContext = createContext<SiteLocale>("en");
+type LocaleContextValue = {
+  locale: SiteLocale;
+  alternatePaths?: Partial<Record<SiteLocale, string>>;
+};
+
+const LocaleContext = createContext<LocaleContextValue>({ locale: "en" });
 
 export function SiteLocaleProvider({
   locale,
+  alternatePaths,
   children,
 }: {
   locale: SiteLocale;
+  alternatePaths?: Partial<Record<SiteLocale, string>>;
   children: ReactNode;
 }) {
-  return <LocaleContext.Provider value={locale}>{children}</LocaleContext.Provider>;
+  return (
+    <LocaleContext.Provider value={{ locale, alternatePaths }}>{children}</LocaleContext.Provider>
+  );
 }
 
 export function useSiteLocale() {
-  return useContext(LocaleContext);
+  return useContext(LocaleContext).locale;
+}
+
+export function useLocaleAlternatePaths() {
+  return useContext(LocaleContext).alternatePaths;
 }
 
 export function translate(locale: SiteLocale, value: string) {

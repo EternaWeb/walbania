@@ -298,13 +298,13 @@ function Header() {
   return localize(
     <>
       <div className="tour-contact-bar">
-        <div className="page-inset py-2 text-xs">
+        <div className="page-inset site-navigation py-2 text-xs">
           <a href="#support" className="text-white underline underline-offset-2">
             Talk with Us
           </a>
         </div>
       </div>
-      <header className="tour-header page-inset">
+      <header className="tour-header page-inset site-navigation">
         <div className="tour-header-row">
           <nav className="tour-header-breadcrumb" aria-label="Breadcrumb">
             <a href="/">Home</a>

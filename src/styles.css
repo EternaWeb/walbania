@@ -204,6 +204,13 @@ h2 {
   margin-inline: auto;
 }
 
+.site-navigation {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: clamp(12px, 2vw, 32px);
+}
+
 @media (min-width: 768px) {
   :root { --site-gutter: 24px; }
 }
@@ -481,8 +488,24 @@ h2 {
 .pill:hover { background: #d4d8ff; }
 
 .collection-desktop-grid {
-  max-width: 1020px;
+  max-width: 880px;
   margin-inline: auto;
+}
+
+.index-scroller-item {
+  width: 72%;
+}
+
+@media (min-width: 640px) {
+  .index-scroller-item {
+    width: 42%;
+  }
+}
+
+@media (min-width: 768px) {
+  .index-scroller-item {
+    width: clamp(180px, 16vw, 220px);
+  }
 }
 
 .collection-card {
@@ -869,6 +892,16 @@ em { color: var(--brand); font-style: italic; font-weight: 500; }
   border-radius: var(--radius-media);
   background: var(--soft);
   isolation: isolate;
+}
+
+.index-hero-shell {
+  width: 100%;
+  margin-inline: 0;
+  padding: 0;
+}
+
+.index-hero-shell .index-hero-media {
+  border-radius: 0;
 }
 
 .index-hero-poster,
@@ -2377,9 +2410,17 @@ em { color: var(--brand); font-style: italic; font-weight: 500; }
   }
 
   .hero-ribbons {
+    left: 12px;
     right: 12px;
     bottom: 12px;
+    justify-content: space-between;
     gap: 6px;
+  }
+
+  .tour-page .hero-ribbons .hero-badge,
+  .tour-page .hero-ribbons .photo-count {
+    padding: 8px 10px;
+    font-size: 10px;
   }
 
   .tour-page .section-heading h2,
@@ -2518,8 +2559,11 @@ em { color: var(--brand); font-style: italic; font-weight: 500; }
 /* Desktop tour hero */
 @media (min-width: 1024px) {
   .tour-page .hero-section {
+    width: 100%;
+    max-width: none;
     height: calc(100svh - 104px);
     min-height: 0;
+    margin-inline: 0;
     padding-top: 0;
   }
 
@@ -2542,7 +2586,7 @@ em { color: var(--brand); font-style: italic; font-weight: 500; }
   .tour-page .hero-visual {
     height: 100%;
     min-height: 0;
-    border-radius: var(--radius-media);
+    border-radius: 0;
   }
 
   .tour-page .hero-visual > img {
@@ -2556,7 +2600,7 @@ em { color: var(--brand); font-style: italic; font-weight: 500; }
     display: flex;
     flex-direction: column;
     padding: clamp(18px, 4.5svh, 52px) clamp(24px, 3.5vw, 52px);
-    border-radius: var(--radius-surface);
+    border-radius: 0;
     background: var(--brand);
     color: white;
   }
@@ -2633,7 +2677,7 @@ em { color: var(--brand); font-style: italic; font-weight: 500; }
     align-items: center;
     gap: clamp(24px, 4vw, 70px);
     padding: 0 clamp(24px, 3.5vw, 52px);
-    border-radius: var(--radius-surface);
+    border-radius: 0;
     background: var(--brand-soft);
   }
 
@@ -2668,6 +2712,12 @@ em { color: var(--brand); font-style: italic; font-weight: 500; }
 
   .tour-page .content-shell {
     margin-top: 84px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .tour-page .hero-badge-desktop {
+    display: none;
   }
 }
 

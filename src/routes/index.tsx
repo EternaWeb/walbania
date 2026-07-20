@@ -200,7 +200,7 @@ const faqs = [
 ];
 
 // ---- Horizontal scroller with smart arrows (desktop only) ----
-function Scroller({ children, itemClass }: { children: React.ReactNode[]; itemClass: string }) {
+function Scroller({ children }: { children: React.ReactNode[] }) {
   const localize = useLocalize();
   const ref = useRef<HTMLDivElement>(null);
   const [canLeft, setCanLeft] = useState(false);
@@ -233,10 +233,7 @@ function Scroller({ children, itemClass }: { children: React.ReactNode[]; itemCl
     <div className="relative">
       <div ref={ref} className="flex gap-5 overflow-x-auto snap-x px-4 md:px-8 scroll-hide">
         {children.map((c, i) => (
-          <div
-            key={i}
-            className={`flex-shrink-0 snap-start w-[78%] sm:w-[45%] md:w-auto ${itemClass}`}
-          >
+          <div key={i} className="index-scroller-item flex-shrink-0 snap-start">
             {c}
           </div>
         ))}
@@ -792,7 +789,7 @@ function Index() {
     <div className="index-page min-h-screen bg-background text-foreground">
       {/* Top blue bar */}
       <div style={{ background: "#1F2528" }} className="w-full">
-        <div className="page-inset py-2 text-xs">
+        <div className="page-inset site-navigation py-2 text-xs">
           <a href="#" className="talk-with-us-link underline underline-offset-2">
             Talk with Us
           </a>
@@ -800,7 +797,7 @@ function Index() {
       </div>
 
       {/* Main nav */}
-      <header className="page-inset py-4">
+      <header className="page-inset site-navigation py-4">
         <div className="flex items-center justify-between gap-4">
           <nav className="hidden md:flex items-center gap-6 text-sm flex-1">
             <a href="#" className="hover:text-[#1F2528]">
@@ -832,7 +829,7 @@ function Index() {
       </header>
 
       {/* Hero */}
-      <section className="px-[10px] page-max">
+      <section className="index-hero-shell">
         <LazyHeroVideo />
       </section>
 
@@ -848,7 +845,7 @@ function Index() {
         </div>
         <div className="md:hidden flex gap-4 overflow-x-auto scroll-hide snap-x -mx-4 px-4">
           {collections.map((c) => (
-            <div key={c.label} className="flex-shrink-0 snap-start w-[70%]">
+            <div key={c.label} className="flex-shrink-0 snap-start w-[64%]">
               <CollectionCard {...c} />
             </div>
           ))}
@@ -860,7 +857,7 @@ function Index() {
       {/* All Inclusive Deals */}
       <section className="py-6 md:py-10 page-max">
         <h2 className="text-center text-3xl md:text-4xl mb-8 md:mb-10">All Inclusive Deals</h2>
-        <Scroller itemClass="md:w-[19%]">
+        <Scroller>
           {deals.map((d, i) => (
             <Card
               key={i}
@@ -923,7 +920,7 @@ function Index() {
         </div>
 
         <div className="mt-10">
-          <Scroller itemClass="md:w-[19%]">
+          <Scroller>
             {experiences.map((e, i) => (
               <div key={i} className="card-zoom px-2">
                 <div

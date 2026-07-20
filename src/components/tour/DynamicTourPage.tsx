@@ -522,7 +522,12 @@ function Gallery({ tour }: { tour: TourViewModel }) {
             onClick={() => setActive(index)}
             aria-label={`${copy.gallery} ${index + 1}`}
           >
-            <img src={image.src} alt={image.alt} loading={index > 1 ? "lazy" : undefined} />
+            <img
+              src={image.src}
+              alt={image.alt}
+              loading={index > 1 ? "lazy" : "eager"}
+              decoding="async"
+            />
             <span>{String(index + 1).padStart(2, "0")}</span>
           </button>
         ))}
@@ -538,7 +543,7 @@ function Gallery({ tour }: { tour: TourViewModel }) {
             <X size={22} />
           </button>
           <div className="gallery-modal-image">
-            <img src={tour.gallery[active].src} alt={tour.gallery[active].alt} />
+            <img src={tour.gallery[active].src} alt={tour.gallery[active].alt} decoding="async" />
             <span>
               {active + 1} / {tour.gallery.length}
             </span>
@@ -678,7 +683,13 @@ function TourContent({ tour }: { tour: TourViewModel }) {
           <div className="hero-shell">
             <div className="hero-grid">
               <div className="hero-visual">
-                <img src={tour.heroImage} alt={tour.heroAlt} />
+                <img
+                  src={tour.heroImage}
+                  alt={tour.heroAlt}
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
+                />
                 <div className="hero-ribbons">
                   {tour.heroBadge && (
                     <div className="hero-badge hero-badge-mobile">{tour.heroBadge}</div>
@@ -996,6 +1007,7 @@ function TourContent({ tour }: { tour: TourViewModel }) {
                         src={related.image}
                         alt={related.title}
                         loading="lazy"
+                        decoding="async"
                       />
                       {related.badge && <span className="ribbon">{related.badge}</span>}
                     </div>

@@ -55,7 +55,7 @@ function durationLabel(minutes: number, locale: TourLocale) {
 }
 
 function localizedPath(locale: TourLocale, slug: string) {
-  return locale === "fr" ? `/fr/tour/${slug}` : `/tour/${slug}`;
+  return locale === "fr" ? `/fr/${slug}` : `/${slug}`;
 }
 
 async function loadTaxonomy(client: SupabaseClientLike, kind: TaxonomyKind) {
@@ -863,36 +863,76 @@ export const publishTourFn = createServerFn({ method: "POST" })
   .validator(z.object({ id: z.string().uuid() }))
   .handler(async ({ data }) => {
     await requireAdminSession();
-    const client = createAdminSupabaseClient();
-    const graph = await fetchTourGraph(client, data.id);
-    if (!graph) throw new Error("Tour not found.");
-    const editor = graphToEditor(graph);
-    const problems = validateForPublish(editor);
-    if (problems.length) return { ok: false as const, problems };
+    try {
+      const client = createAdminSupabaseClient();
+      const graph = await fetchTourGraph(client, data.id);
+      if (!graph) throw new Error("Tour not found.");
+      const editor = graphToEditor(graph);
+      const problems = validateForPublish(editor);
 
-    if (editor.featured) {
-      const { error: clearError } = await client
+      for (const media of graph.media) {
+        const separator = media.storage_path.lastIndexOf("/");
+        if (separator < 1) {
+          problems.push(`${media.role === "hero" ? "Hero" : "Gallery"} image path is invalid.`);
+          continue;
+        }
+        const folder = media.storage_path.slice(0, separator);
+        const name = media.storage_path.slice(separator + 1);
+        const { data: objects, error: storageError } = await client.storage
+          .from("tour-media")
+          .list(folder, { limit: 10, search: name });
+        if (storageError || !objects?.some((object) => object.name === name)) {
+          problems.push(
+            `${media.role === "hero" ? "Hero" : "Gallery"} image is missing from storage. Re-upload it before publishing.`,
+          );
+          continue;
+        }
+        const canonicalUrl = client.storage.from("tour-media").getPublicUrl(media.storage_path)
+          .data.publicUrl;
+        if (media.public_url !== canonicalUrl) {
+          const { error: mediaUpdateError } = await client
+            .from("tour_media")
+            .update({ public_url: canonicalUrl })
+            .eq("id", media.id);
+          throwOnError(mediaUpdateError);
+        }
+      }
+
+      if (problems.length) return { ok: false as const, problems: [...new Set(problems)] };
+
+      if (editor.featured) {
+        const { error: clearError } = await client
+          .from("tours")
+          .update({ featured: false })
+          .neq("id", editor.id!);
+        throwOnError(clearError);
+      }
+      const { error } = await client
         .from("tours")
-        .update({ featured: false })
-        .neq("id", editor.id!);
-      throwOnError(clearError);
-    }
-    const { error } = await client
-      .from("tours")
-      .update({
+        .update({
+          status: "published",
+          published_at: graph.tour.published_at ?? new Date().toISOString(),
+        })
+        .eq("id", data.id);
+      throwOnError(error);
+      const siteUrl = getSiteUrl();
+      const result: PublishResult = {
+        id: data.id,
         status: "published",
-        published_at: graph.tour.published_at ?? new Date().toISOString(),
-      })
-      .eq("id", data.id);
-    throwOnError(error);
-    const siteUrl = getSiteUrl();
-    const result: PublishResult = {
-      id: data.id,
-      status: "published",
-      englishUrl: `${siteUrl}/tour/${editor.translations.en.slug}`,
-      frenchUrl: `${siteUrl}/fr/tour/${editor.translations.fr.slug}`,
-    };
-    return { ok: true as const, result };
+        englishUrl: `${siteUrl}/${editor.translations.en.slug}`,
+        frenchUrl: `${siteUrl}/fr/${editor.translations.fr.slug}`,
+      };
+      return { ok: true as const, result };
+    } catch (error) {
+      return {
+        ok: false as const,
+        problems: [
+          error instanceof Error
+            ? `Publishing failed: ${error.message}`
+            : "Publishing failed because of an unexpected server error.",
+        ],
+      };
+    }
   });
 
 export const unpublishTourFn = createServerFn({ method: "POST" })
@@ -1051,6 +1091,39 @@ export const requestTourUploadFn = createServerFn({ method: "POST" })
       token: signed!.token,
       publicUrl,
       ...readPublicSupabaseConfig(),
+    };
+  });
+
+export const confirmTourUploadFn = createServerFn({ method: "POST" })
+  .validator(
+    z.object({
+      tourId: z.string().uuid(),
+      path: z.string().trim().min(1).max(500),
+    }),
+  )
+  .handler(async ({ data }) => {
+    await requireAdminSession();
+    const prefix = `tours/${data.tourId}/`;
+    if (!data.path.startsWith(prefix)) throw new Error("The uploaded image path is invalid.");
+
+    const name = data.path.slice(prefix.length);
+    if (!name || name.includes("/")) throw new Error("The uploaded image path is invalid.");
+
+    const client = createAdminSupabaseClient();
+    const { data: objects, error } = await client.storage
+      .from("tour-media")
+      .list(`tours/${data.tourId}`, {
+        limit: 10,
+        search: name,
+      });
+    throwOnError(error);
+    if (!objects?.some((object) => object.name === name)) {
+      throw new Error("The image upload did not finish. Please try uploading it again.");
+    }
+
+    return {
+      path: data.path,
+      publicUrl: client.storage.from("tour-media").getPublicUrl(data.path).data.publicUrl,
     };
   });
 

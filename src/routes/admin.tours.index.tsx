@@ -51,7 +51,7 @@ function AdminToursPage() {
                   <td>
                     <div className="admin-table-title">
                       <strong>{tour.titleEn || "Untitled tour"}</strong>
-                      <span>{tour.slugEn ? `/tour/${tour.slugEn}` : "English slug missing"}</span>
+                      <span>{tour.slugEn ? `/${tour.slugEn}` : "English slug missing"}</span>
                     </div>
                   </td>
                   <td>
@@ -67,7 +67,7 @@ function AdminToursPage() {
                       {tour.status === "published" && tour.slugEn && (
                         <a
                           className="admin-icon-button"
-                          href={`/tour/${tour.slugEn}`}
+                          href={`/${tour.slugEn}`}
                           target="_blank"
                           rel="noreferrer"
                           aria-label="Open published tour"
@@ -93,4 +93,3 @@ function AdminToursPage() {
     </>
   );
 }
-

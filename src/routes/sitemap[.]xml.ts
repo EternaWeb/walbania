@@ -42,8 +42,8 @@ export const Route = createFileRoute("/sitemap.xml")({
         ];
         const tourEntries: SitemapEntry[] = [...byTour.values()].flatMap((tour) => {
           if (!tour.en || !tour.fr) return [];
-          const enUrl = `${baseUrl}/tour/${tour.en.slug}`;
-          const frUrl = `${baseUrl}/fr/tour/${tour.fr.slug}`;
+          const enUrl = `${baseUrl}/${tour.en.slug}`;
+          const frUrl = `${baseUrl}/fr/${tour.fr.slug}`;
           return [
             {
               loc: enUrl,

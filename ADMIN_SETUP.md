@@ -33,9 +33,21 @@ Redeploy after changing production environment variables.
    itinerary location, and add date exceptions as needed.
 5. Save the draft, use Preview for each language, and publish.
 
-Publishing returns and displays both live URLs. `/tour` and `/fr/tour` redirect to the featured
-published tour, or to the newest published tour when none is featured. Draft and archived records
-remain inaccessible to the public key because of row-level security.
+Publishing returns and displays both live URLs. English tours use `/<slug>` and French tours use
+`/fr/<slug>`. The older `/tour/<slug>` and `/fr/tour/<slug>` formats redirect permanently to the
+new canonical URLs. `/tour` and `/fr/tour` redirect to the featured published tour, or to the
+newest published tour when none is featured. Draft and archived records remain inaccessible to the
+public key because of row-level security.
+
+## Optional SQL content workflow
+
+Run [`supabase/seed-tour-taxonomies.sql`](./supabase/seed-tour-taxonomies.sql) to add the standard
+categories, tour types, and difficulty levels. It is safe to run repeatedly.
+
+To create a complete tour directly from the Supabase SQL Editor, copy
+[`supabase/tour-insert-template.sql`](./supabase/tour-insert-template.sql), replace every example
+value, and run the edited copy. Image rows only store metadata: upload the corresponding files to
+the `tour-media` bucket before running the tour script.
 
 ## Availability behavior
 

@@ -14,10 +14,12 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as FrRouteImport } from './routes/fr'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as TourSlugRouteImport } from './routes/tour_.$slug'
 import { Route as FrTourRouteImport } from './routes/fr_.tour'
+import { Route as FrSlugRouteImport } from './routes/fr_.$slug'
 import { Route as AdminLoginRouteImport } from './routes/admin_.login'
 import { Route as AdminTaxonomiesRouteImport } from './routes/admin.taxonomies'
 import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
@@ -52,6 +54,11 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SlugRoute = SlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -70,6 +77,11 @@ const TourSlugRoute = TourSlugRouteImport.update({
 const FrTourRoute = FrTourRouteImport.update({
   id: '/fr_/tour',
   path: '/fr/tour',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FrSlugRoute = FrSlugRouteImport.update({
+  id: '/fr_/$slug',
+  path: '/fr/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
@@ -115,6 +127,7 @@ const AdminToursTourIdPreviewRoute = AdminToursTourIdPreviewRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$slug': typeof SlugRoute
   '/admin': typeof AdminRouteWithChildren
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
@@ -123,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/taxonomies': typeof AdminTaxonomiesRoute
   '/admin/login': typeof AdminLoginRoute
+  '/fr/$slug': typeof FrSlugRoute
   '/fr/tour': typeof FrTourRoute
   '/tour/$slug': typeof TourSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -134,6 +148,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$slug': typeof SlugRoute
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -141,6 +156,7 @@ export interface FileRoutesByTo {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/taxonomies': typeof AdminTaxonomiesRoute
   '/admin/login': typeof AdminLoginRoute
+  '/fr/$slug': typeof FrSlugRoute
   '/fr/tour': typeof FrTourRoute
   '/tour/$slug': typeof TourSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -153,6 +169,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$slug': typeof SlugRoute
   '/admin': typeof AdminRouteWithChildren
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
@@ -161,6 +178,7 @@ export interface FileRoutesById {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/taxonomies': typeof AdminTaxonomiesRoute
   '/admin_/login': typeof AdminLoginRoute
+  '/fr_/$slug': typeof FrSlugRoute
   '/fr_/tour': typeof FrTourRoute
   '/tour_/$slug': typeof TourSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -174,6 +192,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$slug'
     | '/admin'
     | '/fr'
     | '/llms.txt'
@@ -182,6 +201,7 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/taxonomies'
     | '/admin/login'
+    | '/fr/$slug'
     | '/fr/tour'
     | '/tour/$slug'
     | '/admin/'
@@ -193,6 +213,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$slug'
     | '/fr'
     | '/llms.txt'
     | '/sitemap.xml'
@@ -200,6 +221,7 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/taxonomies'
     | '/admin/login'
+    | '/fr/$slug'
     | '/fr/tour'
     | '/tour/$slug'
     | '/admin'
@@ -211,6 +233,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/$slug'
     | '/admin'
     | '/fr'
     | '/llms.txt'
@@ -219,6 +242,7 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/taxonomies'
     | '/admin_/login'
+    | '/fr_/$slug'
     | '/fr_/tour'
     | '/tour_/$slug'
     | '/admin/'
@@ -231,12 +255,14 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SlugRoute: typeof SlugRoute
   AdminRoute: typeof AdminRouteWithChildren
   FrRoute: typeof FrRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TourRoute: typeof TourRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  FrSlugRoute: typeof FrSlugRoute
   FrTourRoute: typeof FrTourRoute
   TourSlugRoute: typeof TourSlugRoute
   FrTourSlugRoute: typeof FrTourSlugRoute
@@ -280,6 +306,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$slug': {
+      id: '/$slug'
+      path: '/$slug'
+      fullPath: '/$slug'
+      preLoaderRoute: typeof SlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -306,6 +339,13 @@ declare module '@tanstack/react-router' {
       path: '/fr/tour'
       fullPath: '/fr/tour'
       preLoaderRoute: typeof FrTourRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fr_/$slug': {
+      id: '/fr_/$slug'
+      path: '/fr/$slug'
+      fullPath: '/fr/$slug'
+      preLoaderRoute: typeof FrSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin_/login': {
@@ -389,12 +429,14 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SlugRoute: SlugRoute,
   AdminRoute: AdminRouteWithChildren,
   FrRoute: FrRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TourRoute: TourRoute,
   AdminLoginRoute: AdminLoginRoute,
+  FrSlugRoute: FrSlugRoute,
   FrTourRoute: FrTourRoute,
   TourSlugRoute: TourSlugRoute,
   FrTourSlugRoute: FrTourSlugRoute,

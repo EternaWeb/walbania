@@ -17,10 +17,7 @@ export const Route = createFileRoute("/llms.txt")({
           "## Published tours",
           "",
           ...entries.map((entry) => {
-            const path =
-              entry.locale === "fr"
-                ? `/fr/tour/${entry.slug}`
-                : `/tour/${entry.slug}`;
+            const path = entry.locale === "fr" ? `/fr/${entry.slug}` : `/${entry.slug}`;
             const language = entry.locale === "fr" ? "FR" : "EN";
             return `- [${entry.title} (${language})](${baseUrl}${path}): ${entry.seo_description}`;
           }),

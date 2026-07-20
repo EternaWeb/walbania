@@ -36,7 +36,7 @@ It applies to public discovery pages, search, tours, booking, support, and futur
 | Muted text | `#6B7280` | Supporting copy and metadata |
 | Border | `#E5E7EB` | Dividers and low-emphasis field boundaries |
 
-- Use Inter for interface and body copy. Use the existing medium italic treatment sparingly to add warmth to editorial headings.
+- Use Season Mix at weight 600 for primary `h1` and `h2` headings in sentence case. Use Inter for interface and body copy. Reserve Anton for short promotional ribbons and badges only; do not use it for page or section headings.
 - Favour generous whitespace, simple grids, soft 16–24 px corner radii, restrained borders, and image-led cards.
 - Keep animations short and purposeful. Respect `prefers-reduced-motion`; no interaction may rely on motion alone.
 
@@ -146,7 +146,7 @@ Guest checkout is the first-release default. Future accounts may provide trip ma
 | Reservation result | Instant confirmation |
 | Email behaviour | Verify email with code; allow resending booking confirmation email |
 | Customer access | Guest checkout; future account experience reserved |
-| Brand direction | Retain existing blue/white/lavender, Inter, rounded travel-editorial system |
+| Brand direction | Retain the blue/white/lavender palette with Season Mix headings, Inter interface and body copy, restrained Anton accents, and the rounded travel-editorial system |
 | Logo | Use `public/weblogo.png` in header and footer on white/light surfaces |
 
 ## Confirm before implementation

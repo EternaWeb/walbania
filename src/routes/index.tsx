@@ -71,6 +71,24 @@ const HERO_VIDEO_DESKTOP = "/videos/hero-1080.mp4";
 // Replace this with /videos/hero-720.mp4 when the mobile export is available.
 const HERO_VIDEO_MOBILE = HERO_VIDEO_DESKTOP;
 
+const agencyFeatures = [
+  {
+    number: "01",
+    title: "Tailor-made journeys",
+    detail: "Designed around you",
+  },
+  {
+    number: "02",
+    title: "Albanian expertise",
+    detail: "Local knowledge, firsthand",
+  },
+  {
+    number: "03",
+    title: "With you all the way",
+    detail: "Personal support, 24/7",
+  },
+];
+
 const collections = [
   {
     label: "Couples Travel",
@@ -705,7 +723,7 @@ function SiteFooter() {
   );
 }
 
-function LazyHeroVideo() {
+function LazyHeroVideo({ children }: { children?: React.ReactNode }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
@@ -776,6 +794,7 @@ function LazyHeroVideo() {
         {videoSrc && <source src={videoSrc} type="video/mp4" />}
       </video>
       <span className="index-hero-film" aria-hidden="true" />
+      {children}
     </div>
   );
 }
@@ -829,12 +848,34 @@ function Index() {
       </header>
 
       {/* Hero */}
-      <section className="index-hero-shell">
-        <LazyHeroVideo />
+      <section className="index-hero-shell" aria-labelledby="index-hero-title">
+        <LazyHeroVideo>
+          <div className="index-hero-copy">
+            <a className="index-hero-cta" href="#holiday-collections">
+              <span className="index-hero-cta-label">Experience Albania</span>
+              <span className="index-hero-cta-arrow" aria-hidden="true">
+                <ArrowUpRight />
+              </span>
+            </a>
+            <h1 id="index-hero-title">Beyond the Ordinary.</h1>
+          </div>
+        </LazyHeroVideo>
+
+        <div className="index-hero-features" aria-label="Why travel with WonderAlbania">
+          {agencyFeatures.map((feature) => (
+            <div className="index-hero-feature" key={feature.number}>
+              <span className="index-hero-feature-number">{feature.number}</span>
+              <div>
+                <h2>{feature.title}</h2>
+                <p>{feature.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Our Holiday Collections */}
-      <section className="page-inset py-14 md:py-20">
+      <section id="holiday-collections" className="page-inset py-14 md:py-20">
         <h2 className="text-center text-3xl md:text-4xl mb-8 md:mb-12">
           {locale === "fr" ? "Nos collections de séjours" : "Our Holiday Collections"}
         </h2>

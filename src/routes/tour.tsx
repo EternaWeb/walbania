@@ -709,39 +709,59 @@ function TourContent() {
       <Header />
       <main>
         <section className="tour-container hero-section">
-          <div className="hero-grid">
-            <div className="hero-visual">
-              <img src={images.hero} alt="White coastal village beside clear blue water" />
-              <div className="hero-ribbons">
-                <div className="hero-badge">Local favourite</div>
-                <a className="photo-count" href="#gallery">
-                  View 5 photos
-                </a>
+          <div className="hero-shell">
+            <div className="hero-grid">
+              <div className="hero-visual">
+                <img src={images.hero} alt="White coastal village beside clear blue water" />
+                <div className="hero-ribbons">
+                  <div className="hero-badge hero-badge-mobile">Local favourite</div>
+                  <a className="photo-count" href="#gallery">
+                    View 5 photos
+                  </a>
+                </div>
+              </div>
+              <div className="hero-copy">
+                <div className="hero-badge hero-badge-desktop">Local favourite</div>
+                <div className="hero-copy-content">
+                  <div className="hero-info-row">
+                    <div className="location-label">
+                      <MapPin size={16} /> Albanian Riviera · Southern Albania
+                    </div>
+                    <span className="rating">
+                      <Star size={17} fill="currentColor" /> 4.9
+                    </span>
+                    <a href="#reviews">128 traveller reviews</a>
+                    <span className="hero-duration">
+                      <Clock3 size={17} /> 8 hours
+                    </span>
+                  </div>
+                  <h1>Riviera secrets: villages, bays & blue water</h1>
+                  <p className="hero-intro">
+                    A private day along Albania’s wild southern coast, pairing hidden beaches, stone
+                    villages and lunch with a local family.
+                  </p>
+                  <div className="hero-actions">
+                    <a className="primary-button hero-book" href="#booking">
+                      Check availability
+                    </a>
+                    <NativeShareButton />
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="hero-copy">
-              <div className="hero-info-row">
-                <div className="location-label">
-                  <MapPin size={16} /> Albanian Riviera · Southern Albania
-                </div>
-                <span className="rating">
-                  <Star size={17} fill="currentColor" /> 4.9
-                </span>
-                <a href="#reviews">128 traveller reviews</a>
-                <span>
-                  <Clock3 size={17} /> 8 hours
-                </span>
+            <div className="hero-facts-strip">
+              <div className="hero-fact">
+                <span>Duration</span>
+                <strong>8 hours</strong>
               </div>
-              <h1>Riviera secrets: villages, bays & blue water</h1>
-              <p className="hero-intro">
-                A private day along Albania’s wild southern coast, pairing hidden beaches, stone
-                villages and lunch with a local family.
-              </p>
-              <div className="hero-actions">
+              <div className="hero-fact">
+                <span>Location</span>
+                <strong>Southern Albania</strong>
+              </div>
+              <div className="hero-facts-action">
                 <a className="primary-button hero-book" href="#booking">
                   Check availability
                 </a>
-                <NativeShareButton />
               </div>
             </div>
           </div>

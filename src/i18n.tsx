@@ -138,6 +138,8 @@ const french: Record<string, string> = {
   Details: "Détails",
   Reviews: "Avis",
   Duration: "Durée",
+  Location: "Lieu",
+  "Southern Albania": "Sud de l’Albanie",
   Difficulty: "Difficulté",
   Easy: "Facile",
   "Group size": "Taille du groupe",

@@ -271,7 +271,7 @@ function TravelersLoveUs() {
     <section className="page-inset pb-14 md:pb-20">
       <div
         className="mx-auto py-14 md:py-16 px-6"
-        style={{ background: "#CCDAB8", borderRadius: 20 }}
+        style={{ background: "#CCDAB8", borderRadius: 2 }}
       >
         <h2 className="text-center text-3xl md:text-4xl">
           {locale === "fr" ? "Nos voyageurs nous adorent" : "Travelers Love Us"}
@@ -317,7 +317,7 @@ function Card({
     <div className="card-zoom px-2">
       <div
         className="relative w-full overflow-hidden bg-muted"
-        style={{ borderRadius: 20, aspectRatio: "1/1" }}
+        style={{ borderRadius: 10, aspectRatio: "1/1" }}
       >
         <img src={img} alt="" className="card-zoom-img w-full h-full object-cover" />
         {ribbon && <span className="ribbon">{ribbon}</span>}
@@ -380,7 +380,7 @@ function NotSure() {
     <section className="page-inset pb-14">
       <div
         className="py-14 md:py-16 px-4 relative overflow-hidden"
-        style={{ background: "#1F2528", borderRadius: 24 }}
+        style={{ background: "#1F2528", borderRadius: 2 }}
       >
         <p className="text-center text-white/80 text-sm">Get wonderful ideas</p>
         <h2 className="text-center text-white text-3xl md:text-5xl mt-1">Not sure where to go?</h2>
@@ -393,7 +393,7 @@ function NotSure() {
                   key={i}
                   onClick={openIdea}
                   className="marquee-item card-zoom overflow-hidden bg-white/20"
-                  style={{ borderRadius: 16 }}
+                  style={{ borderRadius: 10 }}
                   aria-label="Get ideas"
                 >
                   <img src={src} alt="" className="card-zoom-img w-full h-full object-cover" />
@@ -462,7 +462,7 @@ function SiteFooter() {
             <input
               type="email"
               placeholder="your@email.com"
-              className="flex-1 px-4 py-3 rounded-full border text-sm outline-none focus:border-[#1F2528]"
+              className="flex-1 px-4 py-3 rounded-[2px] border text-sm outline-none focus:border-[#1F2528]"
               style={{ borderColor: "#E5E7EB" }}
             />
             <button
@@ -640,7 +640,7 @@ function SiteFooter() {
             ].map(({ label, icon: I }) => (
               <div
                 key={label}
-                className="flex items-center gap-2 px-4 py-2 rounded-full border text-xs text-muted-foreground"
+                className="flex items-center gap-2 px-4 py-2 rounded-[2px] border text-xs text-muted-foreground"
                 style={{ borderColor: "#E5E7EB" }}
               >
                 <I size={14} className="text-[#1F2528]" />
@@ -928,7 +928,7 @@ function Index() {
               <div key={i} className="card-zoom px-2">
                 <div
                   className="w-full overflow-hidden bg-muted"
-                  style={{ borderRadius: 20, aspectRatio: "1/1" }}
+                  style={{ borderRadius: 10, aspectRatio: "1/1" }}
                 >
                   <img src={e.img} alt="" className="card-zoom-img w-full h-full object-cover" />
                 </div>

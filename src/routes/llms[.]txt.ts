@@ -14,6 +14,11 @@ export const Route = createFileRoute("/llms.txt")({
           "",
           "> Bilingual, locally designed tours and travel experiences across Albania.",
           "",
+          "## Tour collections",
+          "",
+          `- [All tours (EN)](${baseUrl}/tour): Browse every published WonderAlbania tour.`,
+          `- [Tous les circuits (FR)](${baseUrl}/fr/tour): Découvrez tous les circuits WonderAlbania publiés.`,
+          "",
           "## Published tours",
           "",
           ...entries.map((entry) => {

@@ -743,6 +743,478 @@ h2 {
 .scroll-hide { scrollbar-width: none; }
 .scroll-hide::-webkit-scrollbar { display: none; }
 
+/* Tours catalogue */
+.tours-index-page {
+  overflow-x: clip;
+}
+
+.tours-index-topbar {
+  width: 100%;
+  background: #1f2528;
+}
+
+.tours-index-hero {
+  background: var(--brand-soft);
+}
+
+.tours-index-hero .index-hero-media {
+  height: min(68svh, 620px);
+  border-radius: 0;
+}
+
+.tours-category-section {
+  padding-top: 72px;
+  padding-bottom: 36px;
+}
+
+.tours-category-panel {
+  padding: clamp(34px, 5vw, 68px) clamp(18px, 4vw, 58px);
+  overflow: hidden;
+  border-radius: var(--radius-surface);
+  background: #ccdab8;
+}
+
+.tours-index-heading {
+  max-width: 660px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.tours-index-heading > span {
+  display: block;
+  font-family: "Anton", Impact, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tours-index-heading h2 {
+  margin-top: 8px;
+  font-family: "Season Mix", Georgia, serif;
+  font-size: clamp(34px, 4.4vw, 58px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.tours-index-heading > p {
+  max-width: 540px;
+  margin: 15px auto 0;
+  color: rgba(31, 37, 40, 0.72);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.tours-category-track {
+  display: flex;
+  gap: 12px;
+  margin: 38px calc(clamp(18px, 4vw, 58px) * -1) 0;
+  padding: 2px clamp(18px, 4vw, 58px) 12px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x mandatory;
+}
+
+.tours-category-card {
+  position: relative;
+  min-width: 210px;
+  min-height: 210px;
+  flex: 0 0 210px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 18px;
+  border: 1px solid rgba(31, 37, 40, 0.22);
+  border-radius: var(--radius-surface);
+  background: rgba(255, 255, 255, 0.28);
+  color: var(--ink);
+  text-align: left;
+  scroll-snap-align: start;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    transform 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.tours-category-card:hover,
+.tours-category-card:focus-visible,
+.tours-category-card.is-selected {
+  border-color: rgba(31, 37, 40, 0.7);
+  background: white;
+  transform: translateY(-3px);
+}
+
+.tours-category-card:focus-visible {
+  outline: 2px solid #1f2528;
+  outline-offset: 3px;
+}
+
+.tours-category-icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-surface);
+  background: white;
+}
+
+.tours-category-card.is-selected .tours-category-icon {
+  background: #ccdab8;
+}
+
+.tours-category-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 32px;
+}
+
+.tours-category-copy strong {
+  font-family: "Season Mix", Georgia, serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.tours-category-copy small {
+  color: rgba(31, 37, 40, 0.6);
+  font-size: 11px;
+}
+
+.tours-category-arrow {
+  position: absolute;
+  top: 23px;
+  right: 20px;
+  transition: transform 0.25s ease;
+}
+
+.tours-category-card:hover .tours-category-arrow,
+.tours-category-card:focus-visible .tours-category-arrow {
+  transform: translate(3px, -3px);
+}
+
+.tours-category-empty {
+  margin: 36px 0 0;
+  padding: 30px;
+  border: 1px solid rgba(31, 37, 40, 0.2);
+  color: rgba(31, 37, 40, 0.68);
+  text-align: center;
+  font-size: 13px;
+}
+
+.tours-listing-section {
+  padding: 76px 0 104px;
+}
+
+.tours-listing-heading-row {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 38px;
+}
+
+.tours-index-heading.is-left {
+  margin: 0;
+  text-align: left;
+}
+
+.tours-listing-heading-row > p {
+  flex: 0 0 auto;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.tours-listing-scroller-shell {
+  position: relative;
+}
+
+.tours-listing-scroller {
+  display: flex;
+  gap: clamp(18px, 2.8vw, 42px);
+  margin-inline: -4px;
+  padding: 4px 4px 18px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+}
+
+.tours-listing-card {
+  min-width: calc((100% - clamp(36px, 5.6vw, 84px)) / 3);
+  flex: 0 0 calc((100% - clamp(36px, 5.6vw, 84px)) / 3);
+  scroll-snap-align: start;
+}
+
+.tours-listing-media {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 0.92;
+  overflow: hidden;
+  border-radius: var(--radius-media);
+  background: #dededb;
+}
+
+.tours-listing-media > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tours-listing-card:hover .tours-listing-media > img,
+.tours-listing-card:focus-within .tours-listing-media > img {
+  transform: scale(1.035);
+}
+
+.tours-listing-image-fallback {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: rgba(31, 37, 40, 0.42);
+  font-family: "Season Mix", Georgia, serif;
+  font-size: 20px;
+}
+
+.tours-listing-meta {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.94);
+  color: #111;
+  backdrop-filter: blur(7px);
+}
+
+.tours-listing-meta span {
+  padding: 8px 10px;
+  font-family: "Anton", Impact, sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.tours-listing-meta span + span {
+  border-left: 1px solid rgba(31, 37, 40, 0.18);
+}
+
+.tours-listing-card h3 {
+  max-width: 390px;
+  margin: 14px 0 0;
+  font-family: "Season Mix", Georgia, serif;
+  font-size: clamp(20px, 1.8vw, 27px);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+
+.tours-listing-card h3 a:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+}
+
+.tours-listing-footer {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 15px;
+}
+
+.tours-listing-button {
+  min-height: 32px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  border: 1px solid rgba(31, 37, 40, 0.4);
+  border-radius: 999px;
+  font-family: "Anton", Impact, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.tours-listing-button:hover,
+.tours-listing-button:focus-visible {
+  background: #1f2528;
+  color: white;
+}
+
+.tours-listing-footer p {
+  margin: 0;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.tours-listing-footer p > span {
+  margin-right: 3px;
+  text-transform: uppercase;
+}
+
+.tours-listing-footer strong {
+  font-family: "Season Mix", Georgia, serif;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.tours-listing-footer small {
+  margin-left: 3px;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.tours-listing-control {
+  position: absolute;
+  z-index: 4;
+  top: 38%;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 6px 24px rgba(31, 37, 40, 0.14);
+  cursor: pointer;
+}
+
+.tours-listing-control.is-left {
+  left: -18px;
+}
+.tours-listing-control.is-right {
+  right: -18px;
+}
+
+.tours-listing-empty {
+  min-height: 310px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 42px 20px;
+  border: 1px solid var(--line);
+  background: var(--soft);
+  text-align: center;
+}
+
+.tours-listing-empty h3 {
+  margin-top: 18px;
+  font-family: "Season Mix", Georgia, serif;
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.tours-listing-empty p {
+  max-width: 430px;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.tours-index-footer {
+  border-top: 1px solid var(--line);
+  background: white;
+}
+
+.tours-index-footer-inner {
+  min-height: 160px;
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 32px;
+  align-items: center;
+  font-size: 12px;
+}
+
+.tours-index-footer-inner img {
+  width: auto;
+  height: 27px;
+}
+.tours-index-footer-inner p {
+  color: var(--muted);
+}
+.tours-index-footer-inner a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+  .tours-listing-card {
+    min-width: 58%;
+    flex-basis: 58%;
+  }
+
+  .tours-listing-control {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .tours-index-hero .index-hero-media {
+    height: 58svh;
+  }
+  .tours-category-section {
+    padding-top: 42px;
+    padding-bottom: 12px;
+  }
+  .tours-category-panel {
+    margin-inline: -4px;
+  }
+  .tours-category-track {
+    margin-top: 28px;
+  }
+  .tours-category-card {
+    min-width: 174px;
+    min-height: 184px;
+    flex-basis: 174px;
+  }
+  .tours-category-copy strong {
+    font-size: 18px;
+  }
+  .tours-listing-section {
+    padding: 58px 0 72px;
+  }
+  .tours-listing-heading-row {
+    align-items: start;
+    margin-bottom: 28px;
+  }
+  .tours-listing-heading-row > p {
+    display: none;
+  }
+  .tours-listing-card {
+    min-width: 84%;
+    flex-basis: 84%;
+  }
+  .tours-listing-media {
+    aspect-ratio: 1 / 1.02;
+  }
+  .tours-listing-card h3 {
+    font-size: 23px;
+  }
+  .tours-listing-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .tours-index-footer-inner {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding-top: 42px;
+    padding-bottom: 42px;
+  }
+}
+
 .tly-stack { position: relative; width: 140px; height: 180px; }
 .tly-card {
   position: absolute;

@@ -23,6 +23,8 @@ import type {
   TaxonomyKind,
   TourDateOverride,
   TourEditorPayload,
+  TourListingCard,
+  TourListingData,
   TourListRow,
   TourLocale,
   TourStatus,
@@ -771,6 +773,98 @@ export async function getFeaturedTourPath(locale: TourLocale) {
 export const getFeaturedTourPathFn = createServerFn({ method: "GET" })
   .validator(z.object({ locale: z.enum(["en", "fr"]) }))
   .handler(async ({ data }) => getFeaturedTourPath(data.locale));
+
+export const getPublishedTourListingFn = createServerFn({ method: "GET" })
+  .validator(z.object({ locale: z.enum(["en", "fr"]) }))
+  .handler(async ({ data }): Promise<TourListingData> => {
+    await setPublicNoCacheHeader();
+    const client = createPublicSupabaseClient();
+    const { data: tours, error: tourError } = await client
+      .from("tours")
+      .select("id,featured,base_price_eur,duration_minutes,tour_type_id,published_at")
+      .eq("status", "published")
+      .order("featured", { ascending: false })
+      .order("published_at", { ascending: false });
+    throwOnError(tourError);
+
+    if (!tours?.length) return { categories: [], tours: [] };
+
+    const ids = tours.map((tour) => tour.id);
+    const [translationResult, mediaResult, categoryLinkResult, typeResult, categoryResult] =
+      await Promise.all([
+        client
+          .from("tour_translations")
+          .select("tour_id,slug,title,hero_alt")
+          .eq("locale", data.locale)
+          .in("tour_id", ids),
+        client
+          .from("tour_media")
+          .select("tour_id,public_url,alt_en,alt_fr")
+          .eq("role", "hero")
+          .in("tour_id", ids),
+        client.from("tour_categories").select("tour_id,category_id").in("tour_id", ids),
+        client.from("tour_types").select("id,name_en,name_fr").eq("active", true),
+        client.from("categories").select("id,key,name_en,name_fr").eq("active", true),
+      ]);
+
+    for (const result of [
+      translationResult,
+      mediaResult,
+      categoryLinkResult,
+      typeResult,
+      categoryResult,
+    ]) {
+      throwOnError(result.error);
+    }
+
+    const cards = tours.flatMap((tour): TourListingCard[] => {
+      const translation = translationResult.data?.find((item) => item.tour_id === tour.id);
+      if (!translation?.slug || !translation.title) return [];
+      const hero = mediaResult.data?.find((item) => item.tour_id === tour.id);
+      const type = typeResult.data?.find((item) => item.id === tour.tour_type_id);
+      return [
+        {
+          id: tour.id,
+          title: translation.title,
+          href: localizedPath(data.locale, translation.slug),
+          image: hero?.public_url ?? "",
+          imageAlt:
+            translation.hero_alt ||
+            (data.locale === "fr" ? hero?.alt_fr : hero?.alt_en) ||
+            translation.title,
+          duration: durationLabel(tour.duration_minutes, data.locale),
+          typeName:
+            (data.locale === "fr" ? type?.name_fr : type?.name_en) ||
+            (data.locale === "fr" ? "Circuit" : "Tour"),
+          priceEur: Number(tour.base_price_eur),
+          categoryIds:
+            categoryLinkResult.data
+              ?.filter((item) => item.tour_id === tour.id)
+              .map((item) => item.category_id) ?? [],
+          featured: tour.featured,
+        },
+      ];
+    });
+
+    const categoryCounts = new Map<string, number>();
+    for (const card of cards) {
+      for (const categoryId of card.categoryIds) {
+        categoryCounts.set(categoryId, (categoryCounts.get(categoryId) ?? 0) + 1);
+      }
+    }
+
+    const categories = (categoryResult.data ?? [])
+      .map((category) => ({
+        id: category.id,
+        key: category.key,
+        name: data.locale === "fr" ? category.name_fr : category.name_en,
+        count: categoryCounts.get(category.id) ?? 0,
+      }))
+      .filter((category) => category.count > 0)
+      .sort((left, right) => right.count - left.count || left.name.localeCompare(right.name));
+
+    return { categories, tours: cards };
+  });
 
 export async function listPublishedTourEntries() {
   const client = createPublicSupabaseClient();

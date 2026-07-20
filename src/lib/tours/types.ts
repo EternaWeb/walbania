@@ -207,6 +207,31 @@ export type RelatedTour = {
   badge: string;
 };
 
+export type TourListingCategory = {
+  id: string;
+  key: string;
+  name: string;
+  count: number;
+};
+
+export type TourListingCard = {
+  id: string;
+  title: string;
+  href: string;
+  image: string;
+  imageAlt: string;
+  duration: string;
+  typeName: string;
+  priceEur: number;
+  categoryIds: string[];
+  featured: boolean;
+};
+
+export type TourListingData = {
+  categories: TourListingCategory[];
+  tours: TourListingCard[];
+};
+
 export type TourViewModel = {
   id: string;
   locale: TourLocale;

@@ -8,8 +8,6 @@ import {
   Compass,
   HeartHandshake,
   Hotel,
-  MapPin,
-  Quote,
   SlidersHorizontal,
   Sparkles,
   Star,
@@ -216,84 +214,85 @@ function ReviewRail() {
   };
 
   return (
-    <section id="reviews" className="about-reviews" aria-labelledby="reviews-title">
-      <div className="page-inset">
-        <div className="about-section-heading about-reviews-heading">
-          <div>
-            <p className="about-eyebrow">Traveler perspectives</p>
-            <h2 id="reviews-title">Journeys that feel personal</h2>
-          </div>
-          <div className="about-review-controls" aria-label="Review controls">
-            <button
-              type="button"
-              onClick={() => scrollReviews(-1)}
-              onFocus={() => setPaused(true)}
-              onBlur={() => setPaused(false)}
-              aria-label="Previous reviews"
-            >
-              <ArrowLeft size={18} />
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollReviews(1)}
-              onFocus={() => setPaused(true)}
-              onBlur={() => setPaused(false)}
-              aria-label="Next reviews"
-            >
-              <ArrowRight size={18} />
-            </button>
-          </div>
-        </div>
-
-        <p className="about-placeholder-note">
-          Sample review presentation. Verified traveler stories will replace this preview content.
-        </p>
-      </div>
-
-      <div
-        ref={viewportRef}
-        className="about-review-viewport scroll-hide"
-        tabIndex={0}
-        aria-label="Traveler review carousel"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-        onFocusCapture={() => setPaused(true)}
-        onBlurCapture={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false);
-        }}
-      >
-        <div className="about-review-track">
-          {[...reviews, ...reviews].map((review, index) => {
-            const duplicate = index >= reviews.length;
-            return (
-              <article
-                key={`${review.name}-${index}`}
-                className="about-review-card"
-                aria-hidden={duplicate || undefined}
+    <section
+      id="reviews"
+      className="related-section about-review-section"
+      aria-labelledby="reviews-title"
+    >
+      <div className="tour-container">
+        <div className="related-panel">
+          <div className="about-heading-row">
+            <div className="section-heading">
+              <span className="eyebrow">Traveler perspectives</span>
+              <h2 id="reviews-title">Journeys that feel personal</h2>
+              <p>
+                Sample review presentation. Verified traveler stories will replace this preview
+                content.
+              </p>
+            </div>
+            <div className="highlight-controls" aria-label="Review controls">
+              <button
+                type="button"
+                onClick={() => scrollReviews(-1)}
+                onFocus={() => setPaused(true)}
+                onBlur={() => setPaused(false)}
+                aria-label="Previous reviews"
               >
-                <div className="about-review-card-top">
-                  <Quote size={22} aria-hidden="true" />
-                  <div className="about-review-stars" aria-label="5 out of 5 stars">
-                    {Array.from({ length: 5 }).map((_, star) => (
-                      <Star key={star} size={13} fill="currentColor" aria-hidden="true" />
-                    ))}
-                  </div>
-                </div>
-                <blockquote>“{review.quote}”</blockquote>
-                <footer>
-                  <span className="about-review-avatar" aria-hidden="true">
-                    {review.name.slice(0, 1)}
-                  </span>
-                  <div>
-                    <strong>{review.name}</strong>
-                    <span>
-                      {review.country} · {review.trip}
-                    </span>
-                  </div>
-                </footer>
-              </article>
-            );
-          })}
+                <ArrowLeft size={18} />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollReviews(1)}
+                onFocus={() => setPaused(true)}
+                onBlur={() => setPaused(false)}
+                aria-label="Next reviews"
+              >
+                <ArrowRight size={18} />
+              </button>
+            </div>
+          </div>
+          <div
+            ref={viewportRef}
+            className="about-review-viewport scroll-hide"
+            tabIndex={0}
+            aria-label="Traveler review carousel"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+            onFocusCapture={() => setPaused(true)}
+            onBlurCapture={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false);
+            }}
+          >
+            <div className="about-review-track">
+              {[...reviews, ...reviews].map((review, index) => {
+                const duplicate = index >= reviews.length;
+                return (
+                  <article
+                    key={`${review.name}-${index}`}
+                    className="review-card about-review-card"
+                    aria-hidden={duplicate || undefined}
+                  >
+                    <div className="review-top">
+                      <span className="avatar" aria-hidden="true">
+                        {review.name.slice(0, 1)}
+                      </span>
+                      <div>
+                        <strong>{review.name}</strong>
+                        <span>{review.country}</span>
+                      </div>
+                    </div>
+                    <div className="stars" aria-label="5 out of 5 stars">
+                      {Array.from({ length: 5 }).map((_, star) => (
+                        <Star key={star} size={13} fill="currentColor" aria-hidden="true" />
+                      ))}
+                    </div>
+                    <p>“{review.quote}”</p>
+                    <span>{review.trip} · Sample review</span>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -302,32 +301,38 @@ function ReviewRail() {
 
 function AboutPage() {
   return (
-    <div className="about-page min-h-screen bg-background text-foreground">
+    <div className="about-page tour-page min-h-screen bg-background text-foreground">
       <SiteHeader />
 
       <main>
-        <section className="about-hero" aria-labelledby="about-title">
-          <div className="about-hero-media">
+        <section className="index-hero-shell about-index-hero" aria-labelledby="about-title">
+          <div className="index-hero-media">
             <img
+              className="index-hero-poster"
               src={images.hero}
               alt="Green mountains and a river valley in Valbonë, Albania"
               fetchPriority="high"
             />
-            <span className="about-hero-overlay" aria-hidden="true" />
-            <div className="about-hero-copy">
-              <p className="about-eyebrow about-eyebrow-light">About Wonder Albania</p>
+            <span className="index-hero-film" aria-hidden="true" />
+            <div className="index-hero-copy">
+              <a className="index-hero-cta" href="#our-story">
+                <span className="index-hero-cta-label">About Wonder Albania</span>
+                <span className="index-hero-cta-arrow" aria-hidden="true">
+                  <ArrowUpRight />
+                </span>
+              </a>
               <h1 id="about-title">Local and professional. Modern and human.</h1>
-              <p>
+              <p className="about-hero-intro">
                 We treat travelers as guests, shaping each journey around their pace, interests and
                 expectations—not moving them through a fixed system.
               </p>
             </div>
           </div>
 
-          <div className="about-hero-features" aria-label="Why travel with Wonder Albania">
+          <div className="index-hero-features" aria-label="Why travel with Wonder Albania">
             {heroFeatures.map((feature) => (
-              <div className="about-hero-feature" key={feature.number}>
-                <span>{feature.number}</span>
+              <div className="index-hero-feature" key={feature.number}>
+                <span className="index-hero-feature-number">{feature.number}</span>
                 <div>
                   <h2>{feature.title}</h2>
                   <p>{feature.detail}</p>
@@ -337,39 +342,64 @@ function AboutPage() {
           </div>
         </section>
 
-        <section id="our-story" className="page-inset about-story" aria-labelledby="story-title">
-          <div className="about-story-heading">
-            <p className="about-eyebrow">Our approach</p>
+        <section
+          id="our-story"
+          className="tour-container content-section about-overview"
+          aria-labelledby="story-title"
+        >
+          <div className="section-heading">
+            <span className="eyebrow">Our approach</span>
             <h2 id="story-title">Travel should feel personal, natural and effortless.</h2>
           </div>
-          <div className="about-story-copy">
-            <p>
+          <div className="overview-grid">
+            <p className="lead-copy">
               Wonder Albania exists to offer a different kind of experience: one where the journey
               reflects the person taking it. We focus not only on what a tour includes, but on how
               it feels from the moment a destination is discovered to the memory that returns long
               after homecoming.
             </p>
-            <p>
-              Simplicity, clarity and attention to detail make better journeys. That means useful
-              information before booking, smooth logistics on the road, and thoughtful adjustments
-              whenever the day calls for them. Everything should feel under control without ever
-              becoming intrusive.
-            </p>
+            <div className="overview-copy">
+              <p>
+                Simplicity, clarity and attention to detail make better journeys. That means useful
+                information before booking, smooth logistics on the road, and thoughtful adjustments
+                whenever the day calls for them.
+              </p>
+              <p>
+                Everything should feel under control without becoming intrusive, so the experience
+                stays natural from discovery to the final memory.
+              </p>
+            </div>
           </div>
-          <figure className="about-story-image">
-            <img
-              src={images.approach}
-              alt="Travelers walking toward a stone building in the Albanian countryside"
-              loading="lazy"
-            />
-            <figcaption>
-              <MapPin size={14} /> Thoughtful routes, shaped on the ground
-            </figcaption>
-          </figure>
+          <div className="gallery-section about-story-gallery" aria-label="Albania travel moments">
+            <div className="gallery-large">
+              <img
+                src={images.approach}
+                alt="Travelers walking toward a stone building in the Albanian countryside"
+                loading="lazy"
+              />
+            </div>
+            <div>
+              <img
+                src={images.local}
+                alt="A green Albanian valley with Dajti mountain in the distance"
+                loading="lazy"
+              />
+            </div>
+            <div>
+              <img
+                src={images.lake}
+                alt="Lake Shkodra surrounded by green mountains"
+                loading="lazy"
+              />
+            </div>
+          </div>
         </section>
 
-        <section className="about-knowledge" aria-labelledby="knowledge-title">
-          <div className="page-inset about-knowledge-grid">
+        <section
+          className="tour-container content-section about-knowledge-section"
+          aria-labelledby="knowledge-title"
+        >
+          <div className="related-panel about-knowledge-panel">
             <div className="about-knowledge-image">
               <img
                 src={images.local}
@@ -378,8 +408,10 @@ function AboutPage() {
               />
             </div>
             <div className="about-knowledge-copy">
-              <p className="about-eyebrow">Local knowledge, modern service</p>
-              <h2 id="knowledge-title">Grounded here. Designed for today.</h2>
+              <div className="section-heading">
+                <span className="eyebrow">Local knowledge, modern service</span>
+                <h2 id="knowledge-title">Grounded here. Designed for today.</h2>
+              </div>
               <p>
                 Our approach comes from real local expertise, shaped by years of guiding travelers
                 across Albania and learning both the country and the people who arrive to explore
@@ -397,41 +429,40 @@ function AboutPage() {
 
         <section
           id="sustainability"
-          className="page-inset about-principles"
+          className="tour-container content-section highlights-section about-principles"
           aria-labelledby="principles-title"
         >
-          <div className="about-section-heading">
-            <div>
-              <p className="about-eyebrow">What shapes every journey</p>
-              <h2 id="principles-title">Care, built into the experience.</h2>
-            </div>
+          <div className="section-heading">
+            <span className="eyebrow">What shapes every journey</span>
+            <h2 id="principles-title">Care, built into the experience.</h2>
             <p>
               Quality is not luxury alone. It is the consistency, judgment and responsibility that
               make a trip feel easy from beginning to end.
             </p>
           </div>
-          <div className="about-principles-grid">
-            {principles.map(({ number, title, copy, icon: Icon }) => (
-              <article key={number} className="about-principle-card">
-                <div className="about-principle-top">
-                  <span>{number}</span>
-                  <span className="about-principle-icon">
+          <div className="highlight-shell">
+            <div className="highlight-track">
+              {principles.map(({ number, title, copy, icon: Icon }) => (
+                <article key={number} className="highlight-card about-principle-card">
+                  <div className="highlight-icon">
                     <Icon size={20} strokeWidth={1.7} aria-hidden="true" />
-                  </span>
-                </div>
-                <h3>{title}</h3>
-                <p>{copy}</p>
-              </article>
-            ))}
+                  </div>
+                  <span className="about-principle-number">{number}</span>
+                  <h3>{title}</h3>
+                  <p>{copy}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
-        <section className="about-balance" aria-labelledby="balance-title">
-          <div className="page-inset">
-            <p className="about-eyebrow about-eyebrow-light">The Wonder Albania balance</p>
-            <h2 id="balance-title" className="sr-only">
-              The qualities that define Wonder Albania
-            </h2>
+        <section
+          className="tour-container weather-card about-balance"
+          aria-labelledby="balance-title"
+        >
+          <div>
+            <span className="eyebrow">The Wonder Albania balance</span>
+            <h2 id="balance-title">Genuine while it happens. Memorable long after.</h2>
             <div className="about-balance-list">
               {balances.map(([first, second]) => (
                 <p key={first}>
@@ -441,7 +472,7 @@ function AboutPage() {
                 </p>
               ))}
             </div>
-            <p className="about-balance-closing">
+            <p>
               Simple yet carefully crafted, all working together so Albania feels genuine while it
               happens—and memorable long after it ends.
             </p>
@@ -452,59 +483,74 @@ function AboutPage() {
 
         <section
           id="partners"
-          className="page-inset about-partners"
+          className="tour-container content-section highlights-section about-partners"
           aria-labelledby="partners-title"
         >
-          <div className="about-section-heading">
-            <div>
-              <p className="about-eyebrow">Our trusted network</p>
-              <h2 id="partners-title">The people behind a seamless journey</h2>
-            </div>
+          <div className="section-heading">
+            <span className="eyebrow">Our trusted network</span>
+            <h2 id="partners-title">The people behind a seamless journey</h2>
             <p>
               Great travel depends on strong local relationships. These temporary category marks
               show where approved partner brands will appear.
             </p>
           </div>
-          <div className="about-partner-grid">
-            {partnerCategories.map(({ label, note, icon: Icon }) => (
-              <div className="about-partner-card" key={label}>
-                <Icon size={25} strokeWidth={1.5} aria-hidden="true" />
-                <strong>{label}</strong>
-                <span>{note}</span>
-              </div>
-            ))}
+          <div className="highlight-shell">
+            <div className="highlight-track about-partner-track">
+              {partnerCategories.map(({ label, note, icon: Icon }) => (
+                <article className="highlight-card about-partner-card" key={label}>
+                  <div className="highlight-icon">
+                    <Icon size={20} strokeWidth={1.6} aria-hidden="true" />
+                  </div>
+                  <h3>{label}</h3>
+                  <p>{note}</p>
+                </article>
+              ))}
+            </div>
           </div>
-          <p className="about-placeholder-note about-partner-note">
+          <p className="about-partner-note">
             Partner names and logo assets will be added after approval.
           </p>
         </section>
 
-        <section className="page-inset about-cta" aria-labelledby="about-cta-title">
-          <div className="about-cta-panel">
-            <p>Made around you</p>
-            <h2 id="about-cta-title">Let’s shape your Albania.</h2>
-            <div className="about-cta-marquee marquee" aria-hidden="true">
-              <div className="marquee-track">
-                {[
-                  images.hikers,
-                  images.lake,
-                  images.mist,
-                  images.rafting,
-                  images.hikers,
-                  images.lake,
-                  images.mist,
-                  images.rafting,
-                ].map((src, index) => (
-                  <div className="marquee-item" key={`${src}-${index}`}>
-                    <img src={src} alt="" loading="lazy" />
-                  </div>
-                ))}
+        <section className="page-inset pb-14 about-not-sure" aria-labelledby="about-cta-title">
+          <div className="about-not-sure-panel py-14 md:py-16 px-4 relative overflow-hidden">
+            <p className="text-center text-white/80 text-sm">Made around you</p>
+            <h2 id="about-cta-title" className="text-center text-white text-3xl md:text-5xl mt-1">
+              Let’s shape your Albania.
+            </h2>
+            <div className="mt-10 relative marquee-mask" aria-hidden="true">
+              <div className="marquee">
+                <div className="marquee-track">
+                  {[
+                    images.hikers,
+                    images.lake,
+                    images.mist,
+                    images.rafting,
+                    images.hikers,
+                    images.lake,
+                    images.mist,
+                    images.rafting,
+                  ].map((src, index) => (
+                    <div
+                      className="marquee-item card-zoom overflow-hidden bg-white/20"
+                      key={`${src}-${index}`}
+                    >
+                      <img
+                        className="card-zoom-img w-full h-full object-cover"
+                        src={src}
+                        alt=""
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-            <a className="about-cta-button" href="/tour">
-              <span>Plan your trip</span>
-              <ArrowUpRight size={19} />
-            </a>
+            <div className="flex justify-center mt-8">
+              <a className="secondary-button" href="/tour">
+                Plan your trip <ArrowUpRight size={17} />
+              </a>
+            </div>
           </div>
         </section>
       </main>

@@ -14,6 +14,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as FrRouteImport } from './routes/fr'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -52,6 +53,11 @@ const FrRoute = FrRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SlugRoute = SlugRouteImport.update({
@@ -128,6 +134,7 @@ const AdminToursTourIdPreviewRoute = AdminToursTourIdPreviewRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
@@ -149,6 +156,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
+  '/about': typeof AboutRoute
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -170,6 +178,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
+  '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
@@ -193,6 +202,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$slug'
+    | '/about'
     | '/admin'
     | '/fr'
     | '/llms.txt'
@@ -214,6 +224,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$slug'
+    | '/about'
     | '/fr'
     | '/llms.txt'
     | '/sitemap.xml'
@@ -234,6 +245,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/$slug'
+    | '/about'
     | '/admin'
     | '/fr'
     | '/llms.txt'
@@ -256,6 +268,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SlugRoute: typeof SlugRoute
+  AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
   FrRoute: typeof FrRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
@@ -304,6 +317,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$slug': {
@@ -430,6 +450,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SlugRoute: SlugRoute,
+  AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
   FrRoute: FrRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,

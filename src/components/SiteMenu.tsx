@@ -1,5 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import { useEffect, useId, useState } from "react";
+import { useSiteLocale } from "../i18n";
 
 type MenuGroup = {
   label: string;
@@ -7,7 +8,7 @@ type MenuGroup = {
   items?: { label: string; href: string }[];
 };
 
-const menuGroups: MenuGroup[] = [
+const getMenuGroups = (aboutPath: string): MenuGroup[] => [
   { label: "Home", href: "/" },
   {
     label: "Explore Albania",
@@ -73,18 +74,20 @@ const menuGroups: MenuGroup[] = [
   {
     label: "About",
     items: [
-      { label: "Our Story", href: "#our-story" },
-      { label: "Sustainability", href: "#sustainability" },
-      { label: "Partners", href: "#partners" },
+      { label: "Our Story", href: `${aboutPath}#our-story` },
+      { label: "Sustainability", href: `${aboutPath}#sustainability` },
+      { label: "Partners", href: `${aboutPath}#partners` },
       { label: "Contact", href: "#contact" },
     ],
   },
 ];
 
 export function SiteMenu() {
+  const locale = useSiteLocale();
   const menuId = useId();
   const [isOpen, setIsOpen] = useState(false);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
+  const menuGroups = getMenuGroups(locale === "fr" ? "/fr/" : "/about");
 
   useEffect(() => {
     if (!isOpen) return;

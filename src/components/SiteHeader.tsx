@@ -20,7 +20,7 @@ export function SiteHeader() {
       <header className="site-header page-inset site-navigation py-4">
         <div className="flex items-center justify-between gap-4">
           <nav className="hidden md:flex items-center gap-6 text-sm flex-1" aria-label="Primary">
-            <a href={`${homePath}#about`} className="hover:text-[#1F2528]">
+            <a href={locale === "fr" ? "/fr/#about" : "/about"} className="hover:text-[#1F2528]">
               About
             </a>
             <a href={`${homePath}#offers`} className="hover:text-[#1F2528]">

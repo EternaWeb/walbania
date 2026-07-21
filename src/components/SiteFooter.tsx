@@ -10,9 +10,10 @@ import {
   ShieldCheck,
   Youtube,
 } from "lucide-react";
-import { useLocalize } from "../i18n";
+import { useLocalize, useSiteLocale } from "../i18n";
 
 export function SiteFooter() {
+  const locale = useSiteLocale();
   const localize = useLocalize();
 
   return localize(
@@ -87,7 +88,12 @@ export function SiteFooter() {
               <ul className="space-y-2 text-muted-foreground">
                 {(links as string[]).map((label) => (
                   <li key={label}>
-                    <a href="#" className="hover:text-[#1F2528]">
+                    <a
+                      href={
+                        label === "About Us" ? (locale === "fr" ? "/fr/#about" : "/about") : "#"
+                      }
+                      className="hover:text-[#1F2528]"
+                    >
                       {label}
                     </a>
                   </li>

@@ -18,7 +18,7 @@ export function SiteFooter() {
   return localize(
     <footer id="contact" className="site-footer bg-white border-t">
       <div className="page-inset py-12 border-b">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
+        <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
             <h3 className="text-2xl md:text-3xl font-semibold">
               Join the WonderAlbania newsletter
@@ -42,7 +42,7 @@ export function SiteFooter() {
       </div>
 
       <div className="page-inset py-16">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-6 gap-10 text-sm">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-10 text-sm">
           <div className="col-span-2">
             <img src="/weblogo.png" alt="WonderAlbania" className="h-7 w-auto mb-4" />
             <p className="text-muted-foreground max-w-xs">
@@ -97,7 +97,7 @@ export function SiteFooter() {
           ))}
         </div>
 
-        <div className="max-w-6xl mx-auto mt-14 pt-10 border-t">
+        <div className="mt-14 pt-10 border-t">
           <p className="text-xs uppercase tracking-wider text-muted-foreground mb-5 text-center md:text-left">
             Certifications & Memberships
           </p>
@@ -123,7 +123,7 @@ export function SiteFooter() {
 
       <div className="border-t">
         <div className="page-inset py-6">
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
             <p>
               © {new Date().getFullYear()} WonderAlbania sh.p.k. — Registered No. K12345678L. All
               rights reserved.

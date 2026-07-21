@@ -13,7 +13,6 @@
 
 .tour-finder-band {
   position: relative;
-  z-index: 10;
   display: grid;
   place-items: center;
   min-height: 168px;
@@ -103,10 +102,11 @@
 
 .tour-search-action {
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  min-height: 68px;
+  display: grid;
+  grid-template-rows: 44px 14px;
+  align-content: center;
+  justify-items: center;
   gap: 7px;
   padding-left: 18px;
 }
@@ -177,6 +177,11 @@
   color: #1f2528;
   font-size: 9px;
   cursor: pointer;
+}
+
+.tour-search-reset.is-hidden {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .tour-search-modal-backdrop {
@@ -292,10 +297,30 @@
   cursor: not-allowed;
 }
 
-.tour-people-picker strong {
+.tour-people-picker input {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid rgba(31, 37, 40, 0.24);
+  background: transparent;
+  color: #1f2528;
   text-align: center;
   font-family: "Season Mix", Georgia, serif;
   font-size: 44px;
+  font-weight: 600;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.tour-people-picker input::-webkit-inner-spin-button,
+.tour-people-picker input::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.tour-people-picker input:focus {
+  border-bottom-color: #1f2528;
 }
 
 .tour-picker-help {
@@ -420,8 +445,8 @@
 .tours-results-section {
   scroll-margin-top: 24px;
   padding-top: 76px;
-  border-top: 1px solid #e5e7eb;
-  background: #fafafa;
+  border: 0;
+  background: #fff;
 }
 
 .tour-results-loader {

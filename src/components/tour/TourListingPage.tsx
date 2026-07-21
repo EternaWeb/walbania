@@ -290,6 +290,75 @@ function DateRangeCalendar({
   );
 }
 
+function PeoplePicker({
+  locale,
+  value,
+  onDone,
+}: {
+  locale: SiteLocale;
+  value: number | null;
+  onDone: (value: number) => void;
+}) {
+  const [draft, setDraft] = useState(String(value ?? 1));
+  const currentValue = Math.min(50, Math.max(1, Number(draft) || 1));
+
+  const updateDraft = (nextValue: number) => {
+    setDraft(String(Math.min(50, Math.max(1, nextValue))));
+  };
+
+  return (
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        onDone(currentValue);
+      }}
+    >
+      <div className="tour-people-picker">
+        <button
+          type="button"
+          aria-label="Remove one person"
+          disabled={currentValue <= 1}
+          onClick={() => updateDraft(currentValue - 1)}
+        >
+          <Minus size={20} />
+        </button>
+        <input
+          type="number"
+          min={1}
+          max={50}
+          inputMode="numeric"
+          aria-label={locale === "fr" ? "Nombre de personnes" : "Number of people"}
+          value={draft}
+          onFocus={(event) => event.currentTarget.select()}
+          onChange={(event) => {
+            const next = event.target.value;
+            if (next === "") {
+              setDraft("");
+              return;
+            }
+            updateDraft(Number(next));
+          }}
+          onBlur={() => updateDraft(currentValue)}
+        />
+        <button
+          type="button"
+          aria-label="Add one person"
+          disabled={currentValue >= 50}
+          onClick={() => updateDraft(currentValue + 1)}
+        >
+          <Plus size={20} />
+        </button>
+      </div>
+      <p className="tour-picker-help">
+        {locale === "fr" ? "50 personnes maximum" : "50 people maximum"}
+      </p>
+      <button type="submit" className="tour-modal-done">
+        {locale === "fr" ? "Terminé" : "Done"}
+      </button>
+    </form>
+  );
+}
+
 function TourFinder({
   locale,
   data,
@@ -377,11 +446,15 @@ function TourFinder({
                 <ArrowUpRight />
               </i>
             </button>
-            {(hasSelections || hasSearched) && (
-              <button type="button" className="tour-search-reset" onClick={onReset}>
-                {locale === "fr" ? "Réinitialiser" : "Reset Fields"}
-              </button>
-            )}
+            <button
+              type="button"
+              className={`tour-search-reset${hasSelections || hasSearched ? "" : " is-hidden"}`}
+              aria-hidden={!hasSelections && !hasSearched}
+              tabIndex={hasSelections || hasSearched ? 0 : -1}
+              onClick={onReset}
+            >
+              {locale === "fr" ? "Réinitialiser" : "Reset Fields"}
+            </button>
           </div>
         </div>
       </div>
@@ -439,48 +512,14 @@ function TourFinder({
           title={locale === "fr" ? "Nombre de personnes" : "Number of People"}
           onClose={closeModal}
         >
-          <div className="tour-people-picker">
-            <button
-              type="button"
-              aria-label="Remove one person"
-              disabled={(search.people ?? 1) <= 1}
-              onClick={() =>
-                setSearch((current) => ({
-                  ...current,
-                  people: Math.max(1, (current.people ?? 1) - 1),
-                }))
-              }
-            >
-              <Minus size={20} />
-            </button>
-            <strong>{search.people ?? 1}</strong>
-            <button
-              type="button"
-              aria-label="Add one person"
-              disabled={(search.people ?? 1) >= 50}
-              onClick={() =>
-                setSearch((current) => ({
-                  ...current,
-                  people: Math.min(50, (current.people ?? 1) + 1),
-                }))
-              }
-            >
-              <Plus size={20} />
-            </button>
-          </div>
-          <p className="tour-picker-help">
-            {locale === "fr" ? "50 personnes maximum" : "50 people maximum"}
-          </p>
-          <button
-            type="button"
-            className="tour-modal-done"
-            onClick={() => {
-              setSearch((current) => ({ ...current, people: current.people ?? 1 }));
+          <PeoplePicker
+            locale={locale}
+            value={search.people}
+            onDone={(people) => {
+              setSearch((current) => ({ ...current, people }));
               closeModal();
             }}
-          >
-            {locale === "fr" ? "Terminé" : "Done"}
-          </button>
+          />
         </ModalShell>
       )}
 

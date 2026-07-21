@@ -275,7 +275,7 @@ h2 {
 .site-menu-toggle.is-open {
   position: fixed;
   top: 48px;
-  right: max(var(--site-gutter), calc((100vw - var(--site-max-width)) / 2));
+  right: clamp(12px, 2vw, 32px);
   background: rgba(10, 10, 10, .08);
 }
 

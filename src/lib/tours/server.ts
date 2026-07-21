@@ -894,7 +894,6 @@ export const getPublishedTourListingFn = createServerFn({ method: "GET" })
         name: data.locale === "fr" ? category.name_fr : category.name_en,
         count: categoryCounts.get(category.id) ?? 0,
       }))
-      .filter((category) => category.count > 0)
       .sort((left, right) => right.count - left.count || left.name.localeCompare(right.name));
 
     const localizeTaxonomy = (items: typeof typeResult.data) =>

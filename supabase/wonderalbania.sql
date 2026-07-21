@@ -131,10 +131,22 @@ create table public.tour_media (
   alt_en text not null default '',
   alt_fr text not null default '',
   sort_order integer not null default 0,
-  unique (tour_id, role, sort_order),
-  unique (storage_path)
+  unique (tour_id, role, sort_order)
 );
 create unique index tour_media_single_hero_idx on public.tour_media (tour_id) where role = 'hero';
+create index tour_media_storage_path_idx on public.tour_media (storage_path);
+
+create table public.tour_media_assets (
+  id uuid primary key default gen_random_uuid(),
+  tour_id uuid not null references public.tours(id) on delete cascade,
+  storage_path text not null unique,
+  public_url text not null,
+  alt_en text not null default '',
+  alt_fr text not null default '',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index tour_media_assets_tour_idx on public.tour_media_assets (tour_id, created_at desc);
 
 create table public.tour_list_items (
   id uuid primary key default gen_random_uuid(),
@@ -298,6 +310,7 @@ alter table public.tour_slug_redirects enable row level security;
 alter table public.tour_categories enable row level security;
 alter table public.tour_highlights enable row level security;
 alter table public.tour_media enable row level security;
+alter table public.tour_media_assets enable row level security;
 alter table public.tour_list_items enable row level security;
 alter table public.tour_weather_stats enable row level security;
 alter table public.tour_faqs enable row level security;

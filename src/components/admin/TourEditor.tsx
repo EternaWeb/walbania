@@ -17,12 +17,13 @@ import {
   Send,
   Trash2,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AdminPageHeader } from "./AdminShell";
 import {
   confirmTourUploadFn,
   deleteTourMediaFn,
   geocodePlaceFn,
+  getTourMediaLibraryFn,
   publishTourFn,
   requestTourUploadFn,
   saveTourFn,
@@ -35,6 +36,7 @@ import type {
   TaxonomyItem,
   TourEditorPayload,
   TourLocale,
+  TourMediaAsset,
 } from "../../lib/tours/types";
 
 type ReferenceData = {
@@ -67,6 +69,7 @@ function slugify(value: string) {
 
 const MAX_IMAGE_SOURCE_BYTES = 25 * 1024 * 1024;
 const MAX_IMAGE_UPLOAD_BYTES = 10 * 1024 * 1024;
+const MEDIA_DRAG_TYPE = "application/x-wonderalbania-media";
 
 async function prepareTourImage(file: File, role: "hero" | "gallery") {
   if (!["image/jpeg", "image/png", "image/webp", "image/avif"].includes(file.type)) {
@@ -155,6 +158,51 @@ function AdminMediaPreview({ item }: { item: TourEditorPayload["media"][number] 
         onError={() => setFailed(true)}
       />
     </a>
+  );
+}
+
+function AssignedMediaCard({
+  item,
+  label,
+  disabled,
+  onAltEnChange,
+  onAltFrChange,
+  onRemove,
+}: {
+  item: TourEditorPayload["media"][number];
+  label: string;
+  disabled: boolean;
+  onAltEnChange: (value: string) => void;
+  onAltFrChange: (value: string) => void;
+  onRemove: () => void;
+}) {
+  return (
+    <article className="admin-media-card">
+      <AdminMediaPreview item={item} />
+      <div>
+        <strong>{label}</strong>
+        <input
+          className="admin-input"
+          value={item.altEn}
+          placeholder="English alt text"
+          onChange={(event) => onAltEnChange(event.target.value)}
+        />
+        <input
+          className="admin-input"
+          value={item.altFr}
+          placeholder="French alt text"
+          onChange={(event) => onAltFrChange(event.target.value)}
+        />
+        <button
+          className="admin-button is-danger"
+          type="button"
+          onClick={onRemove}
+          disabled={disabled}
+        >
+          <Trash2 size={14} /> Remove from layout
+        </button>
+      </div>
+    </article>
   );
 }
 
@@ -345,6 +393,10 @@ export function TourEditor({
   const [error, setError] = useState("");
   const [publishResult, setPublishResult] = useState<PublishResult | null>(null);
   const [uploadingLabel, setUploadingLabel] = useState("");
+  const [mediaAssets, setMediaAssets] = useState<TourMediaAsset[]>([]);
+  const [mediaSearch, setMediaSearch] = useState("");
+  const [mediaLibraryLoading, setMediaLibraryLoading] = useState(false);
+  const [mediaDropTarget, setMediaDropTarget] = useState<"hero" | "gallery" | null>(null);
   const [geocodeResults, setGeocodeResults] = useState<Record<number, GeocodeCandidate[]>>({});
   const [searchingStop, setSearchingStop] = useState<number | null>(null);
   const [dateDraft, setDateDraft] = useState({
@@ -353,6 +405,53 @@ export function TourEditor({
     price: "",
   });
   const title = tour.translations.en.title || "Untitled tour";
+
+  useEffect(() => {
+    if (!tour.id) {
+      setMediaAssets([]);
+      return;
+    }
+    let active = true;
+    setMediaLibraryLoading(true);
+    void getTourMediaLibraryFn({ data: { tourId: tour.id } })
+      .then((assets) => {
+        if (active) setMediaAssets(assets);
+      })
+      .catch((caught) => {
+        if (active) {
+          setError(
+            caught instanceof Error ? caught.message : "The uploaded image library could not load.",
+          );
+        }
+      })
+      .finally(() => {
+        if (active) setMediaLibraryLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [tour.id]);
+
+  const availableMediaAssets = useMemo(() => {
+    const assets = new Map(mediaAssets.map((asset) => [asset.storagePath, asset]));
+    for (const item of tour.media) {
+      const current = assets.get(item.storagePath);
+      assets.set(item.storagePath, {
+        storagePath: item.storagePath,
+        publicUrl: item.publicUrl,
+        altEn: item.altEn || current?.altEn || "",
+        altFr: item.altFr || current?.altFr || "",
+      });
+    }
+    const query = mediaSearch.trim().toLocaleLowerCase();
+    return [...assets.values()].filter((asset) => {
+      if (!query) return true;
+      const fileName = asset.storagePath.split("/").pop() ?? "";
+      return [asset.altEn, asset.altFr, fileName].some((value) =>
+        value.toLocaleLowerCase().includes(query),
+      );
+    });
+  }, [mediaAssets, mediaSearch, tour.media]);
 
   const setTranslation = (
     locale: TourLocale,
@@ -461,7 +560,6 @@ export function TourEditor({
       const confirmed = await confirmTourUploadFn({
         data: { tourId: tour.id, path: ticket.path },
       });
-      const replacedHero = role === "hero" ? tour.media.find((item) => item.role === "hero") : null;
       const retained =
         role === "hero" ? tour.media.filter((item) => item.role !== "hero") : tour.media;
       const nextTour: TourEditorPayload = {
@@ -482,9 +580,15 @@ export function TourEditor({
         nextTour,
         "Image optimized, uploaded and saved. Add both alt texts before publishing.",
       );
-      if (replacedHero && replacedHero.storagePath !== confirmed.path) {
-        await deleteTourMediaFn({ data: { path: replacedHero.storagePath } }).catch(() => null);
-      }
+      setMediaAssets((current) => [
+        {
+          storagePath: confirmed.path,
+          publicUrl: confirmed.publicUrl,
+          altEn: "",
+          altFr: "",
+        },
+        ...current.filter((asset) => asset.storagePath !== confirmed.path),
+      ]);
     } catch (caught) {
       if (uploadedPath) {
         await deleteTourMediaFn({ data: { path: uploadedPath } }).catch(() => null);
@@ -496,16 +600,76 @@ export function TourEditor({
     }
   };
 
-  const removeMedia = async (index: number) => {
-    const item = tour.media[index];
-    setTour((current) => ({
-      ...current,
-      media: current.media.filter((_, itemIndex) => itemIndex !== index),
-    }));
+  const assignExistingMedia = async (asset: TourMediaAsset, role: "hero" | "gallery") => {
+    if (
+      role === "gallery" &&
+      tour.media.some((item) => item.role === role && item.storagePath === asset.storagePath)
+    ) {
+      setMessage("That image is already in the gallery.");
+      return;
+    }
+    if (
+      role === "hero" &&
+      tour.media.some((item) => item.role === role && item.storagePath === asset.storagePath)
+    ) {
+      setMessage("That image is already the hero image.");
+      return;
+    }
+
+    setSaving(true);
+    setError("");
+    setMessage("");
     try {
-      await deleteTourMediaFn({ data: { path: item.storagePath } });
-    } catch {
-      setMessage("The image was removed from the tour. Storage cleanup can be retried later.");
+      const retained =
+        role === "hero" ? tour.media.filter((item) => item.role !== "hero") : tour.media;
+      await persistTour(
+        {
+          ...tour,
+          media: [
+            ...retained,
+            {
+              role,
+              storagePath: asset.storagePath,
+              publicUrl: asset.publicUrl,
+              altEn: asset.altEn,
+              altFr: asset.altFr,
+              sortOrder: role === "hero" ? 0 : retained.filter((item) => item.role === role).length,
+            },
+          ],
+        },
+        role === "hero"
+          ? "Existing image assigned as the hero. No upload was needed."
+          : "Existing image added to the gallery. No upload was needed.",
+      );
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "The image could not be assigned.");
+    } finally {
+      setSaving(false);
+      setMediaDropTarget(null);
+    }
+  };
+
+  const dropExistingMedia = (event: React.DragEvent<HTMLElement>, role: "hero" | "gallery") => {
+    event.preventDefault();
+    const storagePath = event.dataTransfer.getData(MEDIA_DRAG_TYPE);
+    const asset = availableMediaAssets.find((item) => item.storagePath === storagePath);
+    setMediaDropTarget(null);
+    if (asset) void assignExistingMedia(asset, role);
+  };
+
+  const removeMedia = async (index: number) => {
+    setSaving(true);
+    setError("");
+    setMessage("");
+    try {
+      await persistTour(
+        { ...tour, media: tour.media.filter((_, itemIndex) => itemIndex !== index) },
+        "Image removed from this tour layout. It remains available in the image library.",
+      );
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "The image could not be removed.");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -1270,57 +1434,199 @@ export function TourEditor({
           {section === "media" && (
             <div className="admin-form-card">
               <h2>Hero and gallery</h2>
-              <p>JPEG, PNG, WebP or AVIF. Maximum 10 MB. Alt text is required in both languages.</p>
-              <div className="admin-upload-grid">
-                {tour.media.map((item, index) => (
-                  <article className="admin-media-card" key={item.storagePath}>
-                    <AdminMediaPreview item={item} />
-                    <div>
-                      <strong>
-                        {item.role === "hero"
-                          ? "Hero image"
-                          : `Gallery ${
-                              tour.media
-                                .filter((media) => media.role === "gallery")
-                                .findIndex((media) => media.storagePath === item.storagePath) + 1
-                            }`}
-                      </strong>
-                      <input
-                        className="admin-input"
-                        value={item.altEn}
-                        placeholder="English alt text"
-                        onChange={(event) =>
-                          setTour({
-                            ...tour,
-                            media: tour.media.map((entry, itemIndex) =>
-                              itemIndex === index ? { ...entry, altEn: event.target.value } : entry,
-                            ),
-                          })
-                        }
-                      />
-                      <input
-                        className="admin-input"
-                        value={item.altFr}
-                        placeholder="French alt text"
-                        onChange={(event) =>
-                          setTour({
-                            ...tour,
-                            media: tour.media.map((entry, itemIndex) =>
-                              itemIndex === index ? { ...entry, altFr: event.target.value } : entry,
-                            ),
-                          })
-                        }
-                      />
-                      <button
-                        className="admin-button is-danger"
-                        type="button"
-                        onClick={() => void removeMedia(index)}
+              <p>
+                Upload new images as before, or reuse an uploaded image by dragging it into the hero
+                or gallery area. Alt text is required in both languages before publishing.
+              </p>
+
+              <section className="admin-media-library" aria-labelledby="media-library-title">
+                <div className="admin-media-library-header">
+                  <div>
+                    <h3 id="media-library-title">Uploaded image library</h3>
+                    <p>Small previews of every image uploaded for this tour.</p>
+                  </div>
+                  <label className="admin-media-search">
+                    <Search size={16} aria-hidden="true" />
+                    <span className="sr-only">Search images by alt text</span>
+                    <input
+                      value={mediaSearch}
+                      onChange={(event) => setMediaSearch(event.target.value)}
+                      placeholder="Search by alt text"
+                    />
+                  </label>
+                </div>
+                {!tour.id ? (
+                  <p className="admin-media-library-empty">
+                    Save this draft once to start uploading and reusing images.
+                  </p>
+                ) : mediaLibraryLoading ? (
+                  <p className="admin-media-library-empty">Loading uploaded images…</p>
+                ) : availableMediaAssets.length === 0 ? (
+                  <p className="admin-media-library-empty">
+                    {mediaSearch ? "No images match that alt text." : "No images uploaded yet."}
+                  </p>
+                ) : (
+                  <div className="admin-media-asset-grid">
+                    {availableMediaAssets.map((asset) => (
+                      <article
+                        className="admin-media-asset"
+                        key={asset.storagePath}
+                        draggable={!saving}
+                        onDragStart={(event) => {
+                          event.dataTransfer.effectAllowed = "copy";
+                          event.dataTransfer.setData(MEDIA_DRAG_TYPE, asset.storagePath);
+                        }}
                       >
-                        <Trash2 size={14} /> Remove
-                      </button>
+                        <img
+                          src={asset.publicUrl}
+                          alt={asset.altEn || asset.altFr || "Uploaded tour image"}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <div>
+                          <strong>{asset.altEn || asset.altFr || "Alt text not added"}</strong>
+                          <span>Drag to a destination or use a button</span>
+                          <div className="admin-media-asset-actions">
+                            <button
+                              type="button"
+                              onClick={() => void assignExistingMedia(asset, "hero")}
+                              disabled={saving}
+                            >
+                              Use as hero
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => void assignExistingMedia(asset, "gallery")}
+                              disabled={saving}
+                            >
+                              Add to gallery
+                            </button>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              <div className="admin-media-destinations">
+                <section
+                  className={`admin-media-drop-zone${mediaDropTarget === "hero" ? " is-active" : ""}`}
+                  onDragEnter={(event) => {
+                    event.preventDefault();
+                    setMediaDropTarget("hero");
+                  }}
+                  onDragOver={(event) => event.preventDefault()}
+                  onDragLeave={(event) => {
+                    if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+                      setMediaDropTarget(null);
+                    }
+                  }}
+                  onDrop={(event) => dropExistingMedia(event, "hero")}
+                >
+                  <div className="admin-media-drop-heading">
+                    <div>
+                      <h3>Hero image</h3>
+                      <p>Drop an uploaded image here to set or replace the hero.</p>
                     </div>
-                  </article>
-                ))}
+                    <span>Drop here</span>
+                  </div>
+                  <div className="admin-media-assignment-grid">
+                    {tour.media.map((item, index) =>
+                      item.role === "hero" ? (
+                        <AssignedMediaCard
+                          key={`hero-${item.storagePath}-${index}`}
+                          item={item}
+                          label="Hero image"
+                          disabled={saving}
+                          onAltEnChange={(value) =>
+                            setTour({
+                              ...tour,
+                              media: tour.media.map((entry, itemIndex) =>
+                                itemIndex === index ? { ...entry, altEn: value } : entry,
+                              ),
+                            })
+                          }
+                          onAltFrChange={(value) =>
+                            setTour({
+                              ...tour,
+                              media: tour.media.map((entry, itemIndex) =>
+                                itemIndex === index ? { ...entry, altFr: value } : entry,
+                              ),
+                            })
+                          }
+                          onRemove={() => void removeMedia(index)}
+                        />
+                      ) : null,
+                    )}
+                    {!tour.media.some((item) => item.role === "hero") && (
+                      <div className="admin-media-drop-empty">No hero image assigned.</div>
+                    )}
+                  </div>
+                </section>
+
+                <section
+                  className={`admin-media-drop-zone${mediaDropTarget === "gallery" ? " is-active" : ""}`}
+                  onDragEnter={(event) => {
+                    event.preventDefault();
+                    setMediaDropTarget("gallery");
+                  }}
+                  onDragOver={(event) => event.preventDefault()}
+                  onDragLeave={(event) => {
+                    if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+                      setMediaDropTarget(null);
+                    }
+                  }}
+                  onDrop={(event) => dropExistingMedia(event, "gallery")}
+                >
+                  <div className="admin-media-drop-heading">
+                    <div>
+                      <h3>Gallery images</h3>
+                      <p>Drop uploaded images here to add them without uploading again.</p>
+                    </div>
+                    <span>Drop here</span>
+                  </div>
+                  <div className="admin-media-assignment-grid">
+                    {tour.media.map((item, index) =>
+                      item.role === "gallery" ? (
+                        <AssignedMediaCard
+                          key={`gallery-${item.storagePath}-${index}`}
+                          item={item}
+                          label={`Gallery ${
+                            tour.media
+                              .slice(0, index + 1)
+                              .filter((media) => media.role === "gallery").length
+                          }`}
+                          disabled={saving}
+                          onAltEnChange={(value) =>
+                            setTour({
+                              ...tour,
+                              media: tour.media.map((entry, itemIndex) =>
+                                itemIndex === index ? { ...entry, altEn: value } : entry,
+                              ),
+                            })
+                          }
+                          onAltFrChange={(value) =>
+                            setTour({
+                              ...tour,
+                              media: tour.media.map((entry, itemIndex) =>
+                                itemIndex === index ? { ...entry, altFr: value } : entry,
+                              ),
+                            })
+                          }
+                          onRemove={() => void removeMedia(index)}
+                        />
+                      ) : null,
+                    )}
+                    {!tour.media.some((item) => item.role === "gallery") && (
+                      <div className="admin-media-drop-empty">No gallery images assigned.</div>
+                    )}
+                  </div>
+                </section>
+              </div>
+
+              <h3 className="admin-media-upload-title">Upload a new image</h3>
+              <div className="admin-upload-grid is-media-upload">
                 <label
                   className={`admin-upload-button${uploadingLabel ? " is-uploading" : ""}`}
                   aria-busy={Boolean(uploadingLabel)}

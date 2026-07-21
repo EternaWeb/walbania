@@ -45,6 +45,13 @@ export type TourMedia = {
   sortOrder: number;
 };
 
+export type TourMediaAsset = {
+  storagePath: string;
+  publicUrl: string;
+  altEn: string;
+  altFr: string;
+};
+
 export type TourListItem = {
   id?: string;
   kind: TourListKind;

@@ -27,6 +27,7 @@ import type {
   TourListingData,
   TourListRow,
   TourLocale,
+  TourMediaAsset,
   TourStatus,
   TourViewModel,
 } from "./types";
@@ -422,6 +423,34 @@ async function saveTour(input: TourEditorPayload) {
       sort_order: item.role === "hero" ? 0 : index,
     })),
   );
+  const mediaAssets = new Map<
+    string,
+    {
+      tour_id: string;
+      storage_path: string;
+      public_url: string;
+      alt_en: string;
+      alt_fr: string;
+      updated_at: string;
+    }
+  >();
+  for (const item of input.media) {
+    const current = mediaAssets.get(item.storagePath);
+    mediaAssets.set(item.storagePath, {
+      tour_id: tourId,
+      storage_path: item.storagePath,
+      public_url: item.publicUrl,
+      alt_en: item.altEn || current?.alt_en || "",
+      alt_fr: item.altFr || current?.alt_fr || "",
+      updated_at: new Date().toISOString(),
+    });
+  }
+  if (mediaAssets.size > 0) {
+    const { error: mediaAssetError } = await client
+      .from("tour_media_assets")
+      .upsert([...mediaAssets.values()], { onConflict: "storage_path" });
+    throwOnError(mediaAssetError);
+  }
   await replaceRows(
     client,
     "tour_list_items",
@@ -756,12 +785,13 @@ export const getPublicTourFn = createServerFn({ method: "GET" })
 
 export async function getFeaturedTourPath(locale: TourLocale) {
   const client = createPublicSupabaseClient();
-  let { data: tour, error } = await client
+  const { data: featuredTour, error } = await client
     .from("tours")
     .select("id")
     .eq("featured", true)
     .maybeSingle();
   throwOnError(error);
+  let tour = featuredTour;
   if (!tour) {
     const result = await client
       .from("tours")
@@ -1260,19 +1290,84 @@ export const confirmTourUploadFn = createServerFn({ method: "POST" })
       throw new Error("The image upload did not finish. Please try uploading it again.");
     }
 
+    const publicUrl = client.storage.from("tour-media").getPublicUrl(data.path).data.publicUrl;
+    const { error: assetError } = await client.from("tour_media_assets").upsert(
+      {
+        tour_id: data.tourId,
+        storage_path: data.path,
+        public_url: publicUrl,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "storage_path" },
+    );
+    throwOnError(assetError);
+
     return {
       path: data.path,
-      publicUrl: client.storage.from("tour-media").getPublicUrl(data.path).data.publicUrl,
+      publicUrl,
     };
+  });
+
+export const getTourMediaLibraryFn = createServerFn({ method: "GET" })
+  .validator(z.object({ tourId: z.string().uuid() }))
+  .handler(async ({ data }) => {
+    await requireAdminSession();
+    const client = createAdminSupabaseClient();
+    const [{ data: objects, error: storageError }, { data: mediaRows, error: mediaError }] =
+      await Promise.all([
+        client.storage.from("tour-media").list(`tours/${data.tourId}`, {
+          limit: 1000,
+          sortBy: { column: "created_at", order: "desc" },
+        }),
+        client
+          .from("tour_media_assets")
+          .select("storage_path,alt_en,alt_fr")
+          .eq("tour_id", data.tourId),
+      ]);
+    throwOnError(storageError);
+    throwOnError(mediaError);
+
+    const metadata = new Map<string, { altEn: string; altFr: string }>();
+    for (const row of mediaRows ?? []) {
+      const current = metadata.get(row.storage_path);
+      metadata.set(row.storage_path, {
+        altEn: current?.altEn || row.alt_en || "",
+        altFr: current?.altFr || row.alt_fr || "",
+      });
+    }
+
+    return (objects ?? [])
+      .filter((object) => object.name && object.id)
+      .map((object): TourMediaAsset => {
+        const storagePath = `tours/${data.tourId}/${object.name}`;
+        const alt = metadata.get(storagePath);
+        return {
+          storagePath,
+          publicUrl: client.storage.from("tour-media").getPublicUrl(storagePath).data.publicUrl,
+          altEn: alt?.altEn ?? "",
+          altFr: alt?.altFr ?? "",
+        };
+      });
   });
 
 export const deleteTourMediaFn = createServerFn({ method: "POST" })
   .validator(z.object({ path: z.string().min(1).max(500) }))
   .handler(async ({ data }) => {
     await requireAdminSession();
-    const { error } = await createAdminSupabaseClient()
-      .storage.from("tour-media")
-      .remove([data.path]);
+    const client = createAdminSupabaseClient();
+    const { count, error: referenceError } = await client
+      .from("tour_media")
+      .select("id", { count: "exact", head: true })
+      .eq("storage_path", data.path);
+    throwOnError(referenceError);
+    if ((count ?? 0) > 0) return { ok: true, deleted: false };
+
+    const { error: assetError } = await client
+      .from("tour_media_assets")
+      .delete()
+      .eq("storage_path", data.path);
+    throwOnError(assetError);
+    const { error } = await client.storage.from("tour-media").remove([data.path]);
     throwOnError(error);
-    return { ok: true };
+    return { ok: true, deleted: true };
   });

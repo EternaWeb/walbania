@@ -39,7 +39,8 @@ export const tourEditorSchema = z.object({
   basePriceEur: z.number().finite().min(0).max(100000),
   discountPercent: z.number().int().min(1).max(99).nullable(),
   defaultAvailable: z.boolean(),
-  durationMinutes: z.number().int().min(1).max(100000),
+  durationValue: z.number().finite().min(0.5).max(1000),
+  durationUnit: z.enum(["hours", "days"]),
   maxGroupSize: z.number().int().min(1).max(10000),
   languageCodes: z.array(z.string().trim().min(2).max(12)).max(20),
   startPlace: z.string().trim().max(180),
@@ -153,7 +154,11 @@ export const reviewInputSchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().trim().min(1).max(160),
   reviewDate: z.string().date(),
-  nationCode: z.string().trim().length(2).transform((value) => value.toUpperCase()),
+  nationCode: z
+    .string()
+    .trim()
+    .length(2)
+    .transform((value) => value.toUpperCase()),
   rating: z.number().int().min(1).max(5),
   travelType: z.enum(["solo", "couple", "family", "friends", "group", "business", "other"]),
   originalLanguage: z.string().trim().min(2).max(16),
@@ -207,4 +212,3 @@ export function validateForPublish(input: z.infer<typeof tourEditorSchema>) {
   }
   return problems;
 }
-

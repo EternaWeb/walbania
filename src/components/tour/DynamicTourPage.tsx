@@ -35,6 +35,8 @@ import type { LucideIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LocaleLocationModal } from "../LocaleLocationModal";
 import { SiteMenu } from "../SiteMenu";
+import { SiteFooter as SharedSiteFooter } from "../SiteFooter";
+import { SiteHeader } from "../SiteHeader";
 import { TourItineraryMap } from "../TourItineraryMap";
 import { SiteLocaleProvider, useLocalize } from "../../i18n";
 import type {
@@ -204,16 +206,14 @@ function formatPrice(value: number, locale: TourLocale) {
   }).format(value);
 }
 
-function durationLabel(minutes: number, locale: TourLocale) {
-  const hours = Math.floor(minutes / 60);
-  const remaining = minutes % 60;
-  if (hours === 0) return `${remaining} min`;
-  if (remaining === 0) {
-    return locale === "fr"
-      ? `${hours} ${hours === 1 ? "heure" : "heures"}`
-      : `${hours} ${hours === 1 ? "hour" : "hours"}`;
+function durationLabel(value: number, unit: "hours" | "days", locale: TourLocale) {
+  const formatted = Number.isInteger(value) ? String(value) : String(value).replace(/\.0$/, "");
+  if (locale === "fr") {
+    if (unit === "days") return `${formatted} ${value === 1 ? "jour" : "jours"}`;
+    return `${formatted} ${value === 1 ? "heure" : "heures"}`;
   }
-  return `${hours} h ${remaining} min`;
+  if (unit === "days") return `${formatted} ${value === 1 ? "day" : "days"}`;
+  return `${formatted} ${value === 1 ? "hour" : "hours"}`;
 }
 
 function formatDate(value: string, locale: TourLocale) {
@@ -249,7 +249,7 @@ function travelTypeLabel(type: TravelType, locale: TourLocale) {
   return labels[locale][type];
 }
 
-function Header({ tour }: { tour: TourViewModel }) {
+function LegacyHeader({ tour }: { tour: TourViewModel }) {
   const localize = useLocalize();
   const copy = COPY[tour.locale];
   return localize(
@@ -610,7 +610,7 @@ function DetailCard({ kind, tour }: { kind: TourListKind; tour: TourViewModel })
   );
 }
 
-function Footer({ locale }: { locale: TourLocale }) {
+function LegacyFooter({ locale }: { locale: TourLocale }) {
   const copy = COPY[locale];
   return (
     <footer id="support" className="site-footer">
@@ -665,7 +665,11 @@ function TourContent({ tour }: { tour: TourViewModel }) {
     [tour.locale],
   );
   const facts = [
-    { icon: Clock3, label: copy.duration, value: durationLabel(tour.durationMinutes, tour.locale) },
+    {
+      icon: Clock3,
+      label: copy.duration,
+      value: durationLabel(tour.durationValue, tour.durationUnit, tour.locale),
+    },
     { icon: Mountain, label: copy.difficulty, value: tour.difficultyName },
     { icon: Users, label: copy.groupSize, value: `${tour.maxGroupSize}` },
     { icon: Car, label: copy.tourType, value: tour.typeName },
@@ -677,7 +681,7 @@ function TourContent({ tour }: { tour: TourViewModel }) {
 
   return (
     <div className="tour-page">
-      <Header tour={tour} />
+      <SiteHeader />
       <main>
         <section className="tour-container hero-section">
           <div className="hero-shell">
@@ -719,7 +723,8 @@ function TourContent({ tour }: { tour: TourViewModel }) {
                       </>
                     )}
                     <span className="hero-duration">
-                      <Clock3 size={17} /> {durationLabel(tour.durationMinutes, tour.locale)}
+                      <Clock3 size={17} />{" "}
+                      {durationLabel(tour.durationValue, tour.durationUnit, tour.locale)}
                     </span>
                   </div>
                   <h1>{tour.title}</h1>
@@ -736,7 +741,7 @@ function TourContent({ tour }: { tour: TourViewModel }) {
             <div className="hero-facts-strip">
               <div className="hero-fact">
                 <span>{copy.duration}</span>
-                <strong>{durationLabel(tour.durationMinutes, tour.locale)}</strong>
+                <strong>{durationLabel(tour.durationValue, tour.durationUnit, tour.locale)}</strong>
               </div>
               <div className="hero-fact">
                 <span>{copy.location}</span>
@@ -883,7 +888,9 @@ function TourContent({ tour }: { tour: TourViewModel }) {
                         )}
                         <span>
                           <Clock3 size={16} />
-                          <b>{durationLabel(tour.durationMinutes, tour.locale)}</b>{" "}
+                          <b>
+                            {durationLabel(tour.durationValue, tour.durationUnit, tour.locale)}
+                          </b>{" "}
                           {copy.doorToDoor}
                         </span>
                       </div>
@@ -1023,7 +1030,7 @@ function TourContent({ tour }: { tour: TourViewModel }) {
           </section>
         )}
       </main>
-      <Footer locale={tour.locale} />
+      <SharedSiteFooter />
     </div>
   );
 }

@@ -44,7 +44,7 @@ function throwOnError(error: { message?: string } | null) {
   if (error) throw new Error(error.message || "Supabase request failed.");
 }
 
-function durationLabel(minutes: number, locale: TourLocale) {
+function minutesDurationLabel(minutes: number, locale: TourLocale) {
   const hours = Math.floor(minutes / 60);
   const remaining = minutes % 60;
   if (hours === 0) return locale === "fr" ? `${remaining} min` : `${remaining} min`;
@@ -54,6 +54,16 @@ function durationLabel(minutes: number, locale: TourLocale) {
       : `${hours} ${hours === 1 ? "hour" : "hours"}`;
   }
   return `${hours} h ${remaining} min`;
+}
+
+function tourDurationLabel(value: number, unit: "hours" | "days", locale: TourLocale) {
+  const formatted = Number.isInteger(value) ? String(value) : String(value).replace(/\.0$/, "");
+  if (locale === "fr") {
+    if (unit === "days") return `${formatted} ${value === 1 ? "jour" : "jours"}`;
+    return `${formatted} ${value === 1 ? "heure" : "heures"}`;
+  }
+  if (unit === "days") return `${formatted} ${value === 1 ? "day" : "days"}`;
+  return `${formatted} ${value === 1 ? "hour" : "hours"}`;
 }
 
 function localizedPath(locale: TourLocale, slug: string) {
@@ -193,7 +203,8 @@ function graphToEditor(graph: NonNullable<Awaited<ReturnType<typeof fetchTourGra
     basePriceEur: Number(tour.base_price_eur),
     discountPercent: tour.discount_percent,
     defaultAvailable: tour.default_available,
-    durationMinutes: tour.duration_minutes,
+    durationValue: Number(tour.duration_value),
+    durationUnit: tour.duration_unit,
     maxGroupSize: tour.max_group_size,
     languageCodes: tour.language_codes ?? [],
     startPlace: tour.start_place,
@@ -308,7 +319,8 @@ async function saveTour(input: TourEditorPayload) {
     base_price_eur: input.basePriceEur,
     discount_percent: input.discountPercent,
     default_available: input.defaultAvailable,
-    duration_minutes: input.durationMinutes,
+    duration_value: input.durationValue,
+    duration_unit: input.durationUnit,
     max_group_size: input.maxGroupSize,
     language_codes: input.languageCodes,
     start_place: input.startPlace,
@@ -513,7 +525,7 @@ async function loadRelatedTours(
 
   const { data: tours, error: tourError } = await client
     .from("tours")
-    .select("id,featured,base_price_eur,duration_minutes,published_at")
+    .select("id,featured,base_price_eur,duration_value,duration_unit,published_at")
     .neq("id", currentId)
     .order("published_at", { ascending: false });
   throwOnError(tourError);
@@ -546,7 +558,7 @@ async function loadRelatedTours(
         title: translation.title,
         href: localizedPath(locale, translation.slug),
         image: media?.find((item) => item.tour_id === tour.id)?.public_url ?? "",
-        meta: durationLabel(tour.duration_minutes, locale),
+        meta: tourDurationLabel(Number(tour.duration_value), tour.duration_unit, locale),
         priceEur: Number(tour.base_price_eur),
         badge: translation.hero_badge,
       };
@@ -626,7 +638,8 @@ async function graphToView(
     basePriceEur: Number(graph.tour.base_price_eur),
     discountPercent: graph.tour.discount_percent,
     defaultAvailable: graph.tour.default_available,
-    durationMinutes: graph.tour.duration_minutes,
+    durationValue: Number(graph.tour.duration_value),
+    durationUnit: graph.tour.duration_unit,
     maxGroupSize: graph.tour.max_group_size,
     languageCodes: graph.tour.language_codes ?? [],
     startPlace: graph.tour.start_place,
@@ -674,7 +687,7 @@ async function graphToView(
       sequence: index + 1,
       time: String(item.start_time).slice(0, 5),
       place: local(item.place_en, item.place_fr),
-      duration: durationLabel(item.duration_minutes, locale),
+      duration: minutesDurationLabel(item.duration_minutes, locale),
       text: local(item.description_en, item.description_fr),
       tag: local(item.type_en, item.type_fr),
       location:
@@ -781,38 +794,51 @@ export const getPublishedTourListingFn = createServerFn({ method: "GET" })
     const client = createPublicSupabaseClient();
     const { data: tours, error: tourError } = await client
       .from("tours")
-      .select("id,featured,base_price_eur,duration_minutes,tour_type_id,published_at")
+      .select(
+        "id,featured,base_price_eur,duration_value,duration_unit,tour_type_id,difficulty_id,max_group_size,default_available,published_at",
+      )
       .eq("status", "published")
       .order("featured", { ascending: false })
       .order("published_at", { ascending: false });
     throwOnError(tourError);
 
-    if (!tours?.length) return { categories: [], tours: [] };
+    if (!tours?.length) return { categories: [], tourTypes: [], difficulties: [], tours: [] };
 
     const ids = tours.map((tour) => tour.id);
-    const [translationResult, mediaResult, categoryLinkResult, typeResult, categoryResult] =
-      await Promise.all([
-        client
-          .from("tour_translations")
-          .select("tour_id,slug,title,hero_alt")
-          .eq("locale", data.locale)
-          .in("tour_id", ids),
-        client
-          .from("tour_media")
-          .select("tour_id,public_url,alt_en,alt_fr")
-          .eq("role", "hero")
-          .in("tour_id", ids),
-        client.from("tour_categories").select("tour_id,category_id").in("tour_id", ids),
-        client.from("tour_types").select("id,name_en,name_fr").eq("active", true),
-        client.from("categories").select("id,key,name_en,name_fr").eq("active", true),
-      ]);
+    const [
+      translationResult,
+      mediaResult,
+      categoryLinkResult,
+      typeResult,
+      difficultyResult,
+      categoryResult,
+      dateOverrideResult,
+    ] = await Promise.all([
+      client
+        .from("tour_translations")
+        .select("tour_id,slug,title,hero_alt")
+        .eq("locale", data.locale)
+        .in("tour_id", ids),
+      client
+        .from("tour_media")
+        .select("tour_id,public_url,alt_en,alt_fr")
+        .eq("role", "hero")
+        .in("tour_id", ids),
+      client.from("tour_categories").select("tour_id,category_id").in("tour_id", ids),
+      client.from("tour_types").select("id,key,name_en,name_fr").eq("active", true),
+      client.from("difficulties").select("id,key,name_en,name_fr").eq("active", true),
+      client.from("categories").select("id,key,name_en,name_fr").eq("active", true),
+      client.from("tour_date_overrides").select("tour_id,date,is_available").in("tour_id", ids),
+    ]);
 
     for (const result of [
       translationResult,
       mediaResult,
       categoryLinkResult,
       typeResult,
+      difficultyResult,
       categoryResult,
+      dateOverrideResult,
     ]) {
       throwOnError(result.error);
     }
@@ -832,15 +858,23 @@ export const getPublishedTourListingFn = createServerFn({ method: "GET" })
             translation.hero_alt ||
             (data.locale === "fr" ? hero?.alt_fr : hero?.alt_en) ||
             translation.title,
-          duration: durationLabel(tour.duration_minutes, data.locale),
+          duration: tourDurationLabel(Number(tour.duration_value), tour.duration_unit, data.locale),
+          typeId: tour.tour_type_id,
           typeName:
             (data.locale === "fr" ? type?.name_fr : type?.name_en) ||
             (data.locale === "fr" ? "Circuit" : "Tour"),
+          difficultyId: tour.difficulty_id,
           priceEur: Number(tour.base_price_eur),
+          maxGroupSize: tour.max_group_size,
           categoryIds:
             categoryLinkResult.data
               ?.filter((item) => item.tour_id === tour.id)
               .map((item) => item.category_id) ?? [],
+          defaultAvailable: tour.default_available,
+          dateOverrides:
+            dateOverrideResult.data
+              ?.filter((item) => item.tour_id === tour.id)
+              .map((item) => ({ date: item.date, isAvailable: item.is_available })) ?? [],
           featured: tour.featured,
         },
       ];
@@ -863,7 +897,19 @@ export const getPublishedTourListingFn = createServerFn({ method: "GET" })
       .filter((category) => category.count > 0)
       .sort((left, right) => right.count - left.count || left.name.localeCompare(right.name));
 
-    return { categories, tours: cards };
+    const localizeTaxonomy = (items: typeof typeResult.data) =>
+      (items ?? []).map((item) => ({
+        id: item.id,
+        key: item.key,
+        name: data.locale === "fr" ? item.name_fr : item.name_en,
+      }));
+
+    return {
+      categories,
+      tourTypes: localizeTaxonomy(typeResult.data),
+      difficulties: localizeTaxonomy(difficultyResult.data),
+      tours: cards,
+    };
   });
 
 export async function listPublishedTourEntries() {

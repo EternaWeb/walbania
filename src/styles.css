@@ -211,6 +211,24 @@ h2 {
   padding-inline: clamp(12px, 2vw, 32px);
 }
 
+.site-contact-bar {
+  width: 100%;
+  background: #1f2528;
+}
+
+.site-header {
+  min-height: 72px;
+  background: #fff;
+}
+
+.site-footer,
+.site-footer > div,
+.site-footer form input,
+.site-footer .border-t,
+.site-footer .border-b {
+  border-color: #e5e7eb;
+}
+
 @media (min-width: 768px) {
   :root { --site-gutter: 24px; }
 }

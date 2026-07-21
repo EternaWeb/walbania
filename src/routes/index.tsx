@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Globe,
-  Search,
-  Sparkle,
   Sparkles,
   ChevronLeft,
   ChevronRight,
@@ -28,8 +26,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useRef, useState, useEffect, useCallback } from "react";
-import { LocaleLocationModal } from "../components/LocaleLocationModal";
-import { SiteMenu } from "../components/SiteMenu";
+import { SiteFooter as SharedSiteFooter } from "../components/SiteFooter";
+import { SiteHeader } from "../components/SiteHeader";
 import { SiteLocaleProvider, useLocalize, useSiteLocale } from "../i18n";
 import type { SiteLocale } from "../i18n";
 
@@ -458,7 +456,7 @@ function FAQ() {
   );
 }
 
-function SiteFooter() {
+function LegacySiteFooter() {
   const localize = useLocalize();
   return localize(
     <footer className="bg-white border-t" style={{ borderColor: "#E5E7EB" }}>
@@ -806,46 +804,7 @@ function Index() {
   const [selectedGroup, setSelectedGroup] = useState("Family");
   return localize(
     <div className="index-page min-h-screen bg-background text-foreground">
-      {/* Top blue bar */}
-      <div style={{ background: "#1F2528" }} className="w-full">
-        <div className="page-inset site-navigation py-2 text-xs">
-          <a href="#" className="talk-with-us-link underline underline-offset-2">
-            Talk with Us
-          </a>
-        </div>
-      </div>
-
-      {/* Main nav */}
-      <header className="page-inset site-navigation py-4">
-        <div className="flex items-center justify-between gap-4">
-          <nav className="hidden md:flex items-center gap-6 text-sm flex-1">
-            <a href="#" className="hover:text-[#1F2528]">
-              About
-            </a>
-            <a href="#" className="hover:text-[#1F2528]">
-              Offers
-            </a>
-            <a href="#" className="hover:text-[#1F2528]">
-              Destinations
-            </a>
-          </nav>
-          <div className="flex-1 md:flex md:justify-center">
-            <a href="/" aria-label="WonderAlbania home">
-              <img src="/weblogo.png" alt="WonderAlbania" className="h-6 md:h-7 w-auto" />
-            </a>
-          </div>
-          <div className="flex items-center gap-[10px] flex-1 justify-end">
-            <LocaleLocationModal />
-            <button aria-label="Search" className="icon-chip">
-              <Search size={18} />
-            </button>
-            <button aria-label="AI" className="icon-chip">
-              <Sparkle size={19} fill="black" strokeWidth={1.7} />
-            </button>
-            <SiteMenu />
-          </div>
-        </div>
-      </header>
+      <SiteHeader />
 
       {/* Hero */}
       <section className="index-hero-shell" aria-labelledby="index-hero-title">
@@ -982,7 +941,7 @@ function Index() {
 
       <NotSure />
       <FAQ />
-      <SiteFooter />
+      <SharedSiteFooter />
     </div>,
   );
 }

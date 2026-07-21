@@ -71,7 +71,8 @@ begin
     base_price_eur,
     discount_percent,
     default_available,
-    duration_minutes,
+    duration_value,
+    duration_unit,
     max_group_size,
     language_codes,
     start_place,
@@ -91,7 +92,8 @@ begin
     129.00,                         -- Main price per person
     null,                           -- Discount percent, for example 15, or null
     true,                           -- All future dates available unless overridden below
-    480,                            -- Total duration in minutes
+    8,                              -- Duration value
+    'hours',                        -- Duration unit: hours or days
     8,                              -- Maximum group size
     array['EN', 'FR', 'SQ']::text[],
     'Tirana',

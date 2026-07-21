@@ -167,6 +167,7 @@ function TextField({
   full,
   min,
   max,
+  step,
 }: {
   label: string;
   value: string | number;
@@ -176,6 +177,7 @@ function TextField({
   full?: boolean;
   min?: number;
   max?: number;
+  step?: number;
 }) {
   return (
     <div className={`admin-field${full ? " is-full" : ""}`}>
@@ -187,6 +189,7 @@ function TextField({
         placeholder={placeholder}
         min={min}
         max={max}
+        step={step}
         onChange={(event) => onChange(event.target.value)}
       />
     </div>
@@ -624,12 +627,29 @@ export function TourEditor({
                     }
                   />
                   <TextField
-                    label="Duration (minutes)"
+                    label="Duration"
                     type="number"
-                    min={1}
-                    value={tour.durationMinutes}
-                    onChange={(value) => setTour({ ...tour, durationMinutes: Number(value) })}
+                    min={0.5}
+                    step={0.5}
+                    value={tour.durationValue}
+                    onChange={(value) => setTour({ ...tour, durationValue: Number(value) })}
                   />
+                  <div className="admin-field">
+                    <label>Duration unit</label>
+                    <select
+                      className="admin-select"
+                      value={tour.durationUnit}
+                      onChange={(event) =>
+                        setTour({
+                          ...tour,
+                          durationUnit: event.target.value as "hours" | "days",
+                        })
+                      }
+                    >
+                      <option value="hours">Hours</option>
+                      <option value="days">Days</option>
+                    </select>
+                  </div>
                   <TextField
                     label="Maximum group size"
                     type="number"

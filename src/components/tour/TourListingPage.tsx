@@ -1,141 +1,531 @@
 import {
   ArrowUpRight,
-  Bike,
-  Camera,
+  Check,
   ChevronLeft,
   ChevronRight,
-  Compass,
-  Crown,
-  Footprints,
-  Globe,
-  Landmark,
-  Leaf,
-  Mountain,
-  Search,
-  Sparkle,
-  Sun,
-  TentTree,
-  Trees,
-  UtensilsCrossed,
-  Waves,
+  LoaderCircle,
+  Minus,
+  Plus,
+  X,
 } from "lucide-react";
+import "../../tour-listing.css";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { LocaleLocationModal } from "../LocaleLocationModal";
-import { SiteMenu } from "../SiteMenu";
-import { SiteLocaleProvider, useLocalize } from "../../i18n";
-import type { LucideIcon } from "lucide-react";
+import { SiteFooter } from "../SiteFooter";
+import { SiteHeader } from "../SiteHeader";
+import { SiteLocaleProvider } from "../../i18n";
 import type { SiteLocale } from "../../i18n";
-import type { TourListingCard, TourListingData } from "../../lib/tours/types";
+import type { TourListingCard, TourListingData, TourListingTaxonomy } from "../../lib/tours/types";
 
 const TOUR_HERO_POSTER = "https://images.unsplash.com/photo-1601581875309-fafbf2d3ed3a?w=1800&q=85";
 
-const categoryIconMap: Record<string, LucideIcon> = {
-  adventure: Compass,
-  nature: Leaf,
-  "cultural-heritage": Landmark,
-  history: Landmark,
-  archaeology: Landmark,
-  beaches: Waves,
-  mountains: Mountain,
-  "food-wine": UtensilsCrossed,
-  luxury: Crown,
-  photography: Camera,
-  wildlife: Trees,
-  winter: Sun,
-  "road-trips": Compass,
-  "city-breaks": Landmark,
-  "unesco-sites": Landmark,
-  "hidden-gems": Compass,
-  "sailing-coast": Waves,
-  hiking: Footprints,
-  cycling: Bike,
-  camping: TentTree,
+const DESTINATIONS = [
+  {
+    name: "The Albanian Alps",
+    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=900&q=82",
+  },
+  {
+    name: "The Riviera",
+    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&q=82",
+  },
+  {
+    name: "Berat",
+    image: "https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?w=900&q=82",
+  },
+  {
+    name: "Gjirokastër",
+    image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=900&q=82",
+  },
+  {
+    name: "Tirana",
+    image: "https://images.unsplash.com/photo-1524230572899-a752b3835840?w=900&q=82",
+  },
+] as const;
+
+type SearchFieldKey = "type" | "categories" | "people" | "dates" | "difficulty";
+
+type TourSearchState = {
+  typeId: string | null;
+  categoryIds: string[] | null;
+  people: number | null;
+  startDate: string | null;
+  endDate: string | null;
+  difficultyId: string | null;
 };
 
-function Header() {
-  const localize = useLocalize();
-  return localize(
-    <>
-      <div className="tours-index-topbar">
-        <div className="page-inset site-navigation py-2 text-xs">
-          <a href="#contact" className="talk-with-us-link underline underline-offset-2">
-            Talk with Us
-          </a>
-        </div>
-      </div>
-      <header className="page-inset site-navigation py-4">
-        <div className="flex items-center justify-between gap-4">
-          <nav className="hidden md:flex items-center gap-6 text-sm flex-1" aria-label="Primary">
-            <a href="/#about" className="hover:text-[#1F2528]">
-              About
-            </a>
-            <a href="/#offers" className="hover:text-[#1F2528]">
-              Offers
-            </a>
-            <a href="/#destinations" className="hover:text-[#1F2528]">
-              Destinations
-            </a>
-          </nav>
-          <div className="flex-1 md:flex md:justify-center">
-            <a href="/" aria-label="WonderAlbania home">
-              <img src="/weblogo.png" alt="WonderAlbania" className="h-6 md:h-7 w-auto" />
-            </a>
-          </div>
-          <div className="flex items-center gap-[10px] flex-1 justify-end">
-            <LocaleLocationModal />
-            <button type="button" aria-label="Search" className="icon-chip">
-              <Search size={18} />
-            </button>
-            <button type="button" aria-label="AI" className="icon-chip">
-              <Sparkle size={19} fill="black" strokeWidth={1.7} />
-            </button>
-            <SiteMenu />
-          </div>
-        </div>
-      </header>
-    </>,
+const EMPTY_SEARCH: TourSearchState = {
+  typeId: null,
+  categoryIds: null,
+  people: null,
+  startDate: null,
+  endDate: null,
+  difficultyId: null,
+};
+
+function dateValue(date: Date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+    date.getDate(),
+  ).padStart(2, "0")}`;
+}
+
+function dateFromValue(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function formatShortDate(value: string, locale: SiteLocale) {
+  return dateFromValue(value).toLocaleDateString(locale === "fr" ? "fr-FR" : "en-GB", {
+    day: "numeric",
+    month: "short",
+  });
+}
+
+function uniqueTours(tours: TourListingCard[]) {
+  return tours.filter((tour, index) => tours.findIndex((item) => item.id === tour.id) === index);
+}
+
+function SearchField({
+  label,
+  value,
+  onClick,
+}: {
+  label: string;
+  value: string;
+  onClick: () => void;
+}) {
+  return (
+    <button type="button" className="tour-search-field" onClick={onClick}>
+      <span>{label}</span>
+      <strong title={value}>{value}</strong>
+    </button>
   );
 }
 
-function CategoryCard({
-  category,
-  selected,
-  onSelect,
-  locale,
+function ModalShell({
+  title,
+  onClose,
+  children,
 }: {
-  category: TourListingData["categories"][number];
-  selected: boolean;
-  onSelect: () => void;
-  locale: SiteLocale;
+  title: string;
+  onClose: () => void;
+  children: React.ReactNode;
 }) {
-  const Icon = categoryIconMap[category.key] ?? Globe;
-  const countLabel =
-    locale === "fr"
-      ? `${category.count} ${category.count === 1 ? "circuit" : "circuits"}`
-      : `${category.count} ${category.count === 1 ? "tour" : "tours"}`;
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
+
   return (
-    <button
-      type="button"
-      className={`tours-category-card${selected ? " is-selected" : ""}`}
-      onClick={onSelect}
-      aria-pressed={selected}
+    <div
+      className="tour-search-modal-backdrop"
+      role="presentation"
+      onMouseDown={(event) => {
+        if (event.currentTarget === event.target) onClose();
+      }}
     >
-      <span className="tours-category-icon">
-        <Icon size={21} strokeWidth={1.6} />
-      </span>
-      <span className="tours-category-copy">
-        <strong>{category.name}</strong>
-        <small>{countLabel}</small>
-      </span>
-      <ArrowUpRight size={18} className="tours-category-arrow" aria-hidden="true" />
-    </button>
+      <section
+        className="tour-search-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tour-search-modal-title"
+      >
+        <header>
+          <h2 id="tour-search-modal-title">{title}</h2>
+          <button type="button" onClick={onClose} aria-label="Close">
+            <X size={20} />
+          </button>
+        </header>
+        {children}
+      </section>
+    </div>
+  );
+}
+
+function ChoiceList({
+  options,
+  selectedIds,
+  multiple = false,
+  onSelect,
+}: {
+  options: TourListingTaxonomy[];
+  selectedIds: string[];
+  multiple?: boolean;
+  onSelect: (id: string) => void;
+}) {
+  return (
+    <div className="tour-choice-list">
+      {options.map((option) => {
+        const selected = selectedIds.includes(option.id);
+        return (
+          <button
+            type="button"
+            key={option.id}
+            className={selected ? "is-selected" : ""}
+            aria-pressed={selected}
+            onClick={() => onSelect(option.id)}
+          >
+            <span>{option.name}</span>
+            {selected && <Check size={17} />}
+            {!selected && multiple && <span className="tour-choice-box" aria-hidden="true" />}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function DateRangeCalendar({
+  locale,
+  startDate,
+  endDate,
+  showSingleDayNote,
+  onChange,
+  onAnyTime,
+  onDone,
+}: {
+  locale: SiteLocale;
+  startDate: string | null;
+  endDate: string | null;
+  showSingleDayNote: boolean;
+  onChange: (start: string | null, end: string | null) => void;
+  onAnyTime: () => void;
+  onDone: () => void;
+}) {
+  const today = useMemo(() => new Date(), []);
+  const [viewMonth, setViewMonth] = useState(
+    () => new Date(today.getFullYear(), today.getMonth(), 1),
+  );
+  const year = viewMonth.getFullYear();
+  const month = viewMonth.getMonth();
+  const leading = (new Date(year, month, 1).getDay() + 6) % 7;
+  const count = new Date(year, month + 1, 0).getDate();
+  const monthName = viewMonth.toLocaleDateString(locale === "fr" ? "fr-FR" : "en-GB", {
+    month: "long",
+    year: "numeric",
+  });
+  const startTime = startDate ? dateFromValue(startDate).getTime() : null;
+  const endTime = endDate ? dateFromValue(endDate).getTime() : null;
+
+  const chooseDate = (value: string) => {
+    if (!startDate || endDate) {
+      onChange(value, null);
+      return;
+    }
+    if (value < startDate) {
+      onChange(value, null);
+      return;
+    }
+    onChange(startDate, value);
+  };
+
+  return (
+    <div className="tour-calendar">
+      <div className="tour-calendar-topline">
+        <button type="button" className="tour-calendar-any" onClick={onAnyTime}>
+          {locale === "fr" ? "À tout moment" : "Any Time"}
+        </button>
+        {showSingleDayNote && (
+          <span>{locale === "fr" ? "CE CIRCUIT DURE UNE JOURNÉE" : "THIS TOUR LASTS ONE DAY"}</span>
+        )}
+      </div>
+      <div className="tour-calendar-heading">
+        <button
+          type="button"
+          aria-label="Previous month"
+          onClick={() => setViewMonth(new Date(year, month - 1, 1))}
+        >
+          <ChevronLeft size={18} />
+        </button>
+        <strong>{monthName}</strong>
+        <button
+          type="button"
+          aria-label="Next month"
+          onClick={() => setViewMonth(new Date(year, month + 1, 1))}
+        >
+          <ChevronRight size={18} />
+        </button>
+      </div>
+      <div className="tour-calendar-grid is-weekdays" aria-hidden="true">
+        {(locale === "fr"
+          ? ["L", "M", "M", "J", "V", "S", "D"]
+          : ["M", "T", "W", "T", "F", "S", "S"]
+        ).map((day, index) => (
+          <span key={`${day}-${index}`}>{day}</span>
+        ))}
+      </div>
+      <div className="tour-calendar-grid">
+        {Array.from({ length: leading }, (_, index) => (
+          <span key={`empty-${index}`} />
+        ))}
+        {Array.from({ length: count }, (_, index) => {
+          const date = new Date(year, month, index + 1);
+          const value = dateValue(date);
+          const time = date.getTime();
+          const isStart = value === startDate;
+          const isEnd = value === endDate;
+          const inRange =
+            startTime !== null && endTime !== null && time > startTime && time < endTime;
+          const disabled =
+            time < new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+          return (
+            <button
+              type="button"
+              key={value}
+              disabled={disabled}
+              className={`${isStart || isEnd ? "is-edge" : ""}${inRange ? " is-range" : ""}`}
+              aria-pressed={isStart || isEnd}
+              onClick={() => chooseDate(value)}
+            >
+              {index + 1}
+            </button>
+          );
+        })}
+      </div>
+      <button type="button" className="tour-modal-done" onClick={onDone}>
+        {locale === "fr" ? "Terminé" : "Done"}
+      </button>
+    </div>
+  );
+}
+
+function TourFinder({
+  locale,
+  data,
+  search,
+  setSearch,
+  hasSearched,
+  onSearch,
+  onReset,
+}: {
+  locale: SiteLocale;
+  data: TourListingData;
+  search: TourSearchState;
+  setSearch: React.Dispatch<React.SetStateAction<TourSearchState>>;
+  hasSearched: boolean;
+  onSearch: () => void;
+  onReset: () => void;
+}) {
+  const [activeModal, setActiveModal] = useState<SearchFieldKey | null>(null);
+  const type = data.tourTypes.find((item) => item.id === search.typeId);
+  const difficulty = data.difficulties.find((item) => item.id === search.difficultyId);
+  const categoryNames =
+    search.categoryIds
+      ?.map((id) => data.categories.find((item) => item.id === id)?.name)
+      .filter(Boolean) ?? [];
+  const typeName = type?.name ?? (locale === "fr" ? "Sélectionner" : "Select");
+  const categoryName =
+    search.categoryIds === null
+      ? locale === "fr"
+        ? "Sélectionner"
+        : "Select"
+      : search.categoryIds.length === 0
+        ? locale === "fr"
+          ? "Toutes"
+          : "All"
+        : categoryNames.join(", ");
+  const datesName = search.startDate
+    ? search.endDate
+      ? `${formatShortDate(search.startDate, locale)} – ${formatShortDate(search.endDate, locale)}`
+      : formatShortDate(search.startDate, locale)
+    : locale === "fr"
+      ? "À tout moment"
+      : "Any Time";
+  const hasSelections = Object.values(search).some((value) => value !== null);
+  const oneDayType = Boolean(
+    type && /half[- ]?day|daily|day tour|journée|demi[- ]journée/i.test(`${type.key} ${type.name}`),
+  );
+  const closeModal = useCallback(() => setActiveModal(null), []);
+
+  return (
+    <div className="tour-finder-band">
+      <div className="tour-finder-box">
+        <span className="tour-finder-label">
+          {locale === "fr" ? "TROUVEZ VOTRE CIRCUIT" : "FIND YOUR TOUR"}
+        </span>
+        <div className="tour-finder-fields">
+          <SearchField
+            label={locale === "fr" ? "TYPE DE CIRCUIT" : "TOUR TYPE"}
+            value={typeName}
+            onClick={() => setActiveModal("type")}
+          />
+          <SearchField
+            label={locale === "fr" ? "CATÉGORIES" : "CATEGORIES"}
+            value={categoryName}
+            onClick={() => setActiveModal("categories")}
+          />
+          <SearchField
+            label={locale === "fr" ? "PERSONNES" : "PEOPLE"}
+            value={search.people ? `${search.people}` : locale === "fr" ? "Sélectionner" : "Select"}
+            onClick={() => setActiveModal("people")}
+          />
+          <SearchField
+            label={locale === "fr" ? "DATES" : "DATES"}
+            value={datesName}
+            onClick={() => setActiveModal("dates")}
+          />
+          <SearchField
+            label={locale === "fr" ? "DIFFICULTÉ" : "DIFFICULTY"}
+            value={difficulty?.name ?? (locale === "fr" ? "Sélectionner" : "Select")}
+            onClick={() => setActiveModal("difficulty")}
+          />
+          <div className="tour-search-action">
+            <button type="button" className="tour-search-submit" onClick={onSearch}>
+              <span>{locale === "fr" ? "RECHERCHER" : "SEARCH TOURS"}</span>
+              <i aria-hidden="true">
+                <ArrowUpRight />
+              </i>
+            </button>
+            {(hasSelections || hasSearched) && (
+              <button type="button" className="tour-search-reset" onClick={onReset}>
+                {locale === "fr" ? "Réinitialiser" : "Reset Fields"}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {activeModal === "type" && (
+        <ModalShell title={locale === "fr" ? "Type de circuit" : "Tour Type"} onClose={closeModal}>
+          <ChoiceList
+            options={data.tourTypes}
+            selectedIds={search.typeId ? [search.typeId] : []}
+            onSelect={(id) => {
+              setSearch((current) => ({ ...current, typeId: id }));
+              closeModal();
+            }}
+          />
+        </ModalShell>
+      )}
+
+      {activeModal === "categories" && (
+        <ModalShell title={locale === "fr" ? "Catégories" : "Categories"} onClose={closeModal}>
+          <div className="tour-choice-list">
+            <button
+              type="button"
+              className={search.categoryIds?.length === 0 ? "is-selected" : ""}
+              aria-pressed={search.categoryIds?.length === 0}
+              onClick={() => setSearch((current) => ({ ...current, categoryIds: [] }))}
+            >
+              <span>{locale === "fr" ? "Toutes" : "All"}</span>
+              {search.categoryIds?.length === 0 && <Check size={17} />}
+            </button>
+          </div>
+          <ChoiceList
+            options={data.categories}
+            multiple
+            selectedIds={search.categoryIds ?? []}
+            onSelect={(id) =>
+              setSearch((current) => {
+                const selected = current.categoryIds ?? [];
+                return {
+                  ...current,
+                  categoryIds: selected.includes(id)
+                    ? selected.filter((item) => item !== id)
+                    : [...selected, id],
+                };
+              })
+            }
+          />
+          <button type="button" className="tour-modal-done" onClick={closeModal}>
+            {locale === "fr" ? "Terminé" : "Done"}
+          </button>
+        </ModalShell>
+      )}
+
+      {activeModal === "people" && (
+        <ModalShell
+          title={locale === "fr" ? "Nombre de personnes" : "Number of People"}
+          onClose={closeModal}
+        >
+          <div className="tour-people-picker">
+            <button
+              type="button"
+              aria-label="Remove one person"
+              disabled={(search.people ?? 1) <= 1}
+              onClick={() =>
+                setSearch((current) => ({
+                  ...current,
+                  people: Math.max(1, (current.people ?? 1) - 1),
+                }))
+              }
+            >
+              <Minus size={20} />
+            </button>
+            <strong>{search.people ?? 1}</strong>
+            <button
+              type="button"
+              aria-label="Add one person"
+              disabled={(search.people ?? 1) >= 50}
+              onClick={() =>
+                setSearch((current) => ({
+                  ...current,
+                  people: Math.min(50, (current.people ?? 1) + 1),
+                }))
+              }
+            >
+              <Plus size={20} />
+            </button>
+          </div>
+          <p className="tour-picker-help">
+            {locale === "fr" ? "50 personnes maximum" : "50 people maximum"}
+          </p>
+          <button
+            type="button"
+            className="tour-modal-done"
+            onClick={() => {
+              setSearch((current) => ({ ...current, people: current.people ?? 1 }));
+              closeModal();
+            }}
+          >
+            {locale === "fr" ? "Terminé" : "Done"}
+          </button>
+        </ModalShell>
+      )}
+
+      {activeModal === "dates" && (
+        <ModalShell
+          title={locale === "fr" ? "Choisissez vos dates" : "Choose Your Dates"}
+          onClose={closeModal}
+        >
+          <DateRangeCalendar
+            locale={locale}
+            startDate={search.startDate}
+            endDate={search.endDate}
+            showSingleDayNote={oneDayType}
+            onChange={(startDate, endDate) =>
+              setSearch((current) => ({ ...current, startDate, endDate }))
+            }
+            onAnyTime={() => {
+              setSearch((current) => ({ ...current, startDate: null, endDate: null }));
+              closeModal();
+            }}
+            onDone={closeModal}
+          />
+        </ModalShell>
+      )}
+
+      {activeModal === "difficulty" && (
+        <ModalShell title={locale === "fr" ? "Difficulté" : "Difficulty"} onClose={closeModal}>
+          <ChoiceList
+            options={data.difficulties}
+            selectedIds={search.difficultyId ? [search.difficultyId] : []}
+            onSelect={(id) => {
+              setSearch((current) => ({ ...current, difficultyId: id }));
+              closeModal();
+            }}
+          />
+        </ModalShell>
+      )}
+    </div>
   );
 }
 
 function TourCard({ tour, locale }: { tour: TourListingCard; locale: SiteLocale }) {
   const formatter = useMemo(
     () =>
-      new Intl.NumberFormat(locale === "fr" ? "fr-FR" : "en-US", {
+      new Intl.NumberFormat(locale === "fr" ? "fr-FR" : "en-GB", {
         style: "currency",
         currency: "EUR",
         maximumFractionDigits: 0,
@@ -175,7 +565,7 @@ function TourCard({ tour, locale }: { tour: TourListingCard; locale: SiteLocale 
   );
 }
 
-function TourScroller({ tours, locale }: { tours: TourListingCard[]; locale: SiteLocale }) {
+function Rail({ children, locale }: { children: React.ReactNode[]; locale: SiteLocale }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(false);
@@ -197,7 +587,7 @@ function TourScroller({ tours, locale }: { tours: TourListingCard[]; locale: Sit
       element.removeEventListener("scroll", updateControls);
       window.removeEventListener("resize", updateControls);
     };
-  }, [updateControls, tours]);
+  }, [children.length, updateControls]);
 
   const move = (direction: number) => {
     scrollerRef.current?.scrollBy({
@@ -209,16 +599,14 @@ function TourScroller({ tours, locale }: { tours: TourListingCard[]; locale: Sit
   return (
     <div className="tours-listing-scroller-shell">
       <div ref={scrollerRef} className="tours-listing-scroller scroll-hide">
-        {tours.map((tour) => (
-          <TourCard key={tour.id} tour={tour} locale={locale} />
-        ))}
+        {children}
       </div>
       {canLeft && (
         <button
           type="button"
           className="tours-listing-control is-left"
           onClick={() => move(-1)}
-          aria-label={locale === "fr" ? "Circuits précédents" : "Previous tours"}
+          aria-label={locale === "fr" ? "Précédent" : "Previous"}
         >
           <ChevronLeft size={20} />
         </button>
@@ -228,7 +616,7 @@ function TourScroller({ tours, locale }: { tours: TourListingCard[]; locale: Sit
           type="button"
           className="tours-listing-control is-right"
           onClick={() => move(1)}
-          aria-label={locale === "fr" ? "Circuits suivants" : "Next tours"}
+          aria-label={locale === "fr" ? "Suivant" : "Next"}
         >
           <ChevronRight size={20} />
         </button>
@@ -237,16 +625,104 @@ function TourScroller({ tours, locale }: { tours: TourListingCard[]; locale: Sit
   );
 }
 
+function TourRail({ tours, locale }: { tours: TourListingCard[]; locale: SiteLocale }) {
+  return (
+    <Rail locale={locale}>
+      {tours.map((tour) => (
+        <TourCard key={tour.id} tour={tour} locale={locale} />
+      ))}
+    </Rail>
+  );
+}
+
+function tourMatchesDates(tour: TourListingCard, startDate: string, endDate: string | null) {
+  const start = dateFromValue(startDate);
+  const end = dateFromValue(endDate ?? startDate);
+  const overrides = new Map(tour.dateOverrides.map((item) => [item.date, item.isAvailable]));
+  const cursor = new Date(start);
+  let checked = 0;
+  while (cursor <= end && checked < 732) {
+    const override = overrides.get(dateValue(cursor));
+    const available = override ?? tour.defaultAvailable;
+    if (available) return true;
+    cursor.setDate(cursor.getDate() + 1);
+    checked += 1;
+  }
+  return false;
+}
+
+function EmptyTours({ locale }: { locale: SiteLocale }) {
+  return (
+    <div className="tours-listing-empty">
+      <h3>{locale === "fr" ? "Aucun circuit trouvé" : "No tours found"}</h3>
+      <p>
+        {locale === "fr"
+          ? "Essayez de modifier ou de réinitialiser vos critères."
+          : "Try changing or resetting your search fields."}
+      </p>
+    </div>
+  );
+}
+
 function ToursIndex({ locale, data }: { locale: SiteLocale; data: TourListingData }) {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const visibleTours = selectedCategory
-    ? data.tours.filter((tour) => tour.categoryIds.includes(selectedCategory))
-    : data.tours;
+  const [search, setSearch] = useState<TourSearchState>(EMPTY_SEARCH);
+  const [submittedSearch, setSubmittedSearch] = useState<TourSearchState | null>(null);
+  const [loadingResults, setLoadingResults] = useState(false);
+  const [showAllTours, setShowAllTours] = useState(false);
+  const resultsRef = useRef<HTMLElement>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    },
+    [],
+  );
+
+  const orderedTours = uniqueTours([...data.tours.filter((tour) => tour.featured), ...data.tours]);
+  const featuredTours = showAllTours ? orderedTours : orderedTours.slice(0, 3);
+
+  const searchResults = useMemo(() => {
+    if (!submittedSearch) return [];
+    return data.tours.filter((tour) => {
+      if (submittedSearch.typeId && tour.typeId !== submittedSearch.typeId) return false;
+      if (
+        submittedSearch.categoryIds?.length &&
+        !submittedSearch.categoryIds.every((id) => tour.categoryIds.includes(id))
+      )
+        return false;
+      if (submittedSearch.people && tour.maxGroupSize < submittedSearch.people) return false;
+      if (submittedSearch.difficultyId && tour.difficultyId !== submittedSearch.difficultyId)
+        return false;
+      if (
+        submittedSearch.startDate &&
+        !tourMatchesDates(tour, submittedSearch.startDate, submittedSearch.endDate)
+      )
+        return false;
+      return true;
+    });
+  }, [data.tours, submittedSearch]);
+
+  const runSearch = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setSubmittedSearch({ ...search });
+    setLoadingResults(true);
+    requestAnimationFrame(() => {
+      resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    timerRef.current = setTimeout(() => setLoadingResults(false), 1300);
+  };
+
+  const resetSearch = () => {
+    setSearch(EMPTY_SEARCH);
+    setSubmittedSearch(null);
+    setLoadingResults(false);
+    if (timerRef.current) clearTimeout(timerRef.current);
+  };
 
   return (
     <div className="tours-index-page min-h-screen bg-background text-foreground">
-      <Header />
-
+      <SiteHeader />
       <main>
         <section className="tours-index-hero" aria-labelledby="tours-index-title">
           <div className="index-hero-media">
@@ -272,7 +748,7 @@ function ToursIndex({ locale, data }: { locale: SiteLocale; data: TourListingDat
             </video>
             <span className="index-hero-film" aria-hidden="true" />
             <div className="index-hero-copy">
-              <a className="index-hero-cta" href="#tour-categories">
+              <a className="index-hero-cta" href="#featured-tours">
                 <span className="index-hero-cta-label">
                   {locale === "fr" ? "Explorer nos circuits" : "Explore our tours"}
                 </span>
@@ -285,134 +761,103 @@ function ToursIndex({ locale, data }: { locale: SiteLocale; data: TourListingDat
               </h1>
             </div>
           </div>
-          <div className="index-hero-features" aria-label="WonderAlbania tours">
-            {[
-              [
-                "01",
-                locale === "fr" ? "Experts locaux" : "Local experts",
-                locale === "fr" ? "Une Albanie vécue de l’intérieur" : "Albania from the inside",
-              ],
-              [
-                "02",
-                locale === "fr" ? "Petits groupes" : "Small groups",
-                locale === "fr" ? "Des voyages plus personnels" : "More personal journeys",
-              ],
-              [
-                "03",
-                locale === "fr" ? "Rythme flexible" : "Flexible pace",
-                locale === "fr" ? "Du temps pour vraiment découvrir" : "Time to truly discover",
-              ],
-            ].map(([number, title, detail]) => (
-              <div className="index-hero-feature" key={number}>
-                <span className="index-hero-feature-number">{number}</span>
-                <div>
-                  <h2>{title}</h2>
-                  <p>{detail}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <TourFinder
+            locale={locale}
+            data={data}
+            search={search}
+            setSearch={setSearch}
+            hasSearched={submittedSearch !== null}
+            onSearch={runSearch}
+            onReset={resetSearch}
+          />
         </section>
 
-        <section id="tour-categories" className="page-inset tours-category-section">
-          <div className="tours-category-panel">
-            <div className="tours-index-heading">
-              <span>{locale === "fr" ? "Choisissez votre voyage" : "Choose your journey"}</span>
-              <h2>{locale === "fr" ? "Explorer par catégorie" : "Explore by category"}</h2>
-              <p>
-                {locale === "fr"
-                  ? "Culture, côte, montagne ou aventure — trouvez l’Albanie qui vous ressemble."
-                  : "Culture, coast, mountains or adventure — find the Albania that feels like yours."}
-              </p>
-            </div>
-
-            {data.categories.length > 0 ? (
-              <div className="tours-category-track scroll-hide">
-                <button
-                  type="button"
-                  className={`tours-category-card${selectedCategory === null ? " is-selected" : ""}`}
-                  onClick={() => setSelectedCategory(null)}
-                  aria-pressed={selectedCategory === null}
-                >
-                  <span className="tours-category-icon">
-                    <Compass size={21} strokeWidth={1.6} />
-                  </span>
-                  <span className="tours-category-copy">
-                    <strong>{locale === "fr" ? "Tous les circuits" : "All tours"}</strong>
-                    <small>
-                      {data.tours.length} {locale === "fr" ? "circuits" : "tours"}
-                    </small>
-                  </span>
-                  <ArrowUpRight size={18} className="tours-category-arrow" aria-hidden="true" />
-                </button>
-                {data.categories.map((category) => (
-                  <CategoryCard
-                    key={category.id}
-                    category={category}
-                    locale={locale}
-                    selected={selectedCategory === category.id}
-                    onSelect={() => setSelectedCategory(category.id)}
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="tours-category-empty">
-                {locale === "fr"
-                  ? "Les catégories apparaîtront dès la publication du premier circuit."
-                  : "Categories will appear as soon as the first tour is published."}
-              </p>
-            )}
-          </div>
-        </section>
-
-        <section className="tours-listing-section" aria-labelledby="all-tours-title">
+        <section id="featured-tours" className="tours-listing-section tours-featured-section">
           <div className="page-inset">
-            <div className="tours-listing-heading-row">
-              <div className="tours-index-heading is-left">
-                <span>{locale === "fr" ? "Circuits WonderAlbania" : "WonderAlbania tours"}</span>
-                <h2 id="all-tours-title">
-                  {selectedCategory
-                    ? data.categories.find((category) => category.id === selectedCategory)?.name
-                    : locale === "fr"
-                      ? "Tous nos circuits"
-                      : "All our tours"}
-                </h2>
-              </div>
-              <p>
-                {visibleTours.length} {locale === "fr" ? "circuits disponibles" : "tours available"}
-              </p>
+            <div className="tours-index-heading">
+              <h2>{locale === "fr" ? "Circuits en vedette" : "Featured Tours"}</h2>
             </div>
-
-            {visibleTours.length > 0 ? (
-              <TourScroller tours={visibleTours} locale={locale} />
-            ) : (
-              <div className="tours-listing-empty">
-                <Compass size={30} strokeWidth={1.4} />
-                <h3>
-                  {locale === "fr" ? "De nouveaux circuits arrivent" : "New tours are on the way"}
-                </h3>
-                <p>
-                  {locale === "fr"
-                    ? "Nos prochains voyages seront affichés ici dès leur publication."
-                    : "Our next journeys will appear here as soon as they are published."}
-                </p>
-              </div>
+            <div className="tours-section-body">
+              {featuredTours.length > 0 ? (
+                <TourRail tours={featuredTours} locale={locale} />
+              ) : (
+                <EmptyTours locale={locale} />
+              )}
+            </div>
+            {data.tours.length > 3 && (
+              <button
+                type="button"
+                className="tours-view-more"
+                onClick={() => setShowAllTours((current) => !current)}
+              >
+                {showAllTours
+                  ? locale === "fr"
+                    ? "VOIR MOINS"
+                    : "VIEW LESS"
+                  : locale === "fr"
+                    ? "VOIR PLUS"
+                    : "VIEW MORE"}
+              </button>
             )}
+          </div>
+        </section>
+
+        {submittedSearch && (
+          <section
+            ref={resultsRef}
+            className="tours-listing-section tours-results-section"
+            aria-live="polite"
+          >
+            <div className="page-inset">
+              <div className="tours-listing-heading-row">
+                <div className="tours-index-heading is-left">
+                  <h2>{locale === "fr" ? "Résultats de recherche" : "Search Results"}</h2>
+                </div>
+                {!loadingResults && (
+                  <p>
+                    {searchResults.length} {locale === "fr" ? "circuits" : "tours"}
+                  </p>
+                )}
+              </div>
+              {loadingResults ? (
+                <div className="tour-results-loader" role="status">
+                  <LoaderCircle size={24} />
+                  <span>{locale === "fr" ? "Recherche en cours…" : "Finding your tours…"}</span>
+                </div>
+              ) : searchResults.length > 0 ? (
+                <TourRail tours={searchResults} locale={locale} />
+              ) : (
+                <EmptyTours locale={locale} />
+              )}
+            </div>
+          </section>
+        )}
+
+        <section
+          id="destinations"
+          className="tour-destinations-section"
+          aria-labelledby="destinations-title"
+        >
+          <div className="page-inset">
+            <div className="tour-destinations-heading">
+              <span>ALBANIA</span>
+              <h2 id="destinations-title">
+                {locale === "fr" ? "Explorer les destinations" : "Explore Destinations"}
+              </h2>
+            </div>
+            <Rail locale={locale}>
+              {DESTINATIONS.map((destination) => (
+                <article className="tour-destination-card" key={destination.name}>
+                  <img src={destination.image} alt="" loading="lazy" />
+                  <span aria-hidden="true" />
+                  <h3>{destination.name}</h3>
+                </article>
+              ))}
+            </Rail>
           </div>
         </section>
       </main>
-
-      <footer id="contact" className="tours-index-footer">
-        <div className="page-inset tours-index-footer-inner">
-          <img src="/weblogo.png" alt="WonderAlbania" />
-          <p>
-            {locale === "fr"
-              ? "Des voyages en Albanie imaginés par ceux qui y vivent."
-              : "Thoughtful Albania journeys, shaped by people who call it home."}
-          </p>
-          <a href="mailto:hello@wonderalbania.com">hello@wonderalbania.com</a>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

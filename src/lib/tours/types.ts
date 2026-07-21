@@ -1,5 +1,6 @@
 export type TourLocale = "en" | "fr";
 export type TourStatus = "draft" | "published" | "archived";
+export type TourDurationUnit = "hours" | "days";
 export type TourListKind = "included" | "excluded" | "bring";
 export type TourMediaRole = "hero" | "gallery";
 export type TravelType = "solo" | "couple" | "family" | "friends" | "group" | "business" | "other";
@@ -101,7 +102,8 @@ export type TourEditorPayload = {
   basePriceEur: number;
   discountPercent: number | null;
   defaultAvailable: boolean;
-  durationMinutes: number;
+  durationValue: number;
+  durationUnit: TourDurationUnit;
   maxGroupSize: number;
   languageCodes: string[];
   startPlace: string;
@@ -214,6 +216,12 @@ export type TourListingCategory = {
   count: number;
 };
 
+export type TourListingTaxonomy = {
+  id: string;
+  key: string;
+  name: string;
+};
+
 export type TourListingCard = {
   id: string;
   title: string;
@@ -221,14 +229,21 @@ export type TourListingCard = {
   image: string;
   imageAlt: string;
   duration: string;
+  typeId: string | null;
   typeName: string;
+  difficultyId: string | null;
   priceEur: number;
+  maxGroupSize: number;
   categoryIds: string[];
+  defaultAvailable: boolean;
+  dateOverrides: Array<{ date: string; isAvailable: boolean }>;
   featured: boolean;
 };
 
 export type TourListingData = {
   categories: TourListingCategory[];
+  tourTypes: TourListingTaxonomy[];
+  difficulties: TourListingTaxonomy[];
   tours: TourListingCard[];
 };
 
@@ -261,7 +276,8 @@ export type TourViewModel = {
   basePriceEur: number;
   discountPercent: number | null;
   defaultAvailable: boolean;
-  durationMinutes: number;
+  durationValue: number;
+  durationUnit: TourDurationUnit;
   maxGroupSize: number;
   languageCodes: string[];
   startPlace: string;
@@ -342,7 +358,8 @@ export const createEmptyTour = (): TourEditorPayload => ({
   basePriceEur: 0,
   discountPercent: null,
   defaultAvailable: true,
-  durationMinutes: 480,
+  durationValue: 8,
+  durationUnit: "hours",
   maxGroupSize: 8,
   languageCodes: ["EN", "FR", "SQ"],
   startPlace: "",

@@ -24,6 +24,8 @@ export type PlaceTranslationInput = {
   seoDescription: string;
   heroIntro: string;
   heroAlt: string;
+  storyTitle: string;
+  storyIntro: string;
 };
 
 export type PlaceSectionInput = {
@@ -34,6 +36,8 @@ export type PlaceSectionInput = {
   bodyFr: string;
   secondaryBodyEn: string;
   secondaryBodyFr: string;
+  imageAltEn: string;
+  imageAltFr: string;
   mediaAssetId: string | null;
   sortOrder: number;
 };
@@ -124,6 +128,8 @@ export type PlaceViewModel = {
   heroIntro: string;
   heroImage: string;
   heroAlt: string;
+  storyTitle: string;
+  storyIntro: string;
   coordinates: readonly [number, number];
   mapZoom: number;
   sections: Array<{
@@ -173,6 +179,14 @@ export function createEmptyPlace(kind: PlaceKind): PlaceEditorPayload {
     seoDescription: "",
     heroIntro: "",
     heroAlt: "",
+    storyTitle:
+      locale === "fr"
+        ? "Trois façons de comprendre ce lieu"
+        : "Three ways to understand this place",
+    storyIntro:
+      locale === "fr"
+        ? "Parcourez son histoire, les expériences qui le définissent et les détails utiles pour préparer votre visite."
+        : "Scroll through its story, the experiences that define it and the practical details for planning your visit.",
   });
   return {
     kind,
@@ -190,6 +204,8 @@ export function createEmptyPlace(kind: PlaceKind): PlaceEditorPayload {
       bodyFr: "",
       secondaryBodyEn: "",
       secondaryBodyFr: "",
+      imageAltEn: "",
+      imageAltFr: "",
       mediaAssetId: null,
       sortOrder,
     })),

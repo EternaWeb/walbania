@@ -1,4 +1,5 @@
 import {
+  Binoculars,
   CalendarDays,
   Camera,
   Church,
@@ -38,6 +39,7 @@ import "../../destination-detail.css";
 import "../../tour-listing.css";
 
 const ICONS: Record<string, LucideIcon> = {
+  binoculars: Binoculars,
   calendar: CalendarDays,
   camera: Camera,
   church: Church,
@@ -108,6 +110,18 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
     label: fact.label,
     value: fact.value,
   }));
+  const durationFact =
+    place.quickFacts.find((fact) => fact.iconKey === "clock") ?? place.quickFacts[0];
+  const regionFact = place.quickFacts.find((fact) => fact.iconKey === "map");
+  const preferredHeroFacts = place.quickFacts.filter((fact) =>
+    ["calendar", "navigation", "route"].includes(fact.iconKey),
+  );
+  const heroFacts = [
+    ...preferredHeroFacts,
+    ...place.quickFacts.filter(
+      (fact) => fact !== durationFact && !preferredHeroFacts.includes(fact),
+    ),
+  ].slice(0, 2);
   const highlights = place.highlights.map((item) => ({
     icon: iconFor(item.iconKey),
     label: item.label,
@@ -126,11 +140,15 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
             <>
               <div className="location-label">
                 {place.kind === "attraction" ? <Landmark size={16} /> : <MapPin size={16} />}
-                {place.parent ? `${place.parent.title}, Albania` : "Albania"}
+                {place.parent
+                  ? `${place.parent.title}, Albania`
+                  : regionFact
+                    ? `${place.title}, ${regionFact.value}`
+                    : `${place.title}, Albania`}
               </div>
-              {quickFacts[0] ? (
+              {durationFact ? (
                 <span className="hero-duration">
-                  <Clock3 size={17} /> {quickFacts[0].value}
+                  <Clock3 size={17} /> {durationFact.value}
                 </span>
               ) : null}
             </>
@@ -139,14 +157,16 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
           intro={place.heroIntro}
           primaryAction={{
             href: "#tours",
-            label: isFrench ? "VOIR LES CIRCUITS" : "EXPLORE TOURS",
+            label: isFrench
+              ? `Explorer les circuits à ${place.title}`
+              : `Explore ${place.title} tours`,
           }}
           secondaryAction={
             <a className="secondary-button" href="#map">
               <MapPin size={17} /> {isFrench ? "VOIR LA CARTE" : "VIEW MAP"}
             </a>
           }
-          facts={place.quickFacts.slice(0, 2).map((fact) => ({
+          facts={heroFacts.map((fact) => ({
             label: fact.label,
             value: fact.value,
           }))}
@@ -171,12 +191,21 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
           ) : null}
 
           <section id="story" className="destination-stack-section">
+            <div className="destination-stack-intro">
+              <SectionHeading
+                title={
+                  place.storyTitle ||
+                  (isFrench
+                    ? `Trois façons de comprendre ${place.title}`
+                    : `Three ways to understand ${place.title}`)
+                }
+                text={place.storyIntro}
+              />
+            </div>
+
             <div className="destination-story-stack">
-              {place.sections.map((section, index) => (
-                <article
-                  className={`destination-story-card destination-story-card-${["one", "two", "three"][index]}`}
-                  key={`${section.title}-${index}`}
-                >
+              {place.sections.slice(0, 3).map((section, index) => {
+                const media = (
                   <div className="destination-story-media">
                     {section.image ? (
                       <img
@@ -187,6 +216,8 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
                       />
                     ) : null}
                   </div>
+                );
+                const copy = (
                   <div className="destination-story-copy">
                     <SectionHeading title={section.title} text={section.body} />
                     {section.secondaryBody ? <p>{section.secondaryBody}</p> : null}
@@ -208,18 +239,32 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
                       </div>
                     ) : null}
                   </div>
-                </article>
-              ))}
+                );
+
+                return (
+                  <article
+                    className={`destination-story-card destination-story-card-${["one", "two", "three"][index]}`}
+                    key={`${section.title}-${index}`}
+                  >
+                    {index === 1 ? copy : media}
+                    {index === 1 ? media : copy}
+                  </article>
+                );
+              })}
             </div>
           </section>
 
           <section id="tours" className="content-section destination-tours-section">
             <SectionHeading
-              title={isFrench ? `Circuits liés à ${place.title}` : `Tours linked to ${place.title}`}
+              title={
+                isFrench
+                  ? `Façons de découvrir ${place.title}`
+                  : `Ways to experience ${place.title}`
+              }
               text={
                 isFrench
-                  ? "Des expériences qui commencent ici, visitent ce lieu ou l’intègrent à leur itinéraire."
-                  : "Experiences that start here, visit this place or include it in their route."
+                  ? "Les circuits liés à ce lieu sont prioritaires, avec les excursions à la journée affichées en premier."
+                  : "Tours linked to this place are prioritised, with day tours shown first."
               }
             />
             <div className="destination-tour-rail">

@@ -88,6 +88,8 @@ create table if not exists public.place_translations (
   seo_description text not null default '',
   hero_intro text not null default '',
   hero_alt text not null default '',
+  story_title text not null default '',
+  story_intro text not null default '',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   unique (place_id, locale)
@@ -114,6 +116,8 @@ create table if not exists public.place_sections (
   body_fr text not null default '',
   secondary_body_en text not null default '',
   secondary_body_fr text not null default '',
+  image_alt_en text not null default '',
+  image_alt_fr text not null default '',
   media_asset_id uuid references public.media_assets(id) on delete restrict,
   sort_order smallint not null check (sort_order between 0 and 2),
   unique (place_id, sort_order)

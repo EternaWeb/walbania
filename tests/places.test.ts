@@ -38,6 +38,8 @@ function publishablePlace(kind: "destination" | "attraction" = "destination") {
     titleFr: `Section française ${index + 1}`,
     bodyEn: "English story copy.",
     bodyFr: "Récit en français.",
+    imageAltEn: `Berat story image ${index + 1}`,
+    imageAltFr: `Image du récit de Berat ${index + 1}`,
     mediaAssetId: ASSET_IDS[index + 2],
   }));
   place.media = [

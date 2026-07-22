@@ -35,21 +35,25 @@ begin
   );
 
   insert into public.place_translations (
-    place_id, locale, slug, title, seo_title, seo_description, hero_intro, hero_alt
+    place_id, locale, slug, title, seo_title, seo_description, hero_intro, hero_alt,
+    story_title, story_intro
   ) values
     (new_place_id, 'en', 'place-slug', 'Place name', 'Place name | Wonder Albania',
-      'English search description.', 'Short English hero introduction.', 'English hero image description.'),
+      'English search description.', 'Short English hero introduction.', 'English hero image description.',
+      'Three ways to understand Place name', 'Short introduction for the three stacked story cards.'),
     (new_place_id, 'fr', 'lieu-slug', 'Nom du lieu', 'Nom du lieu | Wonder Albania',
-      'Description française pour les moteurs de recherche.', 'Courte introduction française.', 'Description française de l’image principale.');
+      'Description française pour les moteurs de recherche.', 'Courte introduction française.', 'Description française de l’image principale.',
+      'Trois façons de comprendre Nom du lieu', 'Courte introduction pour les trois cartes superposées.');
 
   -- A published page must have exactly three ordered story sections.
   insert into public.place_sections (
     place_id, title_en, title_fr, body_en, body_fr,
-    secondary_body_en, secondary_body_fr, media_asset_id, sort_order
+    secondary_body_en, secondary_body_fr, image_alt_en, image_alt_fr,
+    media_asset_id, sort_order
   ) values
-    (new_place_id, 'First story', 'Premier récit', 'English copy.', 'Texte français.', '', '', hero_asset_id, 0),
-    (new_place_id, 'Second story', 'Deuxième récit', 'English copy.', 'Texte français.', '', '', hero_asset_id, 1),
-    (new_place_id, 'Third story', 'Troisième récit', 'English copy.', 'Texte français.', '', '', hero_asset_id, 2);
+    (new_place_id, 'First story', 'Premier récit', 'English copy.', 'Texte français.', '', '', 'English image description.', 'Description française de l’image.', hero_asset_id, 0),
+    (new_place_id, 'Second story', 'Deuxième récit', 'English copy.', 'Texte français.', '', '', 'English image description.', 'Description française de l’image.', hero_asset_id, 1),
+    (new_place_id, 'Third story', 'Troisième récit', 'English copy.', 'Texte français.', '', '', 'English image description.', 'Description française de l’image.', hero_asset_id, 2);
 
   insert into public.place_media (place_id, asset_id, role, alt_en, alt_fr, sort_order)
   values

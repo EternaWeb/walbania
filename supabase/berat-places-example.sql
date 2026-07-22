@@ -1,5 +1,5 @@
 -- Complete sample content for /destinations/berat and
--- /attractions/berat/berat-castle. Run after the places migration.
+-- /attractions/berat/berat-castle. Run after both 2026072200* place migrations.
 -- Images are Wikimedia Commons files with their source credits preserved.
 
 begin;
@@ -46,20 +46,27 @@ begin
   on conflict (id) do update set status = 'published', featured = true, longitude = excluded.longitude,
     latitude = excluded.latitude, map_zoom = excluded.map_zoom, published_at = coalesce(public.places.published_at, now());
 
-  insert into public.place_translations (place_id, locale, slug, title, seo_title, seo_description, hero_intro, hero_alt)
+  insert into public.place_translations (
+    place_id, locale, slug, title, seo_title, seo_description, hero_intro, hero_alt,
+    story_title, story_intro
+  )
   values
-    (berat_id, 'en', 'berat', 'Berat', 'Berat, Albania — city of a thousand windows | Wonder Albania', 'Discover Berat’s Ottoman neighbourhoods, living hilltop castle and linked small-group tours.', 'A river city of white Ottoman houses, stone lanes and a castle that is still alive.', 'The Mangalem quarter climbing the hillside above Berat'),
-    (berat_id, 'fr', 'berat', 'Berat', 'Berat, Albanie — la ville aux mille fenêtres | Wonder Albania', 'Découvrez les quartiers ottomans de Berat, sa citadelle habitée et les circuits associés.', 'Une ville fluviale de maisons ottomanes blanches, de ruelles de pierre et d’une citadelle toujours habitée.', 'Le quartier de Mangalem sur les pentes de Berat')
+    (berat_id, 'en', 'berat', 'Berat', 'Berat, Albania — city of a thousand windows | Wonder Albania', 'Discover Berat’s Ottoman neighbourhoods, living hilltop castle and linked small-group tours.', 'A river city of white Ottoman houses, stone lanes and a castle that is still alive.', 'The Mangalem quarter climbing the hillside above Berat', 'Three ways to understand Berat', 'Scroll through the city’s story, the places that shape it and the best way to plan your stay.'),
+    (berat_id, 'fr', 'berat', 'Berat', 'Berat, Albanie — la ville aux mille fenêtres | Wonder Albania', 'Découvrez les quartiers ottomans de Berat, sa citadelle habitée et les circuits associés.', 'Une ville fluviale de maisons ottomanes blanches, de ruelles de pierre et d’une citadelle toujours habitée.', 'Le quartier de Mangalem sur les pentes de Berat', 'Trois façons de comprendre Berat', 'Parcourez l’histoire de la ville, les lieux qui la façonnent et la meilleure façon de préparer votre séjour.')
   on conflict (place_id, locale) do update set slug = excluded.slug, title = excluded.title,
     seo_title = excluded.seo_title, seo_description = excluded.seo_description,
-    hero_intro = excluded.hero_intro, hero_alt = excluded.hero_alt;
+    hero_intro = excluded.hero_intro, hero_alt = excluded.hero_alt,
+    story_title = excluded.story_title, story_intro = excluded.story_intro;
 
   delete from public.place_sections where place_id = berat_id;
-  insert into public.place_sections (place_id, title_en, title_fr, body_en, body_fr, secondary_body_en, secondary_body_fr, media_asset_id, sort_order)
+  insert into public.place_sections (
+    place_id, title_en, title_fr, body_en, body_fr, secondary_body_en, secondary_body_fr,
+    image_alt_en, image_alt_fr, media_asset_id, sort_order
+  )
   values
-    (berat_id, 'The city on two hills', 'La ville sur deux collines', 'Mangalem and Gorica face one another across the Osum River, their pale façades and rows of windows giving Berat its best-known silhouette.', 'Mangalem et Gorica se font face de part et d’autre de l’Osum. Leurs façades claires et leurs rangées de fenêtres dessinent la silhouette emblématique de Berat.', 'Cross the old stone bridge at an unhurried pace, then climb through lanes where homes, guesthouses and small workshops still shape daily life.', 'Traversez le vieux pont de pierre sans vous presser, puis montez dans des ruelles où maisons, pensions et ateliers rythment toujours la vie quotidienne.', mangalem_id, 0),
-    (berat_id, 'A castle that still lives', 'Une citadelle toujours habitée', 'Berat Castle is more than a viewpoint. Families live inside its walls among churches, mosques, gardens and cobbled passages layered across centuries.', 'La citadelle de Berat est bien plus qu’un belvédère. Des familles vivent encore entre églises, mosquées, jardins et passages pavés façonnés au fil des siècles.', 'Arrive early or near sunset to hear the place settle into its local rhythm beyond the main monuments.', 'Venez tôt ou au coucher du soleil pour sentir le rythme local qui dépasse les seuls monuments.', castle_panorama_id, 1),
-    (berat_id, 'Food, wine and the Osum valley', 'Cuisine, vin et vallée de l’Osum', 'The city opens onto vineyards, villages and the wider Osum valley. Local tables bring together seasonal produce, slow-cooked dishes and wines from the hills around Berat.', 'La ville s’ouvre sur les vignobles, les villages et la vallée de l’Osum. Les tables locales mêlent produits de saison, plats mijotés et vins des collines alentour.', 'Use Berat as a slow base: explore on foot, share a home-cooked meal, and connect the city with nearby countryside.', 'Faites de Berat une base paisible : explorez à pied, partagez un repas maison et reliez la ville à sa campagne.', gorica_id, 2);
+    (berat_id, 'The city on two hills', 'La ville sur deux collines', 'Mangalem and Gorica face one another across the Osum River, their pale façades and rows of windows giving Berat its best-known silhouette.', 'Mangalem et Gorica se font face de part et d’autre de l’Osum. Leurs façades claires et leurs rangées de fenêtres dessinent la silhouette emblématique de Berat.', 'Cross the old stone bridge at an unhurried pace, then climb through lanes where homes, guesthouses and small workshops still shape daily life.', 'Traversez le vieux pont de pierre sans vous presser, puis montez dans des ruelles où maisons, pensions et ateliers rythment toujours la vie quotidienne.', 'White Ottoman houses rising above the Osum River in Berat', 'Maisons ottomanes blanches dominant l’Osum à Berat', mangalem_id, 0),
+    (berat_id, 'A castle that still lives', 'Une citadelle toujours habitée', 'Berat Castle is more than a viewpoint. Families live inside its walls among churches, mosques, gardens and cobbled passages layered across centuries.', 'La citadelle de Berat est bien plus qu’un belvédère. Des familles vivent encore entre églises, mosquées, jardins et passages pavés façonnés au fil des siècles.', 'Arrive early or near sunset to hear the place settle into its local rhythm beyond the main monuments.', 'Venez tôt ou au coucher du soleil pour sentir le rythme local qui dépasse les seuls monuments.', 'Berat Castle and its inhabited stone neighbourhood', 'La citadelle de Berat et son quartier de pierre habité', castle_panorama_id, 1),
+    (berat_id, 'Food, wine and the Osum valley', 'Cuisine, vin et vallée de l’Osum', 'The city opens onto vineyards, villages and the wider Osum valley. Local tables bring together seasonal produce, slow-cooked dishes and wines from the hills around Berat.', 'La ville s’ouvre sur les vignobles, les villages et la vallée de l’Osum. Les tables locales mêlent produits de saison, plats mijotés et vins des collines alentour.', 'Use Berat as a slow base: explore on foot, share a home-cooked meal, and connect the city with nearby countryside.', 'Faites de Berat une base paisible : explorez à pied, partagez un repas maison et reliez la ville à sa campagne.', 'Gorica and the green hills surrounding Berat', 'Gorica et les collines verdoyantes autour de Berat', gorica_id, 2);
 
   delete from public.place_media where place_id = berat_id;
   insert into public.place_media (place_id, asset_id, role, alt_en, alt_fr, sort_order)
@@ -71,9 +78,10 @@ begin
   delete from public.place_facts where place_id = berat_id;
   insert into public.place_facts (place_id, group_key, icon_key, value, label_en, label_fr, sort_order)
   values
-    (berat_id, 'quick', 'clock', '2–3 days', 'Recommended stay', 'Séjour conseillé', 0),
-    (berat_id, 'quick', 'route', '120 km', 'From Tirana', 'Depuis Tirana', 1),
-    (berat_id, 'quick', 'footprints', 'Walkable', 'Best way around', 'Meilleur moyen de visiter', 2),
+    (berat_id, 'quick', 'map', 'Central Albania', 'Region', 'Région', 0),
+    (berat_id, 'quick', 'calendar', 'April–October', 'Best time', 'Meilleure période', 1),
+    (berat_id, 'quick', 'clock', '2–3 days', 'Recommended stay', 'Séjour conseillé', 2),
+    (berat_id, 'quick', 'navigation', '2 hours', 'From Tirana', 'Depuis Tirana', 3),
     (berat_id, 'weather', 'sun', '30°C', 'Typical July high', 'Maximum typique en juillet', 0),
     (berat_id, 'weather', 'cloud-sun', '15°C', 'Typical April high', 'Maximum typique en avril', 1);
 
@@ -92,20 +100,27 @@ begin
     longitude = excluded.longitude, latitude = excluded.latitude, map_zoom = excluded.map_zoom,
     published_at = coalesce(public.places.published_at, now());
 
-  insert into public.place_translations (place_id, locale, slug, title, seo_title, seo_description, hero_intro, hero_alt)
+  insert into public.place_translations (
+    place_id, locale, slug, title, seo_title, seo_description, hero_intro, hero_alt,
+    story_title, story_intro
+  )
   values
-    (castle_id, 'en', 'berat-castle', 'Berat Castle', 'Berat Castle — a living citadel | Wonder Albania', 'Plan a visit to Berat Castle and find tours that include the hilltop citadel.', 'Climb into a hilltop neighbourhood where Byzantine churches, Ottoman traces and everyday life share the same walls.', 'Stone walls and rooftops inside Berat Castle'),
-    (castle_id, 'fr', 'chateau-de-berat', 'Citadelle de Berat', 'Citadelle de Berat — une forteresse habitée | Wonder Albania', 'Préparez votre visite de la citadelle de Berat et trouvez les circuits qui l’incluent.', 'Montez vers un quartier perché où églises byzantines, traces ottomanes et vie quotidienne partagent les mêmes remparts.', 'Remparts et toits à l’intérieur de la citadelle de Berat')
+    (castle_id, 'en', 'berat-castle', 'Berat Castle', 'Berat Castle — a living citadel | Wonder Albania', 'Plan a visit to Berat Castle and find tours that include the hilltop citadel.', 'Climb into a hilltop neighbourhood where Byzantine churches, Ottoman traces and everyday life share the same walls.', 'Stone walls and rooftops inside Berat Castle', 'Three ways to understand Berat Castle', 'Scroll through the living citadel, the sacred art inside its walls and the views that connect it to Berat below.'),
+    (castle_id, 'fr', 'chateau-de-berat', 'Citadelle de Berat', 'Citadelle de Berat — une forteresse habitée | Wonder Albania', 'Préparez votre visite de la citadelle de Berat et trouvez les circuits qui l’incluent.', 'Montez vers un quartier perché où églises byzantines, traces ottomanes et vie quotidienne partagent les mêmes remparts.', 'Remparts et toits à l’intérieur de la citadelle de Berat', 'Trois façons de comprendre la citadelle de Berat', 'Parcourez la citadelle habitée, l’art sacré entre ses remparts et les vues qui la relient à Berat en contrebas.')
   on conflict (place_id, locale) do update set slug = excluded.slug, title = excluded.title,
     seo_title = excluded.seo_title, seo_description = excluded.seo_description,
-    hero_intro = excluded.hero_intro, hero_alt = excluded.hero_alt;
+    hero_intro = excluded.hero_intro, hero_alt = excluded.hero_alt,
+    story_title = excluded.story_title, story_intro = excluded.story_intro;
 
   delete from public.place_sections where place_id = castle_id;
-  insert into public.place_sections (place_id, title_en, title_fr, body_en, body_fr, secondary_body_en, secondary_body_fr, media_asset_id, sort_order)
+  insert into public.place_sections (
+    place_id, title_en, title_fr, body_en, body_fr, secondary_body_en, secondary_body_fr,
+    image_alt_en, image_alt_fr, media_asset_id, sort_order
+  )
   values
-    (castle_id, 'Within the walls', 'À l’intérieur des remparts', 'The broad enclosure contains lanes, homes and quiet corners rather than a single monument. The climb reveals how the fortress grew into a neighbourhood.', 'La vaste enceinte abrite des ruelles, des maisons et des coins tranquilles plutôt qu’un monument unique. La montée révèle comment la forteresse est devenue un quartier.', 'Wear shoes with grip: polished stone and steep passages are part of the experience.', 'Prévoyez des chaussures adhérentes : pierres polies et passages raides font partie de l’expérience.', castle_panorama_id, 0),
-    (castle_id, 'Churches and icons', 'Églises et icônes', 'Small Byzantine churches sit throughout the citadel. The Onufri Museum, housed in the Cathedral of the Dormition, introduces Albania’s celebrated icon-painting tradition.', 'De petites églises byzantines ponctuent la citadelle. Installé dans la cathédrale de la Dormition, le musée Onufri présente la grande tradition albanaise des icônes.', 'Allow time between landmarks; the details in doorways, masonry and gardens are as rewarding as the headline sights.', 'Prenez du temps entre les monuments : portes, maçonneries et jardins sont aussi précieux que les sites majeurs.', castle_church_id, 1),
-    (castle_id, 'Above the Osum', 'Au-dessus de l’Osum', 'From the outer walls, the Osum River threads between Mangalem and Gorica while Mount Tomorr rises beyond the city.', 'Depuis les remparts, l’Osum serpente entre Mangalem et Gorica, tandis que le mont Tomorr se dresse au-delà de la ville.', 'Late afternoon brings softer light and a cooler descent back toward the old quarters.', 'La fin d’après-midi offre une lumière plus douce et une descente plus fraîche vers les vieux quartiers.', berat_panorama_id, 2);
+    (castle_id, 'Within the walls', 'À l’intérieur des remparts', 'The broad enclosure contains lanes, homes and quiet corners rather than a single monument. The climb reveals how the fortress grew into a neighbourhood.', 'La vaste enceinte abrite des ruelles, des maisons et des coins tranquilles plutôt qu’un monument unique. La montée révèle comment la forteresse est devenue un quartier.', 'Wear shoes with grip: polished stone and steep passages are part of the experience.', 'Prévoyez des chaussures adhérentes : pierres polies et passages raides font partie de l’expérience.', 'Stone lanes and walls inside Berat Castle', 'Ruelles et remparts de pierre dans la citadelle de Berat', castle_panorama_id, 0),
+    (castle_id, 'Churches and icons', 'Églises et icônes', 'Small Byzantine churches sit throughout the citadel. The Onufri Museum, housed in the Cathedral of the Dormition, introduces Albania’s celebrated icon-painting tradition.', 'De petites églises byzantines ponctuent la citadelle. Installé dans la cathédrale de la Dormition, le musée Onufri présente la grande tradition albanaise des icônes.', 'Allow time between landmarks; the details in doorways, masonry and gardens are as rewarding as the headline sights.', 'Prenez du temps entre les monuments : portes, maçonneries et jardins sont aussi précieux que les sites majeurs.', 'A historic church within Berat Castle', 'Une église historique dans la citadelle de Berat', castle_church_id, 1),
+    (castle_id, 'Above the Osum', 'Au-dessus de l’Osum', 'From the outer walls, the Osum River threads between Mangalem and Gorica while Mount Tomorr rises beyond the city.', 'Depuis les remparts, l’Osum serpente entre Mangalem et Gorica, tandis que le mont Tomorr se dresse au-delà de la ville.', 'Late afternoon brings softer light and a cooler descent back toward the old quarters.', 'La fin d’après-midi offre une lumière plus douce et une descente plus fraîche vers les vieux quartiers.', 'Panoramic view of Berat from the castle hill', 'Vue panoramique de Berat depuis la colline de la citadelle', berat_panorama_id, 2);
 
   delete from public.place_media where place_id = castle_id;
   insert into public.place_media (place_id, asset_id, role, alt_en, alt_fr, sort_order)
@@ -118,8 +133,9 @@ begin
   insert into public.place_facts (place_id, group_key, icon_key, value, label_en, label_fr, sort_order)
   values
     (castle_id, 'quick', 'clock', '2–3 hours', 'Suggested visit', 'Durée conseillée', 0),
-    (castle_id, 'quick', 'mountain', 'Steep', 'Approach', 'Accès', 1),
-    (castle_id, 'quick', 'sunset', 'Late afternoon', 'Best light', 'Meilleure lumière', 2),
+    (castle_id, 'quick', 'sunset', 'Late afternoon', 'Best light', 'Meilleure lumière', 1),
+    (castle_id, 'quick', 'mountain', 'Steep', 'Approach', 'Accès', 2),
+    (castle_id, 'quick', 'map', 'Berat', 'Destination', 'Destination', 3),
     (castle_id, 'weather', 'sun', 'Exposed', 'Summer conditions', 'Conditions estivales', 0);
 
   delete from public.place_highlights where place_id = castle_id;

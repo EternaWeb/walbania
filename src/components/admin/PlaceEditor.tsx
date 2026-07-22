@@ -459,6 +459,25 @@ export function PlaceEditor({
                         />
                       </div>
                       <div className="admin-field is-full">
+                        <label>Three-card story title</label>
+                        <input
+                          value={value.storyTitle}
+                          onChange={(event) =>
+                            updateTranslation(locale, "storyTitle", event.target.value)
+                          }
+                        />
+                      </div>
+                      <div className="admin-field is-full">
+                        <label>Three-card story introduction</label>
+                        <textarea
+                          rows={3}
+                          value={value.storyIntro}
+                          onChange={(event) =>
+                            updateTranslation(locale, "storyIntro", event.target.value)
+                          }
+                        />
+                      </div>
+                      <div className="admin-field is-full">
                         <label>SEO title</label>
                         <input
                           value={value.seoTitle}
@@ -604,6 +623,38 @@ export function PlaceEditor({
                           </option>
                         ))}
                       </select>
+                    </div>
+                    <div className="admin-field">
+                      <label>English image alt text</label>
+                      <input
+                        value={section.imageAltEn}
+                        onChange={(event) =>
+                          setPlace((current) => ({
+                            ...current,
+                            sections: current.sections.map((item, itemIndex) =>
+                              itemIndex === index
+                                ? { ...item, imageAltEn: event.target.value }
+                                : item,
+                            ),
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className="admin-field">
+                      <label>French image alt text</label>
+                      <input
+                        value={section.imageAltFr}
+                        onChange={(event) =>
+                          setPlace((current) => ({
+                            ...current,
+                            sections: current.sections.map((item, itemIndex) =>
+                              itemIndex === index
+                                ? { ...item, imageAltFr: event.target.value }
+                                : item,
+                            ),
+                          }))
+                        }
+                      />
                     </div>
                   </div>
                 </section>

@@ -15,6 +15,8 @@ const translation = z.object({
   seoDescription: z.string().trim().max(320),
   heroIntro: z.string().trim().max(600),
   heroAlt: z.string().trim().max(240),
+  storyTitle: z.string().trim().max(180),
+  storyIntro: z.string().trim().max(600),
 });
 
 export const placeEditorSchema = z.object({
@@ -36,6 +38,8 @@ export const placeEditorSchema = z.object({
       bodyFr: z.string().trim().max(5000),
       secondaryBodyEn: z.string().trim().max(2500),
       secondaryBodyFr: z.string().trim().max(2500),
+      imageAltEn: z.string().trim().max(240),
+      imageAltFr: z.string().trim().max(240),
       mediaAssetId: z.string().uuid().nullable(),
       sortOrder: z.number().int().min(0).max(2),
     }),
@@ -114,6 +118,8 @@ export function validatePlaceForPublish(input: z.infer<typeof placeEditorSchema>
       ["SEO description", value.seoDescription],
       ["hero introduction", value.heroIntro],
       ["hero alt text", value.heroAlt],
+      ["story title", value.storyTitle],
+      ["story introduction", value.storyIntro],
     ]) {
       if (!text.trim()) problems.push(`${language} ${label} is required.`);
     }
@@ -125,6 +131,9 @@ export function validatePlaceForPublish(input: z.infer<typeof placeEditorSchema>
         problems.push(`${language} section ${index + 1} text is required.`);
       }
       if (!section.mediaAssetId) problems.push(`Section ${index + 1} image is required.`);
+      if (!(locale === "en" ? section.imageAltEn : section.imageAltFr).trim()) {
+        problems.push(`${language} section ${index + 1} image alt text is required.`);
+      }
     }
   }
   if (!input.media.some((item) => item.role === "hero")) problems.push("A hero image is required.");

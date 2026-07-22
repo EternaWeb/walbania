@@ -403,4 +403,6 @@ commit;
 --   migrations/202607210001_tour_duration_units.sql
 --   migrations/202607210002_reuse_tour_media.sql
 --   migrations/202607220001_places_and_global_media.sql
--- The last migration adds the dynamic destinations/attractions CMS and shared media library.
+--   migrations/202607220002_place_story_design_fields.sql
+-- The last two migrations add the dynamic destinations/attractions CMS, shared media library,
+-- and editable copy for the approved three-card story design.

@@ -174,7 +174,7 @@ async function loadTourCards(
     throwOnError(result.error);
   }
   const byId = new Map(tourResult.data?.map((tour) => [tour.id, tour]));
-  return tourIds.flatMap((id): TourListingCard[] => {
+  const cards = tourIds.flatMap((id): TourListingCard[] => {
     const tour = byId.get(id);
     const translation = translationResult.data?.find((item) => item.tour_id === id);
     if (!tour || !translation?.slug || !translation.title) return [];
@@ -206,6 +206,18 @@ async function loadTourCards(
       },
     ];
   });
+  const dayTourPriority = (id: string) => {
+    const tour = byId.get(id);
+    return tour?.duration_unit === "hours" ||
+      (tour?.duration_unit === "days" && Number(tour.duration_value) <= 1)
+      ? 0
+      : 1;
+  };
+  return cards.sort(
+    (left, right) =>
+      dayTourPriority(left.id) - dayTourPriority(right.id) ||
+      tourIds.indexOf(left.id) - tourIds.indexOf(right.id),
+  );
 }
 
 async function loadPlaceView(
@@ -306,6 +318,8 @@ async function loadPlaceView(
     heroAlt:
       translation.hero_alt ||
       (heroMedia ? local(locale, heroMedia.alt_en, heroMedia.alt_fr) : translation.title),
+    storyTitle: translation.story_title ?? "",
+    storyIntro: translation.story_intro ?? "",
     coordinates: [place.longitude, place.latitude],
     mapZoom: Number(place.map_zoom),
     sections: (sectionResult.data ?? []).map((section) => ({
@@ -313,7 +327,9 @@ async function loadPlaceView(
       body: local(locale, section.body_en, section.body_fr),
       secondaryBody: local(locale, section.secondary_body_en, section.secondary_body_fr),
       image: assets.get(section.media_asset_id)?.public_url ?? "",
-      imageAlt: local(locale, section.title_en, section.title_fr),
+      imageAlt:
+        local(locale, section.image_alt_en, section.image_alt_fr) ||
+        local(locale, section.title_en, section.title_fr),
     })),
     quickFacts: (factResult.data ?? [])
       .filter((item) => item.group_key === "quick")
@@ -416,6 +432,8 @@ async function fetchEditorGraph(placeId: string): Promise<PlaceEditorPayload | n
       seoDescription: item?.seo_description ?? "",
       heroIntro: item?.hero_intro ?? "",
       heroAlt: item?.hero_alt ?? "",
+      storyTitle: item?.story_title ?? "",
+      storyIntro: item?.story_intro ?? "",
     };
   };
   return {
@@ -436,6 +454,8 @@ async function fetchEditorGraph(placeId: string): Promise<PlaceEditorPayload | n
       bodyFr: item.body_fr,
       secondaryBodyEn: item.secondary_body_en,
       secondaryBodyFr: item.secondary_body_fr,
+      imageAltEn: item.image_alt_en ?? "",
+      imageAltFr: item.image_alt_fr ?? "",
       mediaAssetId: item.media_asset_id,
       sortOrder: item.sort_order,
     })),
@@ -675,6 +695,8 @@ async function savePlace(input: PlaceEditorPayload) {
     seo_description: input.translations[locale].seoDescription,
     hero_intro: input.translations[locale].heroIntro,
     hero_alt: input.translations[locale].heroAlt,
+    story_title: input.translations[locale].storyTitle,
+    story_intro: input.translations[locale].storyIntro,
   }));
   const translationResult = await client
     .from("place_translations")
@@ -702,6 +724,8 @@ async function savePlace(input: PlaceEditorPayload) {
             body_fr: item.bodyFr,
             secondary_body_en: item.secondaryBodyEn,
             secondary_body_fr: item.secondaryBodyFr,
+            image_alt_en: item.imageAltEn,
+            image_alt_fr: item.imageAltFr,
             media_asset_id: item.mediaAssetId,
             sort_order: index,
           })),

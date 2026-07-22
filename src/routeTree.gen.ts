@@ -21,6 +21,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as TourSlugRouteImport } from './routes/tour_.$slug'
 import { Route as FrTourRouteImport } from './routes/fr_.tour'
 import { Route as FrSlugRouteImport } from './routes/fr_.$slug'
+import { Route as DestinationBeratRouteImport } from './routes/destination.berat'
 import { Route as AdminLoginRouteImport } from './routes/admin_.login'
 import { Route as AdminTaxonomiesRouteImport } from './routes/admin.taxonomies'
 import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
@@ -90,6 +91,11 @@ const FrSlugRoute = FrSlugRouteImport.update({
   path: '/fr/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DestinationBeratRoute = DestinationBeratRouteImport.update({
+  id: '/destination/berat',
+  path: '/destination/berat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin_/login',
   path: '/admin/login',
@@ -143,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/taxonomies': typeof AdminTaxonomiesRoute
   '/admin/login': typeof AdminLoginRoute
+  '/destination/berat': typeof DestinationBeratRoute
   '/fr/$slug': typeof FrSlugRoute
   '/fr/tour': typeof FrTourRoute
   '/tour/$slug': typeof TourSlugRoute
@@ -164,6 +171,7 @@ export interface FileRoutesByTo {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/taxonomies': typeof AdminTaxonomiesRoute
   '/admin/login': typeof AdminLoginRoute
+  '/destination/berat': typeof DestinationBeratRoute
   '/fr/$slug': typeof FrSlugRoute
   '/fr/tour': typeof FrTourRoute
   '/tour/$slug': typeof TourSlugRoute
@@ -187,6 +195,7 @@ export interface FileRoutesById {
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/taxonomies': typeof AdminTaxonomiesRoute
   '/admin_/login': typeof AdminLoginRoute
+  '/destination/berat': typeof DestinationBeratRoute
   '/fr_/$slug': typeof FrSlugRoute
   '/fr_/tour': typeof FrTourRoute
   '/tour_/$slug': typeof TourSlugRoute
@@ -211,6 +220,7 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/taxonomies'
     | '/admin/login'
+    | '/destination/berat'
     | '/fr/$slug'
     | '/fr/tour'
     | '/tour/$slug'
@@ -232,6 +242,7 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/taxonomies'
     | '/admin/login'
+    | '/destination/berat'
     | '/fr/$slug'
     | '/fr/tour'
     | '/tour/$slug'
@@ -254,6 +265,7 @@ export interface FileRouteTypes {
     | '/admin/reviews'
     | '/admin/taxonomies'
     | '/admin_/login'
+    | '/destination/berat'
     | '/fr_/$slug'
     | '/fr_/tour'
     | '/tour_/$slug'
@@ -275,6 +287,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TourRoute: typeof TourRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  DestinationBeratRoute: typeof DestinationBeratRoute
   FrSlugRoute: typeof FrSlugRoute
   FrTourRoute: typeof FrTourRoute
   TourSlugRoute: typeof TourSlugRoute
@@ -368,6 +381,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FrSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/destination/berat': {
+      id: '/destination/berat'
+      path: '/destination/berat'
+      fullPath: '/destination/berat'
+      preLoaderRoute: typeof DestinationBeratRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin_/login': {
       id: '/admin_/login'
       path: '/admin/login'
@@ -457,6 +477,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TourRoute: TourRoute,
   AdminLoginRoute: AdminLoginRoute,
+  DestinationBeratRoute: DestinationBeratRoute,
   FrSlugRoute: FrSlugRoute,
   FrTourRoute: FrTourRoute,
   TourSlugRoute: TourSlugRoute,

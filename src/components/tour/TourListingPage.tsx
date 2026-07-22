@@ -30,6 +30,7 @@ const DESTINATIONS = [
   {
     name: "Berat",
     image: "https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?w=900&q=82",
+    href: "/destination/berat",
   },
   {
     name: "Gjirokastër",
@@ -39,7 +40,7 @@ const DESTINATIONS = [
     name: "Tirana",
     image: "https://images.unsplash.com/photo-1524230572899-a752b3835840?w=900&q=82",
   },
-] as const;
+] as const satisfies ReadonlyArray<{ name: string; image: string; href?: string }>;
 
 type SearchFieldKey = "type" | "categories" | "people" | "dates" | "difficulty";
 
@@ -885,13 +886,28 @@ function ToursIndex({ locale, data }: { locale: SiteLocale; data: TourListingDat
               </h2>
             </div>
             <Rail locale={locale}>
-              {DESTINATIONS.map((destination) => (
-                <article className="tour-destination-card" key={destination.name}>
-                  <img src={destination.image} alt="" loading="lazy" />
-                  <span aria-hidden="true" />
-                  <h3>{destination.name}</h3>
-                </article>
-              ))}
+              {DESTINATIONS.map((destination) => {
+                const card = (
+                  <>
+                    <img src={destination.image} alt="" loading="lazy" />
+                    <span aria-hidden="true" />
+                    <h3>{destination.name}</h3>
+                  </>
+                );
+                return "href" in destination ? (
+                  <a
+                    className="tour-destination-card"
+                    href={destination.href}
+                    key={destination.name}
+                  >
+                    {card}
+                  </a>
+                ) : (
+                  <article className="tour-destination-card" key={destination.name}>
+                    {card}
+                  </article>
+                );
+              })}
             </Rail>
           </div>
         </section>

@@ -15,6 +15,7 @@ import { SiteHeader } from "../SiteHeader";
 import { SiteLocaleProvider } from "../../i18n";
 import type { SiteLocale } from "../../i18n";
 import type { TourListingCard, TourListingData, TourListingTaxonomy } from "../../lib/tours/types";
+import { PerformanceImage } from "../PerformanceImage";
 
 const TOUR_HERO_POSTER = "https://images.unsplash.com/photo-1601581875309-fafbf2d3ed3a?w=1800&q=85";
 
@@ -577,7 +578,14 @@ export function TourCard({ tour, locale }: { tour: TourListingCard; locale: Site
     <article className="tours-listing-card">
       <a href={tour.href} className="tours-listing-media" aria-label={tour.title}>
         {tour.image ? (
-          <img src={tour.image} alt={tour.imageAlt} loading="lazy" decoding="async" />
+          <PerformanceImage
+            src={tour.image}
+            alt={tour.imageAlt}
+            width={900}
+            height={600}
+            sizes="(max-width: 720px) calc(100vw - 24px), (max-width: 1100px) 48vw, 420px"
+            maxWidth={900}
+          />
         ) : (
           <span className="tours-listing-image-fallback" aria-hidden="true">
             WonderAlbania
@@ -766,12 +774,15 @@ function ToursIndex({ locale, data }: { locale: SiteLocale; data: TourListingDat
       <main>
         <section className="tours-index-hero" aria-labelledby="tours-index-title">
           <div className="index-hero-media">
-            <img
+            <PerformanceImage
               src={TOUR_HERO_POSTER}
               alt={locale === "fr" ? "Voyager en Albanie" : "Travel through Albania"}
               className="index-hero-poster"
-              loading="eager"
-              fetchPriority="high"
+              width={1920}
+              height={1080}
+              sizes="100vw"
+              maxWidth={1920}
+              priority
             />
             <video
               className="index-hero-video is-ready"
@@ -889,7 +900,14 @@ function ToursIndex({ locale, data }: { locale: SiteLocale; data: TourListingDat
               {DESTINATIONS.map((destination) => {
                 const card = (
                   <>
-                    <img src={destination.image} alt="" loading="lazy" />
+                    <PerformanceImage
+                      src={destination.image}
+                      alt=""
+                      width={900}
+                      height={600}
+                      sizes="(max-width: 720px) calc(100vw - 24px), (max-width: 1100px) 48vw, 420px"
+                      maxWidth={900}
+                    />
                     <span aria-hidden="true" />
                     <h3>{destination.name}</h3>
                   </>

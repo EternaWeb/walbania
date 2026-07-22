@@ -2,7 +2,7 @@ import type { FeatureCollection, Point } from "geojson";
 import { AlertCircle, ArrowRight, Landmark, LocateFixed, MapPin, RefreshCw, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { GeoJSONSource, Map as MapLibreMap, MapLayerMouseEvent } from "maplibre-gl";
-import "maplibre-gl/dist/maplibre-gl.css";
+import { PerformanceImage } from "../PerformanceImage";
 
 export type DestinationMapLocation = {
   slug: string;
@@ -101,7 +101,8 @@ export function AlbaniaDestinationMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const [selectedSlug, setSelectedSlug] = useState(activeSlug);
-  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [shouldLoadMap, setShouldLoadMap] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [retryKey, setRetryKey] = useState(0);
   const activeLocation = locations.find((location) => location.slug === activeSlug) ?? locations[0];
   const selectedLocation =
@@ -112,6 +113,29 @@ export function AlbaniaDestinationMap({
   );
 
   useEffect(() => {
+    const container = containerRef.current;
+    if (!container || shouldLoadMap) return;
+
+    if (!("IntersectionObserver" in window)) {
+      setShouldLoadMap(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        setShouldLoadMap(true);
+        observer.disconnect();
+      },
+      { rootMargin: "700px 0px" },
+    );
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [shouldLoadMap]);
+
+  useEffect(() => {
+    if (!shouldLoadMap) return;
+
     if (!containerRef.current || !activeLocation) {
       setStatus("error");
       return;
@@ -125,7 +149,10 @@ export function AlbaniaDestinationMap({
 
     const initialize = async () => {
       try {
-        const maplibregl = await import("maplibre-gl");
+        const [maplibregl] = await Promise.all([
+          import("maplibre-gl"),
+          import("maplibre-gl/dist/maplibre-gl.css"),
+        ]);
         if (cancelled || !containerRef.current) return;
 
         map = new maplibregl.Map({
@@ -270,7 +297,7 @@ export function AlbaniaDestinationMap({
       map?.remove();
       mapRef.current = null;
     };
-  }, [activeLocation, activeSlug, locations, locationsBySlug, retryKey]);
+  }, [activeLocation, activeSlug, locations, locationsBySlug, retryKey, shouldLoadMap]);
 
   useEffect(() => {
     const source = mapRef.current?.getSource("destination-locations") as GeoJSONSource | undefined;
@@ -303,7 +330,7 @@ export function AlbaniaDestinationMap({
         aria-label="Interactive map of destinations in Albania"
       />
 
-      {status === "loading" && (
+      {(status === "idle" || status === "loading") && (
         <div className="destination-map-state" role="status">
           <MapPin size={21} />
           <span>Loading destinations…</span>
@@ -332,7 +359,14 @@ export function AlbaniaDestinationMap({
             >
               <X size={16} />
             </button>
-            <img src={selectedLocation.image} alt="" />
+            <PerformanceImage
+              src={selectedLocation.image}
+              alt=""
+              width={480}
+              height={320}
+              sizes="220px"
+              maxWidth={480}
+            />
             <div>
               <span className="destination-map-place-kind">
                 {selectedLocation.kind === "attraction" ? (

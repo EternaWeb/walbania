@@ -4,6 +4,7 @@ import { SiteLocaleProvider } from "../../i18n";
 import type { PlaceCard, PlaceKind, PlaceMapPoint } from "../../lib/places/types";
 import { SiteFooter } from "../SiteFooter";
 import { SiteHeader } from "../SiteHeader";
+import { PerformanceImage } from "../PerformanceImage";
 import { AlbaniaDestinationMap } from "./AlbaniaDestinationMap";
 import type { DestinationMapLocation } from "./AlbaniaDestinationMap";
 import { PlaceCardTile } from "./PlaceCardRail";
@@ -52,7 +53,17 @@ function CollectionContent({
       <SiteHeader />
       <main>
         <section className="place-collection-hero">
-          {first?.image ? <img src={first.image} alt={first.imageAlt} /> : null}
+          {first?.image ? (
+            <PerformanceImage
+              src={first.image}
+              alt={first.imageAlt}
+              width={1920}
+              height={1080}
+              sizes="100vw"
+              maxWidth={1920}
+              priority
+            />
+          ) : null}
           <span aria-hidden="true" />
           <div className="page-inset place-collection-hero-copy">
             <Icon size={28} />

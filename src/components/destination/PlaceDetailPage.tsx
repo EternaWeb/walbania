@@ -23,6 +23,7 @@ import type { LucideIcon } from "lucide-react";
 import type { CSSProperties } from "react";
 import { SiteFooter } from "../SiteFooter";
 import { SiteHeader } from "../SiteHeader";
+import { PerformanceImage } from "../PerformanceImage";
 import { SiteLocaleProvider } from "../../i18n";
 import type { PlaceViewModel } from "../../lib/places/types";
 import { stablePlaceHeroColor } from "../../lib/places/presentation";
@@ -221,11 +222,13 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
                 const media = (
                   <div className="destination-story-media">
                     {section.image ? (
-                      <img
+                      <PerformanceImage
                         src={section.image}
                         alt={section.imageAlt}
-                        loading="lazy"
-                        decoding="async"
+                        width={1200}
+                        height={800}
+                        sizes="(max-width: 760px) calc(100vw - 24px), (max-width: 1280px) 50vw, 700px"
+                        maxWidth={1200}
                       />
                     ) : null}
                   </div>

@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
+import { PerformanceImage } from "../PerformanceImage";
 
 export type DetailHeroFact = {
   label: string;
@@ -38,7 +39,15 @@ export function DetailHero({
       <div className="hero-shell">
         <div className="hero-grid">
           <div className="hero-visual">
-            <img src={image} alt={imageAlt} loading="eager" decoding="async" fetchPriority="high" />
+            <PerformanceImage
+              src={image}
+              alt={imageAlt}
+              width={1600}
+              height={1067}
+              sizes="(max-width: 767px) calc(100vw - 24px), (max-width: 1100px) 55vw, 700px"
+              maxWidth={1600}
+              priority
+            />
             <div className="hero-ribbons">
               {badge && <div className="hero-badge hero-badge-mobile">{badge}</div>}
               {photoLink && (

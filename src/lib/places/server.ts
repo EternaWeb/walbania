@@ -1104,6 +1104,18 @@ export function placeSeoHead(place: PlaceViewModel) {
   const englishUrl = place.locale === "en" ? canonical : alternate;
   const frenchUrl = place.locale === "fr" ? canonical : alternate;
   const title = place.seoTitle || `${place.title} | Wonder Albania`;
+  const imagePreconnects: Array<{ rel: "preconnect"; href: string }> = [];
+
+  try {
+    const imageUrl = new URL(place.heroImage);
+    imagePreconnects.push({ rel: "preconnect", href: imageUrl.origin });
+    if (imageUrl.hostname === "commons.wikimedia.org") {
+      imagePreconnects.push({ rel: "preconnect", href: "https://upload.wikimedia.org" });
+    }
+  } catch {
+    // Locally hosted hero images do not need an additional connection hint.
+  }
+
   return {
     meta: [
       { title },
@@ -1131,6 +1143,7 @@ export function placeSeoHead(place: PlaceViewModel) {
       { name: "twitter:image:alt", content: place.seoImageAlt },
     ],
     links: [
+      ...imagePreconnects,
       { rel: "canonical", href: canonical },
       { rel: "alternate", hrefLang: "en", href: englishUrl },
       { rel: "alternate", hrefLang: "fr", href: frenchUrl },

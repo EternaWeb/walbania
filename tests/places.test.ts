@@ -4,6 +4,7 @@ import {
   publicPlaceLookupSchema,
   validatePlaceForPublish,
 } from "../src/lib/places/schemas";
+import { PLACE_HERO_COLORS, stablePlaceHeroColor } from "../src/lib/places/presentation";
 import { createEmptyPlace } from "../src/lib/places/types";
 
 const ASSET_IDS = [
@@ -12,6 +13,7 @@ const ASSET_IDS = [
   "10000000-0000-4000-8000-000000000003",
   "10000000-0000-4000-8000-000000000004",
   "10000000-0000-4000-8000-000000000005",
+  "10000000-0000-4000-8000-000000000006",
 ];
 
 function publishablePlace(kind: "destination" | "attraction" = "destination") {
@@ -57,6 +59,13 @@ function publishablePlace(kind: "destination" | "attraction" = "destination") {
       altFr: "Carte de Berat",
       sortOrder: 0,
     },
+    {
+      assetId: ASSET_IDS[5],
+      role: "thumbnail",
+      altEn: "Berat SEO thumbnail",
+      altFr: "Vignette SEO de Berat",
+      sortOrder: 0,
+    },
   ];
   return place;
 }
@@ -75,7 +84,18 @@ describe("place publishing rules", () => {
     expect(problems).toContain("A confirmed map location is required.");
     expect(problems).toContain("A hero image is required.");
     expect(problems).toContain("A card image is required.");
+    expect(problems).toContain("An SEO thumbnail image is required.");
     expect(problems).toContain("English section 1 title is required.");
+  });
+
+  test("hero colors are deterministic and limited to the approved palette", () => {
+    const first = stablePlaceHeroColor("berat-place-id");
+    expect(stablePlaceHeroColor("berat-place-id")).toBe(first);
+    expect(PLACE_HERO_COLORS).toContain(first);
+
+    for (const seed of ["berat", "berat-castle", "gjirokaster", "ksamil"]) {
+      expect(PLACE_HERO_COLORS).toContain(stablePlaceHeroColor(seed));
+    }
   });
 
   test("public routes only accept supported kinds, locales and safe slugs", () => {

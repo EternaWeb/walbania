@@ -404,5 +404,6 @@ commit;
 --   migrations/202607210002_reuse_tour_media.sql
 --   migrations/202607220001_places_and_global_media.sql
 --   migrations/202607220002_place_story_design_fields.sql
--- The last two migrations add the dynamic destinations/attractions CMS, shared media library,
--- and editable copy for the approved three-card story design.
+--   migrations/202607220003_place_seo_and_thumbnails.sql
+-- The place migrations add the dynamic destinations/attractions CMS, shared media library,
+-- editable three-card stories, distinct SEO titles, and reusable social thumbnails.

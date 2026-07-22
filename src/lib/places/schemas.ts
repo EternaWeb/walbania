@@ -70,7 +70,7 @@ export const placeEditorSchema = z.object({
     z.object({
       id: z.string().uuid().optional(),
       assetId: z.string().uuid(),
-      role: z.enum(["hero", "card", "gallery"]),
+      role: z.enum(["hero", "card", "gallery", "thumbnail"]),
       altEn: z.string().trim().max(240),
       altFr: z.string().trim().max(240),
       sortOrder: z.number().int().min(0),
@@ -138,6 +138,9 @@ export function validatePlaceForPublish(input: z.infer<typeof placeEditorSchema>
   }
   if (!input.media.some((item) => item.role === "hero")) problems.push("A hero image is required.");
   if (!input.media.some((item) => item.role === "card")) problems.push("A card image is required.");
+  if (!input.media.some((item) => item.role === "thumbnail")) {
+    problems.push("An SEO thumbnail image is required.");
+  }
   if (input.media.some((item) => !item.altEn.trim() || !item.altFr.trim())) {
     problems.push("Every assigned image needs English and French alt text.");
   }

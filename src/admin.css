@@ -657,6 +657,35 @@
   gap: 7px;
 }
 
+.admin-seo-preview {
+  display: grid;
+  gap: 5px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: #fff;
+}
+
+.admin-seo-preview strong {
+  color: #1a0dab;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.admin-seo-preview span {
+  color: #188038;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.admin-seo-preview p {
+  margin: 2px 0 0;
+  color: #4d5156;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .admin-repeat-list {
   display: grid;
   gap: 8px;

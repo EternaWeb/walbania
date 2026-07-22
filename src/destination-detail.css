@@ -2,6 +2,12 @@
   background: #fff;
 }
 
+@media (min-width: 1024px) {
+  .destination-page .hero-copy {
+    background: var(--place-hero-color, #1f2528);
+  }
+}
+
 .site-header-breadcrumb {
   display: flex;
   align-items: center;
@@ -123,7 +129,8 @@
   background: rgba(255, 255, 255, 0.82);
 }
 
-.destination-story-card-three .section-heading h2 {
+.destination-story-card-three .section-heading h2,
+.destination-story-card-three .section-heading h3 {
   color: #fff;
 }
 

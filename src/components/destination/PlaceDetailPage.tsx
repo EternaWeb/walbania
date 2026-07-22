@@ -20,10 +20,12 @@ import {
   Wine,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { CSSProperties } from "react";
 import { SiteFooter } from "../SiteFooter";
 import { SiteHeader } from "../SiteHeader";
 import { SiteLocaleProvider } from "../../i18n";
 import type { PlaceViewModel } from "../../lib/places/types";
+import { stablePlaceHeroColor } from "../../lib/places/presentation";
 import { TourRail } from "../tour/TourListingPage";
 import {
   DetailFacts,
@@ -128,11 +130,16 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
     text: item.text,
   }));
   const locations = mapLocations(place);
+  const heroColor = stablePlaceHeroColor(place.id);
 
   return (
-    <div className="tour-page destination-page place-detail-page">
+    <div
+      className="tour-page destination-page place-detail-page"
+      data-hero-color={heroColor}
+      style={{ "--place-hero-color": heroColor } as CSSProperties}
+    >
       <SiteHeader breadcrumbs={breadcrumbs} />
-      <main>
+      <main aria-labelledby="place-page-title">
         <DetailHero
           image={place.heroImage}
           imageAlt={place.heroAlt}
@@ -154,6 +161,7 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
             </>
           }
           title={place.title}
+          titleId="place-page-title"
           intro={place.heroIntro}
           primaryAction={{
             href: "#tours",
@@ -190,7 +198,11 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
             />
           ) : null}
 
-          <section id="story" className="destination-stack-section">
+          <section
+            id="story"
+            className="destination-stack-section"
+            aria-labelledby="place-story-title"
+          >
             <div className="destination-stack-intro">
               <SectionHeading
                 title={
@@ -200,6 +212,7 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
                     : `Three ways to understand ${place.title}`)
                 }
                 text={place.storyIntro}
+                titleId="place-story-title"
               />
             </div>
 
@@ -219,7 +232,12 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
                 );
                 const copy = (
                   <div className="destination-story-copy">
-                    <SectionHeading title={section.title} text={section.body} />
+                    <SectionHeading
+                      title={section.title}
+                      text={section.body}
+                      titleId={`place-story-card-${index + 1}`}
+                      level={3}
+                    />
                     {section.secondaryBody ? <p>{section.secondaryBody}</p> : null}
                     {index === 1 && highlights.length ? (
                       <DetailHighlights highlights={highlights} />
@@ -245,6 +263,7 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
                   <article
                     className={`destination-story-card destination-story-card-${["one", "two", "three"][index]}`}
                     key={`${section.title}-${index}`}
+                    aria-labelledby={`place-story-card-${index + 1}`}
                   >
                     {index === 1 ? copy : media}
                     {index === 1 ? media : copy}
@@ -254,13 +273,18 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
             </div>
           </section>
 
-          <section id="tours" className="content-section destination-tours-section">
+          <section
+            id="tours"
+            className="content-section destination-tours-section"
+            aria-labelledby="place-tours-title"
+          >
             <SectionHeading
               title={
                 isFrench
                   ? `Façons de découvrir ${place.title}`
                   : `Ways to experience ${place.title}`
               }
+              titleId="place-tours-title"
               text={
                 isFrench
                   ? "Les circuits liés à ce lieu sont prioritaires, avec les excursions à la journée affichées en premier."
@@ -280,9 +304,14 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
             </div>
           </section>
 
-          <section id="map" className="content-section destination-map-section">
+          <section
+            id="map"
+            className="content-section destination-map-section"
+            aria-labelledby="place-map-title"
+          >
             <SectionHeading
               title={isFrench ? `${place.title} sur la carte` : `${place.title} on the map`}
+              titleId="place-map-title"
               text={
                 isFrench
                   ? "Ce lieu reste sélectionné. Touchez une autre destination ou attraction pour l’explorer."
@@ -293,9 +322,10 @@ function PlaceDetailContent({ place }: { place: PlaceViewModel }) {
           </section>
         </div>
 
-        <section className="place-related-section">
+        <section className="place-related-section" aria-labelledby="place-related-title">
           <div className="page-inset">
             <SectionHeading
+              titleId="place-related-title"
               title={
                 isFrench
                   ? `Explorer d’autres ${place.kind === "destination" ? "destinations" : "attractions"}`

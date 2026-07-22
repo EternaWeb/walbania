@@ -3,7 +3,7 @@ import type { TourListingCard } from "../tours/types";
 export type PlaceKind = "destination" | "attraction";
 export type PlaceStatus = "draft" | "published" | "archived";
 export type PlaceLocale = "en" | "fr";
-export type PlaceMediaRole = "hero" | "card" | "gallery";
+export type PlaceMediaRole = "hero" | "card" | "gallery" | "thumbnail";
 
 export type GlobalMediaAsset = {
   id: string;
@@ -125,6 +125,8 @@ export type PlaceViewModel = {
   parent: PlaceCard | null;
   seoTitle: string;
   seoDescription: string;
+  seoImage: string;
+  seoImageAlt: string;
   heroIntro: string;
   heroImage: string;
   heroAlt: string;

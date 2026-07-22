@@ -1749,7 +1749,7 @@ em { color: var(--brand); font-style: italic; font-weight: 500; }
 .content-section { padding: 84px 0 0; }
 .section-heading { max-width: 650px; }
 .eyebrow { color: var(--brand); font-size: 11px; font-weight: 750; letter-spacing: .13em; text-transform: uppercase; }
-.section-heading h2, .map-copy h2, .weather-card h2, .safety-card h2, .assistant-card h2, .newsletter h2 {
+.section-heading h2, .section-heading h3, .map-copy h2, .weather-card h2, .safety-card h2, .assistant-card h2, .newsletter h2 {
   margin: 8px 0 0;
   font-size: clamp(31px, 3.4vw, 47px);
   line-height: 1.07;
@@ -2336,7 +2336,7 @@ em { color: var(--brand); font-style: italic; font-weight: 500; }
   .facts-panel { grid-template-columns: 1fr 1fr; padding: 10px 5px; }
   .fact { padding: 10px; min-height: 72px; }
   .content-section { padding-top: 66px; }
-  .section-heading h2 { font-size: 34px; }
+  .section-heading h2, .section-heading h3 { font-size: 34px; }
   .overview-grid { grid-template-columns: 1fr; gap: 23px; margin-top: 25px; }
   .lead-copy { font-size: 18px; }
   .highlight-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -2725,6 +2725,7 @@ em { color: var(--brand); font-style: italic; font-weight: 500; }
 }
 
 .tour-page .section-heading h2,
+.tour-page .section-heading h3,
 .tour-page .map-copy h2,
 .tour-page .weather-card h2,
 .tour-page .safety-card h2,
@@ -3118,6 +3119,7 @@ em { color: var(--brand); font-style: italic; font-weight: 500; }
   }
 
   .tour-page .section-heading h2,
+  .tour-page .section-heading h3,
   .tour-page .map-copy h2,
   .tour-page .weather-card h2,
   .tour-page .safety-card h2,

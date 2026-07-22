@@ -279,6 +279,8 @@ async function loadPlaceView(
   const assets = await loadAssets(client, [...new Set(assetIds)]);
   const heroMedia = mediaResult.data?.find((item) => item.role === "hero");
   const heroAsset = heroMedia ? assets.get(heroMedia.asset_id) : null;
+  const thumbnailMedia = mediaResult.data?.find((item) => item.role === "thumbnail");
+  const thumbnailAsset = thumbnailMedia ? assets.get(thumbnailMedia.asset_id) : null;
   const mapCards = await loadPlaceCards(client, locale);
   const allTranslations = await client
     .from("place_translations")
@@ -313,6 +315,11 @@ async function loadPlaceView(
     parent,
     seoTitle: translation.seo_title,
     seoDescription: translation.seo_description,
+    seoImage: thumbnailAsset?.public_url ?? heroAsset?.public_url ?? "",
+    seoImageAlt:
+      (thumbnailMedia
+        ? local(locale, thumbnailMedia.alt_en, thumbnailMedia.alt_fr)
+        : translation.hero_alt) || translation.title,
     heroIntro: translation.hero_intro,
     heroImage: heroAsset?.public_url ?? "",
     heroAlt:
@@ -1023,17 +1030,112 @@ export async function listPublishedPlaceEntries() {
 
 export function placeJsonLd(place: PlaceViewModel) {
   const canonical = `${place.siteUrl}${place.href}`;
-  return JSON.stringify({
-    "@context": "https://schema.org",
+  const prefix = place.locale === "fr" ? "/fr" : "";
+  const collectionName = place.kind === "destination" ? "Destinations" : "Attractions";
+  const collectionUrl = `${place.siteUrl}${prefix}/${place.kind === "destination" ? "destinations" : "attractions"}`;
+  const breadcrumbItems = [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: collectionName,
+      item: collectionUrl,
+    },
+    ...(place.parent
+      ? [
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: place.parent.title,
+            item: `${place.siteUrl}${place.parent.href}`,
+          },
+        ]
+      : []),
+    {
+      "@type": "ListItem",
+      position: place.parent ? 3 : 2,
+      name: place.title,
+      item: canonical,
+    },
+  ];
+  const entity = {
     "@type": place.kind === "destination" ? "City" : "TouristAttraction",
+    "@id": `${canonical}#place`,
     name: place.title,
     description: place.seoDescription,
-    image: place.heroImage,
+    image: {
+      "@type": "ImageObject",
+      url: place.seoImage,
+      caption: place.seoImageAlt,
+    },
     url: canonical,
+    mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
+    inLanguage: place.locale,
     geo: {
       "@type": "GeoCoordinates",
       longitude: place.coordinates[0],
       latitude: place.coordinates[1],
     },
+    ...(place.parent
+      ? {
+          containedInPlace: {
+            "@type": "City",
+            name: place.parent.title,
+            url: `${place.siteUrl}${place.parent.href}`,
+          },
+        }
+      : {}),
+  };
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      entity,
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${canonical}#breadcrumb`,
+        itemListElement: breadcrumbItems,
+      },
+    ],
   }).replace(/</g, "\\u003c");
+}
+
+export function placeSeoHead(place: PlaceViewModel) {
+  const canonical = `${place.siteUrl}${place.href}`;
+  const alternate = `${place.siteUrl}${place.alternateHref}`;
+  const englishUrl = place.locale === "en" ? canonical : alternate;
+  const frenchUrl = place.locale === "fr" ? canonical : alternate;
+  const title = place.seoTitle || `${place.title} | Wonder Albania`;
+  return {
+    meta: [
+      { title },
+      { name: "description", content: place.seoDescription },
+      {
+        name: "robots",
+        content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Wonder Albania" },
+      { property: "og:title", content: title },
+      { property: "og:description", content: place.seoDescription },
+      { property: "og:image", content: place.seoImage },
+      { property: "og:image:alt", content: place.seoImageAlt },
+      { property: "og:url", content: canonical },
+      { property: "og:locale", content: place.locale === "fr" ? "fr_FR" : "en_US" },
+      {
+        property: "og:locale:alternate",
+        content: place.locale === "fr" ? "en_US" : "fr_FR",
+      },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: place.seoDescription },
+      { name: "twitter:image", content: place.seoImage },
+      { name: "twitter:image:alt", content: place.seoImageAlt },
+    ],
+    links: [
+      { rel: "canonical", href: canonical },
+      { rel: "alternate", hrefLang: "en", href: englishUrl },
+      { rel: "alternate", hrefLang: "fr", href: frenchUrl },
+      { rel: "alternate", hrefLang: "x-default", href: englishUrl },
+    ],
+    scripts: [{ type: "application/ld+json", children: placeJsonLd(place) }],
+  };
 }

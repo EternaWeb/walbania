@@ -21,6 +21,7 @@ import type {
   PlaceEditorPayload,
   PlaceFactInput,
   PlaceHighlightInput,
+  PlaceMediaRole,
   PlaceTourLinkInput,
   PlaceTourReference,
 } from "../../lib/places/types";
@@ -43,6 +44,7 @@ type ReferenceData = {
 const TABS = [
   ["basics", "Basics"],
   ["translations", "English & French"],
+  ["seo", "SEO"],
   ["sections", "Three story sections"],
   ["details", "Facts & highlights"],
   ["media", "Media"],
@@ -90,6 +92,8 @@ export function PlaceEditor({
     () => new Set(place.tourLinks.map((item) => item.tourId)),
     [place.tourLinks],
   );
+  const seoThumbnailAssignment = place.media.find((item) => item.role === "thumbnail");
+  const seoThumbnailAsset = assets.find((item) => item.id === seoThumbnailAssignment?.assetId);
 
   const updateTranslation = (locale: "en" | "fr", key: string, value: string) => {
     setPlace((current) => ({
@@ -152,7 +156,10 @@ export function PlaceEditor({
     }
   };
 
-  const assignMedia = (role: "hero" | "card", assetId: string) => {
+  const assignMedia = (
+    role: Extract<PlaceMediaRole, "hero" | "card" | "thumbnail">,
+    assetId: string,
+  ) => {
     setPlace((current) => ({
       ...current,
       media: [
@@ -477,29 +484,138 @@ export function PlaceEditor({
                           }
                         />
                       </div>
-                      <div className="admin-field is-full">
-                        <label>SEO title</label>
-                        <input
-                          value={value.seoTitle}
-                          onChange={(event) =>
-                            updateTranslation(locale, "seoTitle", event.target.value)
-                          }
-                        />
-                      </div>
-                      <div className="admin-field is-full">
-                        <label>SEO description</label>
-                        <textarea
-                          rows={3}
-                          value={value.seoDescription}
-                          onChange={(event) =>
-                            updateTranslation(locale, "seoDescription", event.target.value)
-                          }
-                        />
-                      </div>
                     </div>
                   </section>
                 );
               })}
+            </div>
+          ) : null}
+
+          {tab === "seo" ? (
+            <div className="admin-place-section-list">
+              <section className="admin-form-card">
+                <h2>Search appearance</h2>
+                <p className="admin-help">
+                  Give every place a distinct, concise title. Use the format “Place — Unique short
+                  descriptor | Wonder Albania”, for example “Berat — The City of 1000 Windows |
+                  Wonder Albania”.
+                </p>
+                <div className="admin-translation-grid">
+                  {(["en", "fr"] as const).map((locale) => {
+                    const value = place.translations[locale];
+                    const language = locale === "en" ? "English" : "French";
+                    return (
+                      <div className="admin-form-grid" key={locale}>
+                        <div className="admin-field is-full">
+                          <label>{language} SEO title</label>
+                          <input
+                            value={value.seoTitle}
+                            onChange={(event) =>
+                              updateTranslation(locale, "seoTitle", event.target.value)
+                            }
+                          />
+                          <small>
+                            {value.seoTitle.length} characters · keep it concise and unique
+                          </small>
+                        </div>
+                        <div className="admin-field is-full">
+                          <label>{language} meta description</label>
+                          <textarea
+                            rows={4}
+                            value={value.seoDescription}
+                            onChange={(event) =>
+                              updateTranslation(locale, "seoDescription", event.target.value)
+                            }
+                          />
+                          <small>{value.seoDescription.length} characters</small>
+                        </div>
+                        <div className="admin-field is-full">
+                          <label>{language} search preview</label>
+                          <div className="admin-seo-preview">
+                            <strong>{value.seoTitle || value.title || "Untitled place"}</strong>
+                            <span>
+                              wonderalbania.com/
+                              {place.kind === "destination" ? "destinations" : "attractions"}/
+                              {value.slug || "place-slug"}
+                            </span>
+                            <p>{value.seoDescription || "Add a concise page description."}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+
+              <section className="admin-form-card">
+                <h2>SEO and social thumbnail</h2>
+                <p className="admin-help">
+                  Choose a relevant landscape image for search previews, social sharing and
+                  structured data. Add a URL or upload a new image in Media, then select it here.
+                </p>
+                <div className="admin-place-media-role">
+                  {seoThumbnailAsset ? (
+                    <img src={seoThumbnailAsset.publicUrl} alt="" />
+                  ) : (
+                    <div className="admin-media-fallback">
+                      <ImagePlus size={24} />
+                    </div>
+                  )}
+                  <div className="admin-field">
+                    <label>Thumbnail asset</label>
+                    <select
+                      value={seoThumbnailAssignment?.assetId ?? ""}
+                      onChange={(event) => assignMedia("thumbnail", event.target.value)}
+                    >
+                      <option value="">Choose image</option>
+                      {assets.map((item) => (
+                        <option value={item.id} key={item.id}>
+                          {item.creditName || item.publicUrl}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {seoThumbnailAssignment ? (
+                    <div className="admin-form-grid">
+                      <div className="admin-field">
+                        <label>English thumbnail alt text</label>
+                        <input
+                          value={seoThumbnailAssignment.altEn}
+                          onChange={(event) =>
+                            setPlace((current) => ({
+                              ...current,
+                              media: current.media.map((item) =>
+                                item.role === "thumbnail"
+                                  ? { ...item, altEn: event.target.value }
+                                  : item,
+                              ),
+                            }))
+                          }
+                        />
+                      </div>
+                      <div className="admin-field">
+                        <label>French thumbnail alt text</label>
+                        <input
+                          value={seoThumbnailAssignment.altFr}
+                          onChange={(event) =>
+                            setPlace((current) => ({
+                              ...current,
+                              media: current.media.map((item) =>
+                                item.role === "thumbnail"
+                                  ? { ...item, altFr: event.target.value }
+                                  : item,
+                              ),
+                            }))
+                          }
+                        />
+                      </div>
+                    </div>
+                  ) : null}
+                  <button type="button" className="admin-button" onClick={() => setTab("media")}>
+                    <ImagePlus size={15} /> Add or upload image
+                  </button>
+                </div>
+              </section>
             </div>
           ) : null}
 
@@ -917,12 +1033,18 @@ export function PlaceEditor({
                 </label>
               </div>
               <div className="admin-form-grid">
-                {(["hero", "card"] as const).map((role) => {
+                {(["hero", "card", "thumbnail"] as const).map((role) => {
                   const assigned = place.media.find((item) => item.role === role);
                   const asset = assets.find((item) => item.id === assigned?.assetId);
                   return (
                     <div className="admin-place-media-role" key={role}>
-                      <h3>{role === "hero" ? "Hero image" : "Listing card image"}</h3>
+                      <h3>
+                        {role === "hero"
+                          ? "Hero image"
+                          : role === "card"
+                            ? "Listing card image"
+                            : "SEO thumbnail"}
+                      </h3>
                       {asset ? (
                         <img src={asset.publicUrl} alt="" />
                       ) : (

@@ -51,8 +51,8 @@ begin
     story_title, story_intro
   )
   values
-    (berat_id, 'en', 'berat', 'Berat', 'Berat, Albania — city of a thousand windows | Wonder Albania', 'Discover Berat’s Ottoman neighbourhoods, living hilltop castle and linked small-group tours.', 'A river city of white Ottoman houses, stone lanes and a castle that is still alive.', 'The Mangalem quarter climbing the hillside above Berat', 'Three ways to understand Berat', 'Scroll through the city’s story, the places that shape it and the best way to plan your stay.'),
-    (berat_id, 'fr', 'berat', 'Berat', 'Berat, Albanie — la ville aux mille fenêtres | Wonder Albania', 'Découvrez les quartiers ottomans de Berat, sa citadelle habitée et les circuits associés.', 'Une ville fluviale de maisons ottomanes blanches, de ruelles de pierre et d’une citadelle toujours habitée.', 'Le quartier de Mangalem sur les pentes de Berat', 'Trois façons de comprendre Berat', 'Parcourez l’histoire de la ville, les lieux qui la façonnent et la meilleure façon de préparer votre séjour.')
+    (berat_id, 'en', 'berat', 'Berat', 'Berat — The City of 1000 Windows | Wonder Albania', 'Explore Berat’s Ottoman neighbourhoods, living hilltop castle, local flavours and tours through central Albania.', 'A river city of white Ottoman houses, stone lanes and a castle that is still alive.', 'The Mangalem quarter climbing the hillside above Berat', 'Three ways to understand Berat', 'Scroll through the city’s story, the places that shape it and the best way to plan your stay.'),
+    (berat_id, 'fr', 'berat', 'Berat', 'Berat — La ville aux mille fenêtres | Wonder Albania', 'Explorez les quartiers ottomans de Berat, sa citadelle habitée, ses saveurs locales et les circuits en Albanie centrale.', 'Une ville fluviale de maisons ottomanes blanches, de ruelles de pierre et d’une citadelle toujours habitée.', 'Le quartier de Mangalem sur les pentes de Berat', 'Trois façons de comprendre Berat', 'Parcourez l’histoire de la ville, les lieux qui la façonnent et la meilleure façon de préparer votre séjour.')
   on conflict (place_id, locale) do update set slug = excluded.slug, title = excluded.title,
     seo_title = excluded.seo_title, seo_description = excluded.seo_description,
     hero_intro = excluded.hero_intro, hero_alt = excluded.hero_alt,
@@ -73,6 +73,7 @@ begin
   values
     (berat_id, mangalem_id, 'hero', 'Mangalem’s white houses above the Osum River in Berat', 'Les maisons blanches de Mangalem au-dessus de l’Osum à Berat', 0),
     (berat_id, berat_panorama_id, 'card', 'Panoramic view across Berat', 'Vue panoramique sur Berat', 0),
+    (berat_id, mangalem_id, 'thumbnail', 'Mangalem’s white Ottoman houses in Berat', 'Les maisons ottomanes blanches de Mangalem à Berat', 0),
     (berat_id, gorica_id, 'gallery', 'Gorica neighbourhood in Berat', 'Le quartier de Gorica à Berat', 0);
 
   delete from public.place_facts where place_id = berat_id;
@@ -105,8 +106,8 @@ begin
     story_title, story_intro
   )
   values
-    (castle_id, 'en', 'berat-castle', 'Berat Castle', 'Berat Castle — a living citadel | Wonder Albania', 'Plan a visit to Berat Castle and find tours that include the hilltop citadel.', 'Climb into a hilltop neighbourhood where Byzantine churches, Ottoman traces and everyday life share the same walls.', 'Stone walls and rooftops inside Berat Castle', 'Three ways to understand Berat Castle', 'Scroll through the living citadel, the sacred art inside its walls and the views that connect it to Berat below.'),
-    (castle_id, 'fr', 'chateau-de-berat', 'Citadelle de Berat', 'Citadelle de Berat — une forteresse habitée | Wonder Albania', 'Préparez votre visite de la citadelle de Berat et trouvez les circuits qui l’incluent.', 'Montez vers un quartier perché où églises byzantines, traces ottomanes et vie quotidienne partagent les mêmes remparts.', 'Remparts et toits à l’intérieur de la citadelle de Berat', 'Trois façons de comprendre la citadelle de Berat', 'Parcourez la citadelle habitée, l’art sacré entre ses remparts et les vues qui la relient à Berat en contrebas.')
+    (castle_id, 'en', 'berat-castle', 'Berat Castle', 'Berat Castle — Albania’s Living Citadel | Wonder Albania', 'Visit Berat Castle for Byzantine churches, the Onufri Museum, sweeping Osum views and tours of Albania’s living citadel.', 'Climb into a hilltop neighbourhood where Byzantine churches, Ottoman traces and everyday life share the same walls.', 'Stone walls and rooftops inside Berat Castle', 'Three ways to understand Berat Castle', 'Scroll through the living citadel, the sacred art inside its walls and the views that connect it to Berat below.'),
+    (castle_id, 'fr', 'chateau-de-berat', 'Citadelle de Berat', 'Citadelle de Berat — La forteresse habitée | Wonder Albania', 'Visitez la citadelle de Berat, ses églises byzantines, le musée Onufri, ses vues sur l’Osum et les circuits associés.', 'Montez vers un quartier perché où églises byzantines, traces ottomanes et vie quotidienne partagent les mêmes remparts.', 'Remparts et toits à l’intérieur de la citadelle de Berat', 'Trois façons de comprendre la citadelle de Berat', 'Parcourez la citadelle habitée, l’art sacré entre ses remparts et les vues qui la relient à Berat en contrebas.')
   on conflict (place_id, locale) do update set slug = excluded.slug, title = excluded.title,
     seo_title = excluded.seo_title, seo_description = excluded.seo_description,
     hero_intro = excluded.hero_intro, hero_alt = excluded.hero_alt,
@@ -127,6 +128,7 @@ begin
   values
     (castle_id, castle_panorama_id, 'hero', 'The stone walls and hillside setting of Berat Castle', 'Les remparts de pierre et la colline de la citadelle de Berat', 0),
     (castle_id, castle_church_id, 'card', 'Historic church inside Berat Castle', 'Église historique dans la citadelle de Berat', 0),
+    (castle_id, castle_panorama_id, 'thumbnail', 'Berat Castle on its hill above the city', 'La citadelle de Berat sur sa colline au-dessus de la ville', 0),
     (castle_id, berat_panorama_id, 'gallery', 'Berat seen from the castle hill', 'Berat vue depuis la colline de la citadelle', 0);
 
   delete from public.place_facts where place_id = castle_id;

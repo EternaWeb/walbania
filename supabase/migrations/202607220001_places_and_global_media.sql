@@ -97,6 +97,9 @@ create table if not exists public.place_translations (
 create unique index if not exists place_translations_slug_idx
   on public.place_translations (locale, slug)
   where slug <> '';
+create unique index if not exists place_translations_seo_title_idx
+  on public.place_translations (locale, lower(seo_title))
+  where seo_title <> '';
 
 create table if not exists public.place_slug_redirects (
   id uuid primary key default gen_random_uuid(),
@@ -151,7 +154,7 @@ create table if not exists public.place_media (
   id uuid primary key default gen_random_uuid(),
   place_id uuid not null references public.places(id) on delete cascade,
   asset_id uuid not null references public.media_assets(id) on delete restrict,
-  role text not null check (role in ('hero', 'card', 'gallery')),
+  role text not null check (role in ('hero', 'card', 'gallery', 'thumbnail')),
   alt_en text not null default '',
   alt_fr text not null default '',
   sort_order integer not null default 0,
@@ -161,6 +164,8 @@ create unique index if not exists place_media_single_hero_idx
   on public.place_media (place_id) where role = 'hero';
 create unique index if not exists place_media_single_card_idx
   on public.place_media (place_id) where role = 'card';
+create unique index if not exists place_media_single_thumbnail_idx
+  on public.place_media (place_id) where role = 'thumbnail';
 create index if not exists place_media_asset_idx on public.place_media (asset_id);
 
 create table if not exists public.place_tours (

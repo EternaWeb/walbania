@@ -13,6 +13,7 @@ export function DetailHero({
   photoLink,
   info,
   title,
+  titleId,
   intro,
   primaryAction,
   secondaryAction,
@@ -25,6 +26,7 @@ export function DetailHero({
   photoLink?: { href: string; label: string };
   info: ReactNode;
   title: ReactNode;
+  titleId?: string;
   intro: string;
   primaryAction: { href: string; label: string };
   secondaryAction?: ReactNode;
@@ -59,7 +61,7 @@ export function DetailHero({
             {badge && <div className="hero-badge hero-badge-desktop">{badge}</div>}
             <div className="hero-copy-content">
               <div className="hero-info-row">{info}</div>
-              <h1>{title}</h1>
+              <h1 id={titleId}>{title}</h1>
               <p className="hero-intro">{intro}</p>
               <div className="hero-actions">
                 <a className="primary-button hero-book" href={primaryAction.href}>
@@ -156,15 +158,20 @@ export function SectionHeading({
   eyebrow,
   title,
   text,
+  titleId,
+  level = 2,
 }: {
   eyebrow?: string;
   title: ReactNode;
   text?: string;
+  titleId?: string;
+  level?: 2 | 3;
 }) {
+  const Heading = level === 3 ? "h3" : "h2";
   return (
     <div className="section-heading">
       {eyebrow && <span className="eyebrow">{eyebrow}</span>}
-      <h2>{title}</h2>
+      <Heading id={titleId}>{title}</Heading>
       {text && <p>{text}</p>}
     </div>
   );

@@ -1,5 +1,21 @@
 -- Reusable destination / attraction insert template.
 -- Edit the values in this file, then run it after the places migration.
+--
+-- SEO TITLE RULE (one unique descriptor for every place and locale):
+--   Place name — Unique short descriptor | Wonder Albania
+-- Examples:
+--   Berat — The City of 1000 Windows | Wonder Albania
+--   Berat Castle — Albania’s Living Citadel | Wonder Albania
+-- Do not reuse another place's descriptor. The database rejects duplicate SEO
+-- titles within the same locale, which protects destination pages from competing
+-- with one another in search results.
+--
+-- SEO THUMBNAIL RULE:
+-- Every published place needs one role='thumbnail' image. Use a representative,
+-- high-resolution landscape photo (1200x630px or larger is recommended), not a
+-- logo or text graphic. The asset may be uploaded in admin, selected from the
+-- existing media library, or registered below as a public URL. Always add useful
+-- EN/FR alt text and keep the remote image URL crawlable.
 
 begin;
 
@@ -9,6 +25,7 @@ declare
   parent_destination_id uuid := null; -- Required when place_kind = 'attraction'.
   hero_asset_id uuid;
   card_asset_id uuid;
+  thumbnail_asset_id uuid;
   section_asset_ids uuid[] := array[]::uuid[];
   place_kind text := 'destination'; -- destination | attraction
 begin
@@ -26,6 +43,13 @@ begin
   on conflict (public_url) do update set credit_name = excluded.credit_name
   returning id into card_asset_id;
 
+  insert into public.media_assets (
+    source_kind, public_url, mime_type, credit_name, credit_url
+  ) values
+    ('url', 'https://example.com/seo-thumbnail.jpg', 'image/jpeg', 'Photographer', 'https://example.com/source')
+  on conflict (public_url) do update set credit_name = excluded.credit_name
+  returning id into thumbnail_asset_id;
+
   insert into public.places (
     id, kind, parent_destination_id, status, featured,
     longitude, latitude, map_zoom, published_at
@@ -38,10 +62,10 @@ begin
     place_id, locale, slug, title, seo_title, seo_description, hero_intro, hero_alt,
     story_title, story_intro
   ) values
-    (new_place_id, 'en', 'place-slug', 'Place name', 'Place name | Wonder Albania',
+    (new_place_id, 'en', 'place-slug', 'Place name', 'Place name — Unique English descriptor | Wonder Albania',
       'English search description.', 'Short English hero introduction.', 'English hero image description.',
       'Three ways to understand Place name', 'Short introduction for the three stacked story cards.'),
-    (new_place_id, 'fr', 'lieu-slug', 'Nom du lieu', 'Nom du lieu | Wonder Albania',
+    (new_place_id, 'fr', 'lieu-slug', 'Nom du lieu', 'Nom du lieu — Descriptif français unique | Wonder Albania',
       'Description française pour les moteurs de recherche.', 'Courte introduction française.', 'Description française de l’image principale.',
       'Trois façons de comprendre Nom du lieu', 'Courte introduction pour les trois cartes superposées.');
 
@@ -58,7 +82,8 @@ begin
   insert into public.place_media (place_id, asset_id, role, alt_en, alt_fr, sort_order)
   values
     (new_place_id, hero_asset_id, 'hero', 'English hero alt text', 'Texte alternatif français', 0),
-    (new_place_id, card_asset_id, 'card', 'English card alt text', 'Texte alternatif français', 0);
+    (new_place_id, card_asset_id, 'card', 'English card alt text', 'Texte alternatif français', 0),
+    (new_place_id, thumbnail_asset_id, 'thumbnail', 'English SEO thumbnail alt text', 'Texte alternatif français de la vignette SEO', 0);
 
   insert into public.place_facts (
     place_id, group_key, icon_key, value, label_en, label_fr, sort_order

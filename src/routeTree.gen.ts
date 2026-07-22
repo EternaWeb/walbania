@@ -25,7 +25,7 @@ import { Route as FrTourRouteImport } from './routes/fr_.tour'
 import { Route as FrDestinationsRouteImport } from './routes/fr_.destinations'
 import { Route as FrAttractionsRouteImport } from './routes/fr_.attractions'
 import { Route as FrSlugRouteImport } from './routes/fr_.$slug'
-import { Route as DestinationsSlugRouteImport } from './routes/destinations.$slug'
+import { Route as DestinationsSlugRouteImport } from './routes/destinations_.$slug'
 import { Route as DestinationBeratRouteImport } from './routes/destination.berat'
 import { Route as AdminLoginRouteImport } from './routes/admin_.login'
 import { Route as AdminTaxonomiesRouteImport } from './routes/admin.taxonomies'
@@ -35,15 +35,15 @@ import { Route as AdminToursIndexRouteImport } from './routes/admin.tours.index'
 import { Route as AdminDestinationsIndexRouteImport } from './routes/admin.destinations.index'
 import { Route as AdminAttractionsIndexRouteImport } from './routes/admin.attractions.index'
 import { Route as FrTourSlugRouteImport } from './routes/fr_.tour_.$slug'
-import { Route as FrDestinationsSlugRouteImport } from './routes/fr_.destinations.$slug'
-import { Route as AttractionsDestinationSlugSlugRouteImport } from './routes/attractions.$destinationSlug.$slug'
+import { Route as FrDestinationsSlugRouteImport } from './routes/fr_.destinations_.$slug'
+import { Route as AttractionsDestinationSlugSlugRouteImport } from './routes/attractions_.$destinationSlug.$slug'
 import { Route as AdminToursNewRouteImport } from './routes/admin.tours.new'
 import { Route as AdminToursTourIdRouteImport } from './routes/admin.tours.$tourId'
 import { Route as AdminDestinationsNewRouteImport } from './routes/admin.destinations.new'
 import { Route as AdminDestinationsPlaceIdRouteImport } from './routes/admin.destinations.$placeId'
 import { Route as AdminAttractionsNewRouteImport } from './routes/admin.attractions.new'
 import { Route as AdminAttractionsPlaceIdRouteImport } from './routes/admin.attractions.$placeId'
-import { Route as FrAttractionsDestinationSlugSlugRouteImport } from './routes/fr_.attractions.$destinationSlug.$slug'
+import { Route as FrAttractionsDestinationSlugSlugRouteImport } from './routes/fr_.attractions_.$destinationSlug.$slug'
 import { Route as AdminToursTourIdPreviewRouteImport } from './routes/admin_.tours.$tourId.preview'
 
 const TourRoute = TourRouteImport.update({
@@ -127,9 +127,9 @@ const FrSlugRoute = FrSlugRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const DestinationsSlugRoute = DestinationsSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => DestinationsRoute,
+  id: '/destinations_/$slug',
+  path: '/destinations/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DestinationBeratRoute = DestinationBeratRouteImport.update({
   id: '/destination/berat',
@@ -177,15 +177,15 @@ const FrTourSlugRoute = FrTourSlugRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const FrDestinationsSlugRoute = FrDestinationsSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => FrDestinationsRoute,
+  id: '/fr_/destinations_/$slug',
+  path: '/fr/destinations/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AttractionsDestinationSlugSlugRoute =
   AttractionsDestinationSlugSlugRouteImport.update({
-    id: '/$destinationSlug/$slug',
-    path: '/$destinationSlug/$slug',
-    getParentRoute: () => AttractionsRoute,
+    id: '/attractions_/$destinationSlug/$slug',
+    path: '/attractions/$destinationSlug/$slug',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const AdminToursNewRoute = AdminToursNewRouteImport.update({
   id: '/tours/new',
@@ -220,9 +220,9 @@ const AdminAttractionsPlaceIdRoute = AdminAttractionsPlaceIdRouteImport.update({
 } as any)
 const FrAttractionsDestinationSlugSlugRoute =
   FrAttractionsDestinationSlugSlugRouteImport.update({
-    id: '/$destinationSlug/$slug',
-    path: '/$destinationSlug/$slug',
-    getParentRoute: () => FrAttractionsRoute,
+    id: '/fr_/attractions_/$destinationSlug/$slug',
+    path: '/fr/attractions/$destinationSlug/$slug',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const AdminToursTourIdPreviewRoute = AdminToursTourIdPreviewRouteImport.update({
   id: '/admin_/tours/$tourId/preview',
@@ -235,8 +235,8 @@ export interface FileRoutesByFullPath {
   '/$slug': typeof SlugRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
-  '/attractions': typeof AttractionsRouteWithChildren
-  '/destinations': typeof DestinationsRouteWithChildren
+  '/attractions': typeof AttractionsRoute
+  '/destinations': typeof DestinationsRoute
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -248,8 +248,8 @@ export interface FileRoutesByFullPath {
   '/destination/berat': typeof DestinationBeratRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/fr/$slug': typeof FrSlugRoute
-  '/fr/attractions': typeof FrAttractionsRouteWithChildren
-  '/fr/destinations': typeof FrDestinationsRouteWithChildren
+  '/fr/attractions': typeof FrAttractionsRoute
+  '/fr/destinations': typeof FrDestinationsRoute
   '/fr/tour': typeof FrTourRoute
   '/tour/$slug': typeof TourSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -272,8 +272,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
   '/about': typeof AboutRoute
-  '/attractions': typeof AttractionsRouteWithChildren
-  '/destinations': typeof DestinationsRouteWithChildren
+  '/attractions': typeof AttractionsRoute
+  '/destinations': typeof DestinationsRoute
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -285,8 +285,8 @@ export interface FileRoutesByTo {
   '/destination/berat': typeof DestinationBeratRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/fr/$slug': typeof FrSlugRoute
-  '/fr/attractions': typeof FrAttractionsRouteWithChildren
-  '/fr/destinations': typeof FrDestinationsRouteWithChildren
+  '/fr/attractions': typeof FrAttractionsRoute
+  '/fr/destinations': typeof FrDestinationsRoute
   '/fr/tour': typeof FrTourRoute
   '/tour/$slug': typeof TourSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -311,8 +311,8 @@ export interface FileRoutesById {
   '/$slug': typeof SlugRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
-  '/attractions': typeof AttractionsRouteWithChildren
-  '/destinations': typeof DestinationsRouteWithChildren
+  '/attractions': typeof AttractionsRoute
+  '/destinations': typeof DestinationsRoute
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -322,10 +322,10 @@ export interface FileRoutesById {
   '/admin/taxonomies': typeof AdminTaxonomiesRoute
   '/admin_/login': typeof AdminLoginRoute
   '/destination/berat': typeof DestinationBeratRoute
-  '/destinations/$slug': typeof DestinationsSlugRoute
+  '/destinations_/$slug': typeof DestinationsSlugRoute
   '/fr_/$slug': typeof FrSlugRoute
-  '/fr_/attractions': typeof FrAttractionsRouteWithChildren
-  '/fr_/destinations': typeof FrDestinationsRouteWithChildren
+  '/fr_/attractions': typeof FrAttractionsRoute
+  '/fr_/destinations': typeof FrDestinationsRoute
   '/fr_/tour': typeof FrTourRoute
   '/tour_/$slug': typeof TourSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -335,14 +335,14 @@ export interface FileRoutesById {
   '/admin/destinations/new': typeof AdminDestinationsNewRoute
   '/admin/tours/$tourId': typeof AdminToursTourIdRoute
   '/admin/tours/new': typeof AdminToursNewRoute
-  '/attractions/$destinationSlug/$slug': typeof AttractionsDestinationSlugSlugRoute
-  '/fr_/destinations/$slug': typeof FrDestinationsSlugRoute
+  '/attractions_/$destinationSlug/$slug': typeof AttractionsDestinationSlugSlugRoute
+  '/fr_/destinations_/$slug': typeof FrDestinationsSlugRoute
   '/fr_/tour_/$slug': typeof FrTourSlugRoute
   '/admin/attractions/': typeof AdminAttractionsIndexRoute
   '/admin/destinations/': typeof AdminDestinationsIndexRoute
   '/admin/tours/': typeof AdminToursIndexRoute
   '/admin_/tours/$tourId/preview': typeof AdminToursTourIdPreviewRoute
-  '/fr_/attractions/$destinationSlug/$slug': typeof FrAttractionsDestinationSlugSlugRoute
+  '/fr_/attractions_/$destinationSlug/$slug': typeof FrAttractionsDestinationSlugSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -437,7 +437,7 @@ export interface FileRouteTypes {
     | '/admin/taxonomies'
     | '/admin_/login'
     | '/destination/berat'
-    | '/destinations/$slug'
+    | '/destinations_/$slug'
     | '/fr_/$slug'
     | '/fr_/attractions'
     | '/fr_/destinations'
@@ -450,14 +450,14 @@ export interface FileRouteTypes {
     | '/admin/destinations/new'
     | '/admin/tours/$tourId'
     | '/admin/tours/new'
-    | '/attractions/$destinationSlug/$slug'
-    | '/fr_/destinations/$slug'
+    | '/attractions_/$destinationSlug/$slug'
+    | '/fr_/destinations_/$slug'
     | '/fr_/tour_/$slug'
     | '/admin/attractions/'
     | '/admin/destinations/'
     | '/admin/tours/'
     | '/admin_/tours/$tourId/preview'
-    | '/fr_/attractions/$destinationSlug/$slug'
+    | '/fr_/attractions_/$destinationSlug/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -465,21 +465,25 @@ export interface RootRouteChildren {
   SlugRoute: typeof SlugRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
-  AttractionsRoute: typeof AttractionsRouteWithChildren
-  DestinationsRoute: typeof DestinationsRouteWithChildren
+  AttractionsRoute: typeof AttractionsRoute
+  DestinationsRoute: typeof DestinationsRoute
   FrRoute: typeof FrRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TourRoute: typeof TourRoute
   AdminLoginRoute: typeof AdminLoginRoute
   DestinationBeratRoute: typeof DestinationBeratRoute
+  DestinationsSlugRoute: typeof DestinationsSlugRoute
   FrSlugRoute: typeof FrSlugRoute
-  FrAttractionsRoute: typeof FrAttractionsRouteWithChildren
-  FrDestinationsRoute: typeof FrDestinationsRouteWithChildren
+  FrAttractionsRoute: typeof FrAttractionsRoute
+  FrDestinationsRoute: typeof FrDestinationsRoute
   FrTourRoute: typeof FrTourRoute
   TourSlugRoute: typeof TourSlugRoute
+  AttractionsDestinationSlugSlugRoute: typeof AttractionsDestinationSlugSlugRoute
+  FrDestinationsSlugRoute: typeof FrDestinationsSlugRoute
   FrTourSlugRoute: typeof FrTourSlugRoute
   AdminToursTourIdPreviewRoute: typeof AdminToursTourIdPreviewRoute
+  FrAttractionsDestinationSlugSlugRoute: typeof FrAttractionsDestinationSlugSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -596,12 +600,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FrSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/destinations/$slug': {
-      id: '/destinations/$slug'
-      path: '/$slug'
+    '/destinations_/$slug': {
+      id: '/destinations_/$slug'
+      path: '/destinations/$slug'
       fullPath: '/destinations/$slug'
       preLoaderRoute: typeof DestinationsSlugRouteImport
-      parentRoute: typeof DestinationsRoute
+      parentRoute: typeof rootRouteImport
     }
     '/destination/berat': {
       id: '/destination/berat'
@@ -666,19 +670,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FrTourSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/fr_/destinations/$slug': {
-      id: '/fr_/destinations/$slug'
-      path: '/$slug'
+    '/fr_/destinations_/$slug': {
+      id: '/fr_/destinations_/$slug'
+      path: '/fr/destinations/$slug'
       fullPath: '/fr/destinations/$slug'
       preLoaderRoute: typeof FrDestinationsSlugRouteImport
-      parentRoute: typeof FrDestinationsRoute
+      parentRoute: typeof rootRouteImport
     }
-    '/attractions/$destinationSlug/$slug': {
-      id: '/attractions/$destinationSlug/$slug'
-      path: '/$destinationSlug/$slug'
+    '/attractions_/$destinationSlug/$slug': {
+      id: '/attractions_/$destinationSlug/$slug'
+      path: '/attractions/$destinationSlug/$slug'
       fullPath: '/attractions/$destinationSlug/$slug'
       preLoaderRoute: typeof AttractionsDestinationSlugSlugRouteImport
-      parentRoute: typeof AttractionsRoute
+      parentRoute: typeof rootRouteImport
     }
     '/admin/tours/new': {
       id: '/admin/tours/new'
@@ -722,12 +726,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAttractionsPlaceIdRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/fr_/attractions/$destinationSlug/$slug': {
-      id: '/fr_/attractions/$destinationSlug/$slug'
-      path: '/$destinationSlug/$slug'
+    '/fr_/attractions_/$destinationSlug/$slug': {
+      id: '/fr_/attractions_/$destinationSlug/$slug'
+      path: '/fr/attractions/$destinationSlug/$slug'
       fullPath: '/fr/attractions/$destinationSlug/$slug'
       preLoaderRoute: typeof FrAttractionsDestinationSlugSlugRouteImport
-      parentRoute: typeof FrAttractionsRoute
+      parentRoute: typeof rootRouteImport
     }
     '/admin_/tours/$tourId/preview': {
       id: '/admin_/tours/$tourId/preview'
@@ -773,74 +777,30 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
-interface AttractionsRouteChildren {
-  AttractionsDestinationSlugSlugRoute: typeof AttractionsDestinationSlugSlugRoute
-}
-
-const AttractionsRouteChildren: AttractionsRouteChildren = {
-  AttractionsDestinationSlugSlugRoute: AttractionsDestinationSlugSlugRoute,
-}
-
-const AttractionsRouteWithChildren = AttractionsRoute._addFileChildren(
-  AttractionsRouteChildren,
-)
-
-interface DestinationsRouteChildren {
-  DestinationsSlugRoute: typeof DestinationsSlugRoute
-}
-
-const DestinationsRouteChildren: DestinationsRouteChildren = {
-  DestinationsSlugRoute: DestinationsSlugRoute,
-}
-
-const DestinationsRouteWithChildren = DestinationsRoute._addFileChildren(
-  DestinationsRouteChildren,
-)
-
-interface FrAttractionsRouteChildren {
-  FrAttractionsDestinationSlugSlugRoute: typeof FrAttractionsDestinationSlugSlugRoute
-}
-
-const FrAttractionsRouteChildren: FrAttractionsRouteChildren = {
-  FrAttractionsDestinationSlugSlugRoute: FrAttractionsDestinationSlugSlugRoute,
-}
-
-const FrAttractionsRouteWithChildren = FrAttractionsRoute._addFileChildren(
-  FrAttractionsRouteChildren,
-)
-
-interface FrDestinationsRouteChildren {
-  FrDestinationsSlugRoute: typeof FrDestinationsSlugRoute
-}
-
-const FrDestinationsRouteChildren: FrDestinationsRouteChildren = {
-  FrDestinationsSlugRoute: FrDestinationsSlugRoute,
-}
-
-const FrDestinationsRouteWithChildren = FrDestinationsRoute._addFileChildren(
-  FrDestinationsRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SlugRoute: SlugRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
-  AttractionsRoute: AttractionsRouteWithChildren,
-  DestinationsRoute: DestinationsRouteWithChildren,
+  AttractionsRoute: AttractionsRoute,
+  DestinationsRoute: DestinationsRoute,
   FrRoute: FrRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TourRoute: TourRoute,
   AdminLoginRoute: AdminLoginRoute,
   DestinationBeratRoute: DestinationBeratRoute,
+  DestinationsSlugRoute: DestinationsSlugRoute,
   FrSlugRoute: FrSlugRoute,
-  FrAttractionsRoute: FrAttractionsRouteWithChildren,
-  FrDestinationsRoute: FrDestinationsRouteWithChildren,
+  FrAttractionsRoute: FrAttractionsRoute,
+  FrDestinationsRoute: FrDestinationsRoute,
   FrTourRoute: FrTourRoute,
   TourSlugRoute: TourSlugRoute,
+  AttractionsDestinationSlugSlugRoute: AttractionsDestinationSlugSlugRoute,
+  FrDestinationsSlugRoute: FrDestinationsSlugRoute,
   FrTourSlugRoute: FrTourSlugRoute,
   AdminToursTourIdPreviewRoute: AdminToursTourIdPreviewRoute,
+  FrAttractionsDestinationSlugSlugRoute: FrAttractionsDestinationSlugSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

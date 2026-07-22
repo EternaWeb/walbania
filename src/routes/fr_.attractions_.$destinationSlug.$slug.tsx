@@ -2,10 +2,15 @@ import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import { PlaceDetailPage } from "../components/destination/PlaceDetailPage";
 import { getPublicPlaceFn, placeJsonLd } from "../lib/places/server";
 
-export const Route = createFileRoute("/fr_/destinations/$slug")({
+export const Route = createFileRoute("/fr_/attractions_/$destinationSlug/$slug")({
   loader: async ({ params }) => {
     const result = await getPublicPlaceFn({
-      data: { kind: "destination", locale: "fr", slug: params.slug },
+      data: {
+        kind: "attraction",
+        locale: "fr",
+        parentSlug: params.destinationSlug,
+        slug: params.slug,
+      },
     });
     if (result.kind === "not-found") throw notFound();
     if (result.kind === "redirect") throw redirect({ href: result.location, statusCode: 301 });
@@ -31,9 +36,9 @@ export const Route = createFileRoute("/fr_/destinations/$slug")({
           scripts: [{ type: "application/ld+json", children: placeJsonLd(loaderData) }],
         }
       : {},
-  component: FrenchDestinationRoute,
+  component: FrenchAttractionRoute,
 });
 
-function FrenchDestinationRoute() {
+function FrenchAttractionRoute() {
   return <PlaceDetailPage place={Route.useLoaderData()} />;
 }

@@ -96,4 +96,21 @@ describe("place publishing rules", () => {
         .success,
     ).toBe(false);
   });
+
+  test("place detail routes render independently from their collection pages", async () => {
+    const routeTree = await Bun.file(new URL("../src/routeTree.gen.ts", import.meta.url)).text();
+
+    for (const routeId of [
+      "/destinations_/$slug",
+      "/attractions_/$destinationSlug/$slug",
+      "/fr_/destinations_/$slug",
+      "/fr_/attractions_/$destinationSlug/$slug",
+    ]) {
+      const routeStart = routeTree.indexOf(`id: '${routeId}'`);
+      expect(routeStart).toBeGreaterThan(-1);
+      expect(routeTree.slice(routeStart, routeStart + 220)).toContain(
+        "getParentRoute: () => rootRouteImport",
+      );
+    }
+  });
 });

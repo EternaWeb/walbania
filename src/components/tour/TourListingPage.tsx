@@ -562,7 +562,7 @@ function TourFinder({
   );
 }
 
-function TourCard({ tour, locale }: { tour: TourListingCard; locale: SiteLocale }) {
+export function TourCard({ tour, locale }: { tour: TourListingCard; locale: SiteLocale }) {
   const formatter = useMemo(
     () =>
       new Intl.NumberFormat(locale === "fr" ? "fr-FR" : "en-GB", {
@@ -605,7 +605,7 @@ function TourCard({ tour, locale }: { tour: TourListingCard; locale: SiteLocale 
   );
 }
 
-function Rail({ children, locale }: { children: React.ReactNode[]; locale: SiteLocale }) {
+export function Rail({ children, locale }: { children: React.ReactNode[]; locale: SiteLocale }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(false);
@@ -665,7 +665,7 @@ function Rail({ children, locale }: { children: React.ReactNode[]; locale: SiteL
   );
 }
 
-function TourRail({ tours, locale }: { tours: TourListingCard[]; locale: SiteLocale }) {
+export function TourRail({ tours, locale }: { tours: TourListingCard[]; locale: SiteLocale }) {
   return (
     <Rail locale={locale}>
       {tours.map((tour) => (

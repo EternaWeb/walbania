@@ -38,6 +38,13 @@ import { SiteMenu } from "../SiteMenu";
 import { SiteFooter as SharedSiteFooter } from "../SiteFooter";
 import { SiteHeader } from "../SiteHeader";
 import { TourItineraryMap } from "../TourItineraryMap";
+import {
+  DetailFacts,
+  DetailHero,
+  DetailHighlights,
+  DetailSectionNav,
+  SectionHeading,
+} from "./TourDetailPrimitives";
 import { SiteLocaleProvider, useLocalize } from "../../i18n";
 import type {
   TourDateOverride,
@@ -465,24 +472,6 @@ function ShareButton({ tour }: { tour: TourViewModel }) {
   );
 }
 
-function SectionHeading({
-  eyebrow,
-  title,
-  text,
-}: {
-  eyebrow?: string;
-  title: React.ReactNode;
-  text?: string;
-}) {
-  return (
-    <div className="section-heading">
-      {eyebrow && <span className="eyebrow">{eyebrow}</span>}
-      <h2>{title}</h2>
-      {text && <p>{text}</p>}
-    </div>
-  );
-}
-
 function Gallery({ tour }: { tour: TourViewModel }) {
   const copy = COPY[tour.locale];
   const [active, setActive] = useState<number | null>(null);
@@ -683,99 +672,60 @@ function TourContent({ tour }: { tour: TourViewModel }) {
     <div className="tour-page">
       <SiteHeader />
       <main>
-        <section className="tour-container hero-section">
-          <div className="hero-shell">
-            <div className="hero-grid">
-              <div className="hero-visual">
-                <img
-                  src={tour.heroImage}
-                  alt={tour.heroAlt}
-                  loading="eager"
-                  decoding="async"
-                  fetchPriority="high"
-                />
-                <div className="hero-ribbons">
-                  {tour.heroBadge && (
-                    <div className="hero-badge hero-badge-mobile">{tour.heroBadge}</div>
-                  )}
-                  {tour.gallery.length > 0 && (
-                    <a className="photo-count" href="#gallery">
-                      {copy.photos(tour.gallery.length)}
-                    </a>
-                  )}
-                </div>
+        <DetailHero
+          image={tour.heroImage}
+          imageAlt={tour.heroAlt}
+          badge={tour.heroBadge}
+          photoLink={
+            tour.gallery.length > 0
+              ? { href: "#gallery", label: copy.photos(tour.gallery.length) }
+              : undefined
+          }
+          info={
+            <>
+              <div className="location-label">
+                <MapPin size={16} /> {tour.locationLabel || tour.region}
               </div>
-              <div className="hero-copy">
-                {tour.heroBadge && (
-                  <div className="hero-badge hero-badge-desktop">{tour.heroBadge}</div>
-                )}
-                <div className="hero-copy-content">
-                  <div className="hero-info-row">
-                    <div className="location-label">
-                      <MapPin size={16} /> {tour.locationLabel || tour.region}
-                    </div>
-                    {tour.ratingCount > 0 && (
-                      <>
-                        <span className="rating">
-                          <Star size={17} fill="currentColor" /> {rating}
-                        </span>
-                        <a href="#reviews">{copy.reviews(tour.ratingCount)}</a>
-                      </>
-                    )}
-                    <span className="hero-duration">
-                      <Clock3 size={17} />{" "}
-                      {durationLabel(tour.durationValue, tour.durationUnit, tour.locale)}
-                    </span>
-                  </div>
-                  <h1>{tour.title}</h1>
-                  <p className="hero-intro">{tour.heroIntro}</p>
-                  <div className="hero-actions">
-                    <a className="primary-button hero-book" href="#booking">
-                      {copy.availability}
-                    </a>
-                    <ShareButton tour={tour} />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="hero-facts-strip">
-              <div className="hero-fact">
-                <span>{copy.duration}</span>
-                <strong>{durationLabel(tour.durationValue, tour.durationUnit, tour.locale)}</strong>
-              </div>
-              <div className="hero-fact">
-                <span>{copy.location}</span>
-                <strong>{tour.region}</strong>
-              </div>
-              <div className="hero-facts-action">
-                <a className="primary-button hero-book" href="#booking">
-                  {copy.availability}
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
+              {tour.ratingCount > 0 && (
+                <>
+                  <span className="rating">
+                    <Star size={17} fill="currentColor" /> {rating}
+                  </span>
+                  <a href="#reviews">{copy.reviews(tour.ratingCount)}</a>
+                </>
+              )}
+              <span className="hero-duration">
+                <Clock3 size={17} />
+                {durationLabel(tour.durationValue, tour.durationUnit, tour.locale)}
+              </span>
+            </>
+          }
+          title={tour.title}
+          intro={tour.heroIntro}
+          primaryAction={{ href: "#booking", label: copy.availability }}
+          secondaryAction={<ShareButton tour={tour} />}
+          facts={[
+            {
+              label: copy.duration,
+              value: durationLabel(tour.durationValue, tour.durationUnit, tour.locale),
+            },
+            { label: copy.location, value: tour.region },
+          ]}
+        />
 
         <div className="tour-container content-shell">
           <div className="content-main">
-            <nav className="section-nav" aria-label="Tour sections">
-              <a href="#overview">{copy.overview}</a>
-              <a href="#itinerary">{copy.itinerary}</a>
-              <a href="#included">{copy.details}</a>
-              {tour.ratingCount > 0 && <a href="#reviews">{copy.reviewsNav}</a>}
-            </nav>
+            <DetailSectionNav
+              label="Tour sections"
+              links={[
+                { href: "#overview", label: copy.overview },
+                { href: "#itinerary", label: copy.itinerary },
+                { href: "#included", label: copy.details },
+                ...(tour.ratingCount > 0 ? [{ href: "#reviews", label: copy.reviewsNav }] : []),
+              ]}
+            />
 
-            <section className="facts-panel" aria-label="Quick tour facts">
-              {facts.map(({ icon: Icon, label, value }) => (
-                <div className="fact" key={label}>
-                  <Icon size={20} />
-                  <div>
-                    <span>{label}</span>
-                    <strong>{value}</strong>
-                  </div>
-                </div>
-              ))}
-            </section>
+            <DetailFacts label="Quick tour facts" facts={facts} />
 
             <section id="overview" className="content-section overview-section">
               <SectionHeading eyebrow={copy.experience} title={tour.overviewTitle} />
@@ -791,22 +741,13 @@ function TourContent({ tour }: { tour: TourViewModel }) {
             {tour.highlights.length > 0 && (
               <section className="content-section highlights-section">
                 <SectionHeading eyebrow={copy.highlightsEyebrow} title={copy.highlights} />
-                <div className="highlight-shell">
-                  <div className="highlight-track">
-                    {tour.highlights.map((highlight, index) => {
-                      const Icon = ICONS[highlight.iconKey] ?? Sparkles;
-                      return (
-                        <article className="highlight-card" key={`${highlight.label}-${index}`}>
-                          <div className="highlight-icon">
-                            <Icon size={20} />
-                          </div>
-                          <h3>{highlight.label}</h3>
-                          <p>{highlight.text}</p>
-                        </article>
-                      );
-                    })}
-                  </div>
-                </div>
+                <DetailHighlights
+                  highlights={tour.highlights.map((highlight) => ({
+                    icon: ICONS[highlight.iconKey] ?? Sparkles,
+                    label: highlight.label,
+                    text: highlight.text,
+                  }))}
+                />
               </section>
             )}
 

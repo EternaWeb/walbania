@@ -1,455 +1,265 @@
 import {
-  ArrowRight,
   CalendarDays,
   Camera,
-  ChevronDown,
   Clock3,
-  Compass,
   Landmark,
   MapPin,
   Mountain,
   Navigation,
-  Sparkles,
-  Star,
   Sun,
   Utensils,
-  Users,
 } from "lucide-react";
 import { SiteFooter } from "../SiteFooter";
 import { SiteHeader } from "../SiteHeader";
 import { SiteLocaleProvider } from "../../i18n";
+import type { TourListingCard } from "../../lib/tours/types";
+import { TourRail } from "../tour/TourListingPage";
+import {
+  DetailFacts,
+  DetailHero,
+  DetailHighlights,
+  DetailSectionNav,
+  SectionHeading,
+} from "../tour/TourDetailPrimitives";
+import { AlbaniaDestinationMap } from "./AlbaniaDestinationMap";
 import "../../destination-detail.css";
 
 const images = {
   hero: "https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?w=1800&q=88",
-  castle: "https://images.unsplash.com/photo-1524230572899-a752b3835840?w=1000&q=84",
-  oldTown: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1000&q=84",
-  food: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1000&q=84",
-  river: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1000&q=84",
-  hills: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1000&q=84",
+  castle: "https://images.unsplash.com/photo-1524230572899-a752b3835840?w=1200&q=84",
+  oldTown: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1200&q=84",
+  river: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1200&q=84",
+  food: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&q=84",
+  hills: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1200&q=84",
 };
+
+const packages: TourListingCard[] = [
+  {
+    id: "berat-old-town",
+    title: "Berat Old Town, Castle & family lunch",
+    href: "/tour",
+    image: images.castle,
+    imageAlt: "Stone lanes and historic buildings in Berat",
+    duration: "Full day",
+    typeId: "small-group",
+    typeName: "Small group",
+    difficultyId: "easy",
+    priceEur: 79,
+    maxGroupSize: 10,
+    categoryIds: ["culture", "food"],
+    defaultAvailable: true,
+    dateOverrides: [],
+    featured: true,
+  },
+  {
+    id: "berat-wine",
+    title: "Berat flavours and vineyard escape",
+    href: "/tour",
+    image: images.food,
+    imageAlt: "A table filled with local Albanian food",
+    duration: "2 days",
+    typeId: "private",
+    typeName: "Private",
+    difficultyId: "easy",
+    priceEur: 245,
+    maxGroupSize: 6,
+    categoryIds: ["food", "wine"],
+    defaultAvailable: true,
+    dateOverrides: [],
+    featured: true,
+  },
+  {
+    id: "berat-osum",
+    title: "Berat, Osum Canyon & Tomorr foothills",
+    href: "/tour",
+    image: images.hills,
+    imageAlt: "Mountain landscape near Berat",
+    duration: "3 days",
+    typeId: "small-group",
+    typeName: "Small group",
+    difficultyId: "moderate",
+    priceEur: 389,
+    maxGroupSize: 8,
+    categoryIds: ["nature", "walking"],
+    defaultAvailable: true,
+    dateOverrides: [],
+    featured: true,
+  },
+];
 
 const highlights = [
   {
     icon: Landmark,
-    title: "Berat Castle",
-    text: "Walk through a living citadel where stone lanes, Byzantine churches and family homes share the hilltop.",
+    label: "Berat Castle",
+    text: "Walk through a living citadel where stone lanes, churches and family homes share the hilltop.",
   },
   {
     icon: Camera,
-    title: "Mangalem quarter",
-    text: "See the layered Ottoman houses that gave Berat its much-loved name: the city of a thousand windows.",
+    label: "Mangalem quarter",
+    text: "See the Ottoman houses that gave Berat its name: the city of a thousand windows.",
   },
   {
     icon: Utensils,
-    title: "Table-to-table culture",
-    text: "Taste slow-cooked local dishes, mountain herbs and wines made in the countryside surrounding the city.",
+    label: "Local tables",
+    text: "Taste slow-cooked dishes, mountain herbs and wines made in the surrounding countryside.",
   },
   {
     icon: Mountain,
-    title: "Tomorr landscapes",
-    text: "Pair the old town with canyon walks, mountain viewpoints and quiet villages beyond the Osum valley.",
+    label: "Tomorr landscapes",
+    text: "Pair the old town with canyon walks, mountain viewpoints and quiet villages beyond the valley.",
   },
-] as const;
-
-const areas = [
-  {
-    number: "01",
-    name: "Mangalem",
-    label: "For first-time visitors",
-    text: "White Ottoman houses climb above the river in Berat's most recognisable neighbourhood. Stay here for stone lanes, cafes and easy walks to the castle.",
-    image: images.oldTown,
-  },
-  {
-    number: "02",
-    name: "Gorica",
-    label: "For a slower rhythm",
-    text: "Cross the old bridge for leafy lanes, guesthouses and the classic view back toward Mangalem. Evenings feel calm and wonderfully local.",
-    image: images.river,
-  },
-  {
-    number: "03",
-    name: "The castle quarter",
-    label: "For history lovers",
-    text: "Wake inside the ancient walls and explore before the day visitors arrive. Expect steep cobbles, wide views and a village atmosphere.",
-    image: images.castle,
-  },
-] as const;
-
-const packages = [
-  {
-    badge: "Most loved",
-    image: images.castle,
-    meta: "Full day · Small group",
-    title: "Berat Old Town, Castle & family lunch",
-    description:
-      "A thoughtfully paced introduction to Berat with a local guide and a home-cooked lunch above the river.",
-    rating: "4.9",
-    reviews: "86 reviews",
-    price: "€79",
-  },
-  {
-    badge: "Food & wine",
-    image: images.food,
-    meta: "2 days · Private",
-    title: "Berat flavours and vineyard escape",
-    description:
-      "Pair the UNESCO old town with a countryside winery, seasonal tastings and an overnight boutique stay.",
-    rating: "4.8",
-    reviews: "41 reviews",
-    price: "€245",
-  },
-  {
-    badge: "Active",
-    image: images.hills,
-    meta: "3 days · Small group",
-    title: "Berat, Osum Canyon & Tomorr foothills",
-    description:
-      "Go beyond the city with canyon scenery, village hospitality and a guided walk through the surrounding landscape.",
-    rating: "4.9",
-    reviews: "33 reviews",
-    price: "€389",
-  },
-] as const;
-
-const faqs = [
-  {
-    question: "How many days should I spend in Berat?",
-    answer:
-      "Two nights is a lovely first visit: one day for the old town and castle, then another for a winery, canyon or countryside experience. A day trip works, but misses Berat's relaxed evenings.",
-  },
-  {
-    question: "Is Berat easy to explore on foot?",
-    answer:
-      "The riverside neighbourhoods are compact and walkable. The castle climb is steep and cobbled, so comfortable shoes are essential; taxis can take you close to the upper entrance.",
-  },
-  {
-    question: "Can Berat be combined with other destinations?",
-    answer:
-      "Yes. Berat fits naturally between Tirana and Gjirokastër, or as a cultural stop before the Albanian Riviera. Our multi-day packages can connect the route with private transport.",
-  },
-] as const;
-
-function SectionHeading({
-  eyebrow,
-  title,
-  text,
-}: {
-  eyebrow: string;
-  title: string;
-  text?: string;
-}) {
-  return (
-    <div className="destination-section-heading">
-      <span className="destination-eyebrow">{eyebrow}</span>
-      <h2>{title}</h2>
-      {text && <p>{text}</p>}
-    </div>
-  );
-}
-
-function PackageCard({ tour }: { tour: (typeof packages)[number] }) {
-  return (
-    <article className="destination-package-card">
-      <a href="/tour" className="destination-package-image" aria-label={`View ${tour.title}`}>
-        <img src={tour.image} alt="" loading="lazy" decoding="async" />
-        <span>{tour.badge}</span>
-      </a>
-      <div className="destination-package-copy">
-        <span className="destination-package-meta">{tour.meta}</span>
-        <h3>
-          <a href="/tour">{tour.title}</a>
-        </h3>
-        <p>{tour.description}</p>
-        <div className="destination-package-rating">
-          <span>
-            <Star size={15} fill="currentColor" /> {tour.rating}
-          </span>
-          <span>{tour.reviews}</span>
-        </div>
-        <div className="destination-package-footer">
-          <span>
-            From <strong>{tour.price}</strong> / person
-          </span>
-          <a href="/tour" aria-label={`Explore ${tour.title}`}>
-            <ArrowRight size={18} />
-          </a>
-        </div>
-      </div>
-    </article>
-  );
-}
+];
 
 function DestinationContent() {
   return (
-    <div className="destination-page">
+    <div className="tour-page destination-page">
       <SiteHeader />
       <main>
-        <section className="destination-hero page-inset">
-          <div className="destination-hero-media">
-            <img
-              src={images.hero}
-              alt="Historic hillside houses overlooking Berat"
-              loading="eager"
-              decoding="async"
-              fetchPriority="high"
-            />
-            <div className="destination-hero-overlay" />
-            <nav className="destination-breadcrumb" aria-label="Breadcrumb">
-              <a href="/">Home</a>
-              <span>/</span>
-              <a href="/#destinations">Destinations</a>
-              <span>/</span>
-              <strong>Berat</strong>
-            </nav>
-            <div className="destination-hero-copy">
-              <span className="destination-kicker">UNESCO World Heritage · Southern Albania</span>
-              <h1>Berat</h1>
-              <p>A city of a thousand windows, lived in one unhurried moment at a time.</p>
-            </div>
-            <a href="#packages" className="destination-hero-cta">
-              Explore Berat tours <ArrowRight size={18} />
-            </a>
-          </div>
-          <div className="destination-facts-strip" aria-label="Berat at a glance">
-            <div>
-              <MapPin size={19} />
-              <span>
-                <small>Region</small>
-                <strong>Central Albania</strong>
+        <DetailHero
+          image={images.hero}
+          imageAlt="Historic hillside houses overlooking Berat"
+          info={
+            <>
+              <div className="location-label">
+                <MapPin size={16} /> Berat, Central Albania
+              </div>
+              <span className="hero-duration">
+                <Clock3 size={17} /> Ideal for 2–3 days
               </span>
-            </div>
-            <div>
-              <CalendarDays size={19} />
-              <span>
-                <small>Best time</small>
-                <strong>April–October</strong>
-              </span>
-            </div>
-            <div>
-              <Clock3 size={19} />
-              <span>
-                <small>Ideal stay</small>
-                <strong>2–3 days</strong>
-              </span>
-            </div>
-            <div>
-              <Navigation size={19} />
-              <span>
-                <small>From Tirana</small>
-                <strong>2 hours</strong>
-              </span>
-            </div>
-          </div>
-        </section>
+            </>
+          }
+          title="Berat"
+          intro="A city of a thousand windows, lived in one unhurried moment at a time."
+          primaryAction={{ href: "#tours", label: "Explore Berat tours" }}
+          facts={[
+            { label: "Best time", value: "April–October" },
+            { label: "From Tirana", value: "2 hours" },
+          ]}
+        />
 
-        <nav className="destination-section-nav page-inset" aria-label="Destination sections">
-          <a href="#overview">Overview</a>
-          <a href="#highlights">Highlights</a>
-          <a href="#areas">Where to stay</a>
-          <a href="#packages">Tours</a>
-          <a href="#planning">Plan your visit</a>
-        </nav>
-
-        <section id="overview" className="destination-intro destination-container">
-          <SectionHeading
-            eyebrow="Meet Berat"
-            title="History on the hillside. Life along the river."
+        <div className="tour-container destination-content">
+          <DetailSectionNav
+            label="Destination sections"
+            links={[
+              { href: "#story", label: "Discover Berat" },
+              { href: "#map", label: "Explore the map" },
+              { href: "#tours", label: "Berat tours" },
+            ]}
           />
-          <div className="destination-intro-grid">
-            <p className="destination-lead">
-              Berat is the kind of place that reveals itself slowly: in the evening light on
-              Mangalem's windows, a conversation over mountain tea, and the footsteps of families
-              who still call the castle home.
-            </p>
-            <div>
-              <p>
-                The Osum River divides two historic quarters and ties together centuries of Roman,
-                Byzantine and Ottoman history. Yet Berat never feels like a museum. Cafes spill onto
-                the promenade, vines shade stone courtyards and the city settles into a gentle
-                rhythm after sunset.
-              </p>
-              <p>
-                Come for the architecture, stay for the hospitality, and leave time for the farms,
-                vineyards and dramatic landscapes just beyond the old town.
-              </p>
-            </div>
-          </div>
-        </section>
 
-        <section id="highlights" className="destination-highlights">
-          <div className="destination-container">
-            <SectionHeading
-              eyebrow="Why you'll love it"
-              title="The essential Berat experiences"
-              text="Four sides of the city, brought together by people who know every lane."
-            />
-            <div className="destination-highlight-grid">
-              {highlights.map(({ icon: Icon, title, text }) => (
-                <article key={title}>
-                  <span>
-                    <Icon size={21} />
-                  </span>
-                  <h3>{title}</h3>
-                  <p>{text}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
+          <DetailFacts
+            label="Berat at a glance"
+            facts={[
+              { icon: MapPin, label: "Region", value: "Central Albania" },
+              { icon: CalendarDays, label: "Best time", value: "April–October" },
+              { icon: Clock3, label: "Ideal stay", value: "2–3 days" },
+              { icon: Navigation, label: "From Tirana", value: "2 hours" },
+            ]}
+          />
 
-        <section className="destination-story destination-container">
-          <div className="destination-story-grid">
-            <div className="destination-story-primary">
-              <img
-                src={images.castle}
-                alt="Stone lanes and historic architecture in Berat"
-                loading="lazy"
+          <section id="story" className="destination-stack-section">
+            <div className="destination-stack-intro">
+              <SectionHeading
+                title="Three ways to understand Berat"
+                text="Scroll through the city's story, the places that shape it, and the best way to plan your stay."
               />
             </div>
-            <div className="destination-story-copy">
-              <span className="destination-eyebrow">A living landmark</span>
-              <h2>Inside the walls, Berat is still home.</h2>
-              <p>
-                Kalaja is one of the rare fortified quarters in the Balkans where daily life never
-                left. Gardens grow behind old stone walls and neighbours pause to talk beneath
-                centuries-old churches.
-              </p>
-              <div className="destination-quote">
-                <Sparkles size={20} />
-                <blockquote>
-                  “Go early for the quiet paths. Stay late for the golden view across the valley.”
-                </blockquote>
-                <span>— Elira, local host</span>
-              </div>
-            </div>
-            <div className="destination-story-secondary">
-              <img
-                src={images.river}
-                alt="River and mountain landscape near Berat"
-                loading="lazy"
-              />
-            </div>
-          </div>
-        </section>
 
-        <section id="areas" className="destination-areas">
-          <div className="destination-container">
+            <div className="destination-story-stack">
+              <article className="destination-story-card destination-story-card-one">
+                <div className="destination-story-media">
+                  <img
+                    src={images.castle}
+                    alt="Historic stone architecture inside Berat Castle"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div className="destination-story-copy">
+                  <SectionHeading
+                    title="A living city inside ancient walls"
+                    text="Berat's history is not kept behind glass. Families still live within the castle, gardens grow behind stone walls and neighbours pause beneath centuries-old churches. Below, Mangalem and Gorica face one another across the Osum River in layers of white Ottoman houses."
+                  />
+                  <p>
+                    Come for the architecture, but leave enough time for the rhythm of daily life:
+                    morning coffee beside the river, a slow castle walk and the old town turning
+                    gold before sunset.
+                  </p>
+                </div>
+              </article>
+
+              <article className="destination-story-card destination-story-card-two">
+                <div className="destination-story-copy">
+                  <SectionHeading
+                    title="The places and flavours that make Berat"
+                    text="The essential experiences are close enough to connect in one thoughtful day, yet distinctive enough to reward a longer stay."
+                  />
+                  <DetailHighlights highlights={highlights} />
+                </div>
+                <div className="destination-story-media">
+                  <img
+                    src={images.oldTown}
+                    alt="Old town streets and traditional architecture"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              </article>
+
+              <article className="destination-story-card destination-story-card-three">
+                <div className="destination-story-media">
+                  <img
+                    src={images.river}
+                    alt="River and mountain landscape near Berat"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div className="destination-story-copy">
+                  <SectionHeading
+                    title="Plan for warm days and slow evenings"
+                    text="Spring and autumn bring comfortable walking weather and quieter lanes. Summer is lively and sun-filled, so plan the castle early and keep afternoons for long lunches, vineyards or the river."
+                  />
+                  <div className="weather-stats destination-weather-stats">
+                    <div>
+                      <Sun size={23} />
+                      <strong>28°C</strong>
+                      <span>Average summer high</span>
+                    </div>
+                    <div>
+                      <CalendarDays size={23} />
+                      <strong>Apr–May</strong>
+                      <span>Best for spring walks</span>
+                    </div>
+                    <div>
+                      <Utensils size={23} />
+                      <strong>Sep–Oct</strong>
+                      <span>Harvest and local food</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section id="map" className="content-section destination-map-section">
             <SectionHeading
-              eyebrow="Find your corner"
-              title="Where to stay in Berat"
-              text="Three neighbourhoods, each with a distinct view of the city."
+              title="Berat on the map of Albania"
+              text="Berat stays highlighted on this page. Touch another location to preview it, then choose whether to open its destination page."
             />
-            <div className="destination-area-list">
-              {areas.map((area) => (
-                <article key={area.name}>
-                  <div className="destination-area-image">
-                    <img src={area.image} alt="" loading="lazy" decoding="async" />
-                    <span>{area.number}</span>
-                  </div>
-                  <div className="destination-area-copy">
-                    <span>{area.label}</span>
-                    <h3>{area.name}</h3>
-                    <p>{area.text}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
+            <AlbaniaDestinationMap activeSlug="berat" />
+          </section>
 
-        <section id="packages" className="destination-packages destination-container">
-          <div className="destination-packages-heading">
+          <section id="tours" className="content-section destination-tours-section">
             <SectionHeading
-              eyebrow="Handpicked journeys"
               title="Ways to experience Berat"
-              text="Flexible tours designed with trusted local guides, thoughtful pacing and plenty of room for discovery."
+              text="The same tour cards and controls used across our tour catalogue, showing sample packages for this destination."
             />
-            <a href="/tour">
-              View all tours <ArrowRight size={17} />
-            </a>
-          </div>
-          <div className="destination-package-grid">
-            {packages.map((tour) => (
-              <PackageCard tour={tour} key={tour.title} />
-            ))}
-          </div>
-        </section>
-
-        <section id="planning" className="destination-planning">
-          <div className="destination-container">
-            <div className="destination-planning-copy">
-              <SectionHeading eyebrow="Plan your visit" title="Berat through the seasons" />
-              <p>
-                Spring and autumn bring warm walking weather and quieter lanes. Summer is lively and
-                sun-filled; plan castle walks early and keep afternoons for long lunches or the
-                river. Winter is calm, atmospheric and made for slow cultural weekends.
-              </p>
-              <div className="destination-planning-notes">
-                <span>
-                  <Sun size={19} /> 28°C average summer high
-                </span>
-                <span>
-                  <Users size={19} /> Quieter in April, May & October
-                </span>
-              </div>
+            <div className="destination-tour-rail">
+              <TourRail tours={packages} locale="en" />
             </div>
-            <div className="destination-season-grid">
-              {[
-                ["Mar–May", "Fresh hillsides", "Mild days for walking and bright countryside."],
-                [
-                  "Jun–Aug",
-                  "Long golden evenings",
-                  "Lively streets, warm nights and vineyard visits.",
-                ],
-                [
-                  "Sep–Nov",
-                  "Harvest season",
-                  "Soft light, local produce and comfortable temperatures.",
-                ],
-                [
-                  "Dec–Feb",
-                  "Quiet cultural stays",
-                  "Peaceful landmarks and cosy traditional dining.",
-                ],
-              ].map(([months, title, text], index) => (
-                <article className={index === 2 ? "is-recommended" : ""} key={months}>
-                  {index === 2 && <span>Our pick</span>}
-                  <small>{months}</small>
-                  <h3>{title}</h3>
-                  <p>{text}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="destination-faq destination-container">
-          <SectionHeading eyebrow="Good to know" title="Planning questions, answered" />
-          <div className="destination-faq-list">
-            {faqs.map((faq, index) => (
-              <details key={faq.question} open={index === 0}>
-                <summary>
-                  <span>{faq.question}</span>
-                  <ChevronDown size={20} />
-                </summary>
-                <p>{faq.answer}</p>
-              </details>
-            ))}
-          </div>
-        </section>
-
-        <section className="destination-contact page-inset">
-          <div>
-            <span className="destination-eyebrow">Made for you</span>
-            <h2>Not sure which Berat experience fits?</h2>
-            <p>Tell our Albania team how you like to travel and we'll shape the right route.</p>
-          </div>
-          <a href="#contact">
-            Talk with a local expert <ArrowRight size={18} />
-          </a>
-          <Compass className="destination-contact-mark" aria-hidden="true" />
-        </section>
+          </section>
+        </div>
       </main>
       <SiteFooter />
     </div>

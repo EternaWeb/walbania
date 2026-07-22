@@ -567,6 +567,7 @@ export function TourEditor({
         media: [
           ...retained,
           {
+            assetId: confirmed.assetId,
             role,
             storagePath: confirmed.path,
             publicUrl: confirmed.publicUrl,
@@ -582,6 +583,7 @@ export function TourEditor({
       );
       setMediaAssets((current) => [
         {
+          assetId: confirmed.assetId,
           storagePath: confirmed.path,
           publicUrl: confirmed.publicUrl,
           altEn: "",
@@ -628,6 +630,7 @@ export function TourEditor({
           media: [
             ...retained,
             {
+              assetId: asset.assetId,
               role,
               storagePath: asset.storagePath,
               publicUrl: asset.publicUrl,
@@ -1442,8 +1445,10 @@ export function TourEditor({
               <section className="admin-media-library" aria-labelledby="media-library-title">
                 <div className="admin-media-library-header">
                   <div>
-                    <h3 id="media-library-title">Uploaded image library</h3>
-                    <p>Small previews of every image uploaded for this tour.</p>
+                    <h3 id="media-library-title">Site-wide image library</h3>
+                    <p>
+                      Reuse uploaded files or image URLs across tours, destinations and attractions.
+                    </p>
                   </div>
                   <label className="admin-media-search">
                     <Search size={16} aria-hidden="true" />

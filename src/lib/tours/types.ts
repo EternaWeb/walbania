@@ -37,6 +37,7 @@ export type TourHighlight = {
 
 export type TourMedia = {
   id?: string;
+  assetId?: string;
   role: TourMediaRole;
   storagePath: string;
   publicUrl: string;
@@ -46,6 +47,7 @@ export type TourMedia = {
 };
 
 export type TourMediaAsset = {
+  assetId?: string;
   storagePath: string;
   publicUrl: string;
   altEn: string;

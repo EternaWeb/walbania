@@ -398,3 +398,9 @@ on conflict (id) do update set
   allowed_mime_types = excluded.allowed_mime_types;
 
 commit;
+
+-- Existing projects and fresh installs should next run:
+--   migrations/202607210001_tour_duration_units.sql
+--   migrations/202607210002_reuse_tour_media.sql
+--   migrations/202607220001_places_and_global_media.sql
+-- The last migration adds the dynamic destinations/attractions CMS and shared media library.

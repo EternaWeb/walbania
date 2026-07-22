@@ -1,9 +1,12 @@
 import {
   Compass,
+  Images,
+  Landmark,
   LayoutDashboard,
   LogOut,
   Menu,
   MessageSquareText,
+  MapPinned,
   Settings2,
   X,
 } from "lucide-react";
@@ -14,6 +17,9 @@ import { logoutAdminFn } from "../../lib/admin/auth";
 const NAVIGATION = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/tours", label: "Tours", icon: Compass },
+  { href: "/admin/destinations", label: "Destinations", icon: MapPinned },
+  { href: "/admin/attractions", label: "Attractions", icon: Landmark },
+  { href: "/admin/media", label: "Media library", icon: Images },
   { href: "/admin/reviews", label: "Reviews", icon: MessageSquareText },
   { href: "/admin/taxonomies", label: "Categories & types", icon: Settings2 },
 ];

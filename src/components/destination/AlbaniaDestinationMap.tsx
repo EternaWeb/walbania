@@ -1,11 +1,12 @@
 import type { FeatureCollection, Point } from "geojson";
-import { AlertCircle, ArrowRight, LocateFixed, MapPin, RefreshCw, X } from "lucide-react";
+import { AlertCircle, ArrowRight, Landmark, LocateFixed, MapPin, RefreshCw, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { GeoJSONSource, Map as MapLibreMap, MapLayerMouseEvent } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 export type DestinationMapLocation = {
   slug: string;
+  kind: "destination" | "attraction";
   name: string;
   region: string;
   summary: string;
@@ -14,18 +15,20 @@ export type DestinationMapLocation = {
   coordinates: readonly [longitude: number, latitude: number];
 };
 
-export const ALBANIA_DESTINATIONS: DestinationMapLocation[] = [
+const ALBANIA_DESTINATIONS: DestinationMapLocation[] = [
   {
     slug: "berat",
+    kind: "destination",
     name: "Berat",
     region: "Central Albania",
     summary: "Ottoman quarters, a living castle and slow evenings beside the Osum River.",
     image: "https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?w=700&q=82",
-    href: "/destination/berat",
+    href: "/destinations/berat",
     coordinates: [19.9437, 40.7058],
   },
   {
     slug: "tirana",
+    kind: "destination",
     name: "Tirana",
     region: "Central Albania",
     summary: "Creative neighbourhoods, vivid history and Albania's most energetic food scene.",
@@ -35,6 +38,7 @@ export const ALBANIA_DESTINATIONS: DestinationMapLocation[] = [
   },
   {
     slug: "theth",
+    kind: "destination",
     name: "Theth",
     region: "Albanian Alps",
     summary: "A stone village framed by high peaks, waterfalls and celebrated mountain trails.",
@@ -44,6 +48,7 @@ export const ALBANIA_DESTINATIONS: DestinationMapLocation[] = [
   },
   {
     slug: "gjirokaster",
+    kind: "destination",
     name: "Gjirokastër",
     region: "Southern Albania",
     summary: "Slate rooftops, fortress views and beautifully preserved Ottoman houses.",
@@ -53,6 +58,7 @@ export const ALBANIA_DESTINATIONS: DestinationMapLocation[] = [
   },
   {
     slug: "sarande",
+    kind: "destination",
     name: "Sarandë",
     region: "Albanian Riviera",
     summary: "A bright Ionian base for beaches, ancient Butrint and the southern coast.",
@@ -76,6 +82,8 @@ function markerData(
       properties: {
         slug: location.slug,
         name: location.name,
+        kind: location.kind,
+        icon: location.kind === "attraction" ? "◆" : "●",
         active: location.slug === activeSlug,
         selected: location.slug === selectedSlug,
       },
@@ -161,7 +169,7 @@ export function AlbaniaDestinationMap({
 
           map.addSource("destination-locations", {
             type: "geojson",
-            data: markerData(locations, activeSlug, selectedSlug),
+            data: markerData(locations, activeSlug, activeSlug),
           });
           map.addLayer({
             id: "destination-pin-halo",
@@ -208,6 +216,18 @@ export function AlbaniaDestinationMap({
               "text-halo-width": 2,
             },
           });
+          map.addLayer({
+            id: "destination-pin-icons",
+            type: "symbol",
+            source: "destination-locations",
+            layout: {
+              "text-field": ["get", "icon"],
+              "text-font": ["Noto Sans Bold"],
+              "text-size": ["case", ["==", ["get", "kind"], "attraction"], 15, 12],
+              "text-allow-overlap": true,
+            },
+            paint: { "text-color": "#FFFFFF" },
+          });
 
           const selectLocation = (event: MapLayerMouseEvent) => {
             const slug = event.features?.[0]?.properties?.slug;
@@ -223,15 +243,18 @@ export function AlbaniaDestinationMap({
           };
 
           map.on("click", "destination-pins", selectLocation);
+          map.on("click", "destination-pin-icons", selectLocation);
           map.on("click", "destination-pin-labels", selectLocation);
-          ["destination-pins", "destination-pin-labels"].forEach((layerId) => {
-            map?.on("mouseenter", layerId, () => {
-              if (map) map.getCanvas().style.cursor = "pointer";
-            });
-            map?.on("mouseleave", layerId, () => {
-              if (map) map.getCanvas().style.cursor = "";
-            });
-          });
+          ["destination-pins", "destination-pin-icons", "destination-pin-labels"].forEach(
+            (layerId) => {
+              map?.on("mouseenter", layerId, () => {
+                if (map) map.getCanvas().style.cursor = "pointer";
+              });
+              map?.on("mouseleave", layerId, () => {
+                if (map) map.getCanvas().style.cursor = "";
+              });
+            },
+          );
 
           setStatus("ready");
         });
@@ -311,11 +334,19 @@ export function AlbaniaDestinationMap({
             </button>
             <img src={selectedLocation.image} alt="" />
             <div>
-              <span>{selectedLocation.region}</span>
+              <span className="destination-map-place-kind">
+                {selectedLocation.kind === "attraction" ? (
+                  <Landmark size={12} />
+                ) : (
+                  <MapPin size={12} />
+                )}
+                {selectedLocation.kind === "attraction" ? "Attraction" : "Destination"}
+                {selectedLocation.region ? ` · ${selectedLocation.region}` : ""}
+              </span>
               <strong>{selectedLocation.name}</strong>
               <p>{selectedLocation.summary}</p>
               <a href={selectedLocation.href}>
-                Open destination <ArrowRight size={15} />
+                Open {selectedLocation.kind} <ArrowRight size={15} />
               </a>
             </div>
           </div>
@@ -328,6 +359,7 @@ export function AlbaniaDestinationMap({
                 key={location.slug}
                 onClick={() => selectFromControls(location)}
               >
+                {location.kind === "attraction" ? <Landmark size={13} /> : <MapPin size={13} />}
                 {location.name}
               </button>
             ))}

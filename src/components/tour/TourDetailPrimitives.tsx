@@ -17,6 +17,7 @@ export function DetailHero({
   primaryAction,
   secondaryAction,
   facts,
+  mobileBreadcrumb,
 }: {
   image: string;
   imageAlt: string;
@@ -28,6 +29,7 @@ export function DetailHero({
   primaryAction: { href: string; label: string };
   secondaryAction?: ReactNode;
   facts: DetailHeroFact[];
+  mobileBreadcrumb?: Array<{ href?: string; label: string }>;
 }) {
   return (
     <section className="tour-container hero-section">
@@ -43,6 +45,15 @@ export function DetailHero({
                 </a>
               )}
             </div>
+            {mobileBreadcrumb?.length ? (
+              <ol className="hero-mobile-breadcrumb" aria-label="Breadcrumb">
+                {mobileBreadcrumb.map((item, index) => (
+                  <li key={`${item.label}-${index}`}>
+                    {item.href ? <a href={item.href}>{item.label}</a> : <span>{item.label}</span>}
+                  </li>
+                ))}
+              </ol>
+            ) : null}
           </div>
           <div className="hero-copy">
             {badge && <div className="hero-badge hero-badge-desktop">{badge}</div>}

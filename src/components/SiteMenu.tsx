@@ -8,8 +8,8 @@ type MenuGroup = {
   items?: { label: string; href: string }[];
 };
 
-const getMenuGroups = (aboutPath: string): MenuGroup[] => [
-  { label: "Home", href: "/" },
+const getMenuGroups = (aboutPath: string, localePrefix: string): MenuGroup[] => [
+  { label: "Home", href: `${localePrefix}/` },
   {
     label: "Explore Albania",
     items: [
@@ -70,7 +70,8 @@ const getMenuGroups = (aboutPath: string): MenuGroup[] => [
     ],
   },
   { label: "Offers", href: "#offers" },
-  { label: "Destinations", href: "#destinations" },
+  { label: "Destinations", href: `${localePrefix}/destinations` },
+  { label: "Attractions", href: `${localePrefix}/attractions` },
   {
     label: "About",
     items: [
@@ -87,7 +88,10 @@ export function SiteMenu() {
   const menuId = useId();
   const [isOpen, setIsOpen] = useState(false);
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
-  const menuGroups = getMenuGroups(locale === "fr" ? "/fr/" : "/about");
+  const menuGroups = getMenuGroups(
+    locale === "fr" ? "/fr/" : "/about",
+    locale === "fr" ? "/fr" : "",
+  );
 
   useEffect(() => {
     if (!isOpen) return;

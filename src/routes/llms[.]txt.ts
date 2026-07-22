@@ -2,22 +2,28 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { getSiteUrl } from "../lib/supabase";
 import { listPublishedTourEntries } from "../lib/tours/server";
+import { listPublishedPlaceEntries } from "../lib/places/server";
 
 export const Route = createFileRoute("/llms.txt")({
   server: {
     handlers: {
       GET: async () => {
         const baseUrl = getSiteUrl();
-        const entries = await listPublishedTourEntries();
+        const [entries, places] = await Promise.all([
+          listPublishedTourEntries(),
+          listPublishedPlaceEntries(),
+        ]);
         const lines = [
           "# WonderAlbania",
           "",
           "> Bilingual, locally designed tours and travel experiences across Albania.",
           "",
-          "## Tour collections",
+          "## Collections",
           "",
           `- [All tours (EN)](${baseUrl}/tour): Browse every published WonderAlbania tour.`,
           `- [Tous les circuits (FR)](${baseUrl}/fr/tour): Découvrez tous les circuits WonderAlbania publiés.`,
+          `- [Destinations (EN)](${baseUrl}/destinations): Explore Albanian cities and linked tours.`,
+          `- [Attractions (EN)](${baseUrl}/attractions): Explore landmarks and the tours that visit them.`,
           "",
           "## Published tours",
           "",
@@ -26,6 +32,13 @@ export const Route = createFileRoute("/llms.txt")({
             const language = entry.locale === "fr" ? "FR" : "EN";
             return `- [${entry.title} (${language})](${baseUrl}${path}): ${entry.seo_description}`;
           }),
+          "",
+          "## Published destinations and attractions",
+          "",
+          ...places.map(
+            (entry) =>
+              `- [${entry.title} (${entry.locale.toUpperCase()})](${baseUrl}${entry.href}): ${entry.seoDescription}`,
+          ),
           "",
           `Sitemap: ${baseUrl}/sitemap.xml`,
         ];

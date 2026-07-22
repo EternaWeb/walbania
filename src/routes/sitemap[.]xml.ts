@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { getSiteUrl } from "../lib/supabase";
 import { listPublishedTourEntries } from "../lib/tours/server";
+import { listPublishedPlaceEntries } from "../lib/places/server";
 
 function escapeXml(value: string) {
   return value
@@ -24,7 +25,10 @@ export const Route = createFileRoute("/sitemap.xml")({
     handlers: {
       GET: async () => {
         const baseUrl = getSiteUrl();
-        const entries = await listPublishedTourEntries();
+        const [entries, placeRows] = await Promise.all([
+          listPublishedTourEntries(),
+          listPublishedPlaceEntries(),
+        ]);
         const byTour = new Map<
           string,
           Partial<Record<"en" | "fr", { slug: string; updatedAt: string }>>
@@ -59,6 +63,46 @@ export const Route = createFileRoute("/sitemap.xml")({
               default: `${baseUrl}/tour`,
             },
           },
+          {
+            loc: `${baseUrl}/destinations`,
+            lastmod: "",
+            priority: "0.9",
+            alternates: {
+              en: `${baseUrl}/destinations`,
+              fr: `${baseUrl}/fr/destinations`,
+              default: `${baseUrl}/destinations`,
+            },
+          },
+          {
+            loc: `${baseUrl}/fr/destinations`,
+            lastmod: "",
+            priority: "0.9",
+            alternates: {
+              en: `${baseUrl}/destinations`,
+              fr: `${baseUrl}/fr/destinations`,
+              default: `${baseUrl}/destinations`,
+            },
+          },
+          {
+            loc: `${baseUrl}/attractions`,
+            lastmod: "",
+            priority: "0.9",
+            alternates: {
+              en: `${baseUrl}/attractions`,
+              fr: `${baseUrl}/fr/attractions`,
+              default: `${baseUrl}/attractions`,
+            },
+          },
+          {
+            loc: `${baseUrl}/fr/attractions`,
+            lastmod: "",
+            priority: "0.9",
+            alternates: {
+              en: `${baseUrl}/attractions`,
+              fr: `${baseUrl}/fr/attractions`,
+              default: `${baseUrl}/attractions`,
+            },
+          },
         ];
         const tourEntries: SitemapEntry[] = [...byTour.values()].flatMap((tour) => {
           if (!tour.en || !tour.fr) return [];
@@ -79,7 +123,23 @@ export const Route = createFileRoute("/sitemap.xml")({
             },
           ];
         });
-        const urls = [...staticEntries, ...tourEntries]
+        const byPlace = new Map<string, Partial<Record<"en" | "fr", (typeof placeRows)[number]>>>();
+        for (const entry of placeRows) {
+          const place = byPlace.get(entry.id) ?? {};
+          place[entry.locale] = entry;
+          byPlace.set(entry.id, place);
+        }
+        const placeEntries: SitemapEntry[] = [...byPlace.values()].flatMap((place) => {
+          if (!place.en || !place.fr) return [];
+          const enUrl = `${baseUrl}${place.en.href}`;
+          const frUrl = `${baseUrl}${place.fr.href}`;
+          const alternates = { en: enUrl, fr: frUrl, default: enUrl };
+          return [
+            { loc: enUrl, lastmod: place.en.updatedAt, priority: "0.8", alternates },
+            { loc: frUrl, lastmod: place.fr.updatedAt, priority: "0.8", alternates },
+          ];
+        });
+        const urls = [...staticEntries, ...tourEntries, ...placeEntries]
           .map((entry) => {
             const alternates = entry.alternates
               ? [

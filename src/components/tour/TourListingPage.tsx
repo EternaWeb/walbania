@@ -30,7 +30,7 @@ const DESTINATIONS = [
   {
     name: "Berat",
     image: "https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?w=900&q=82",
-    href: "/destination/berat",
+    href: "/destinations/berat",
   },
   {
     name: "Gjirokastër",

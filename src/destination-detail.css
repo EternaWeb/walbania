@@ -2,6 +2,39 @@
   background: #fff;
 }
 
+.site-header-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: "Geist Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.site-header-breadcrumb li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.site-header-breadcrumb li:not(:last-child)::after {
+  content: "/";
+  color: var(--muted);
+}
+
+.site-header-breadcrumb a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.hero-mobile-breadcrumb {
+  display: none;
+}
+
 .destination-content {
   padding-bottom: 100px;
 }
@@ -222,6 +255,12 @@
   font-size: 9px;
 }
 
+.destination-map-preview .destination-map-place-kind {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .destination-map-preview strong {
   display: block;
   margin-top: 5px;
@@ -275,6 +314,12 @@
   font-size: 10px;
 }
 
+.destination-map-controls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .destination-map-controls button.is-active {
   border-color: var(--brand);
   background: var(--brand);
@@ -316,6 +361,134 @@
   flex-basis: calc((100% - 32px) / 3);
 }
 
+.place-related-section {
+  padding: 86px 0 96px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.place-related-section .section-heading {
+  margin-bottom: 32px;
+}
+
+.place-card-tile .place-card-copy {
+  position: absolute;
+  z-index: 2;
+  left: 16px;
+  right: 16px;
+  bottom: 18px;
+  color: #fff;
+}
+
+.place-card-tile .place-card-copy small {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 8px;
+  font-family: "Geist Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.place-card-tile .place-card-copy h3 {
+  position: static;
+}
+
+.place-card-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--brand);
+  color: rgba(255, 255, 255, 0.55);
+  font-family: "Season Mix", Georgia, serif;
+}
+
+.place-empty-message {
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.place-collection-page {
+  background: #fff;
+}
+
+.place-collection-hero {
+  position: relative;
+  min-height: min(72svh, 720px);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background: var(--brand);
+  color: #fff;
+}
+
+.place-collection-hero > img,
+.place-collection-hero > span {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.place-collection-hero > img {
+  object-fit: cover;
+}
+
+.place-collection-hero > span {
+  background: linear-gradient(180deg, rgba(31, 37, 40, 0.12), rgba(31, 37, 40, 0.8));
+}
+
+.place-collection-hero-copy {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding-top: 70px;
+  padding-bottom: clamp(52px, 8vw, 92px);
+}
+
+.place-collection-hero-copy h1 {
+  max-width: 860px;
+  margin: 14px 0 0;
+  color: #fff;
+  font-size: clamp(56px, 9vw, 126px);
+  line-height: 0.86;
+}
+
+.place-collection-hero-copy p {
+  max-width: 590px;
+  margin: 24px 0 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.place-collection-list,
+.place-collection-map {
+  padding-top: 92px;
+  padding-bottom: 92px;
+}
+
+.place-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 34px;
+}
+
+.place-card-grid .tour-destination-card {
+  width: 100%;
+  min-width: 0;
+  height: clamp(360px, 42vw, 560px);
+  flex-basis: auto;
+}
+
+.place-collection-map {
+  padding-top: 0;
+}
+
 @media (max-width: 980px) {
   .destination-story-card {
     grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
@@ -328,6 +501,10 @@
   .destination-tour-rail .tours-listing-card {
     min-width: 48%;
     flex-basis: 48%;
+  }
+
+  .place-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -344,8 +521,40 @@
   .destination-story-card-two {
     min-height: calc(100svh - 84px);
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(220px, 42svh) minmax(0, 1fr);
+    grid-template-rows: auto minmax(220px, 42svh);
     margin-bottom: 10vh;
+  }
+
+  .hero-mobile-breadcrumb {
+    position: absolute;
+    z-index: 4;
+    left: 12px;
+    bottom: 12px;
+    max-width: calc(100% - 24px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    margin: 0;
+    padding: 8px 10px;
+    border-radius: 2px;
+    background: #ccdab8;
+    color: #1f2528;
+    font-family: "Geist Mono", monospace;
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    line-height: 1.35;
+    list-style: none;
+    text-transform: uppercase;
+  }
+
+  .hero-mobile-breadcrumb li {
+    display: inline-flex;
+    gap: 5px;
+  }
+
+  .hero-mobile-breadcrumb li:not(:last-child)::after {
+    content: "/";
   }
 
   .destination-story-card {
@@ -361,12 +570,12 @@
     margin-bottom: 0;
   }
 
-  .destination-story-card-two .destination-story-copy {
-    order: 2;
+  .destination-story-card .destination-story-copy {
+    order: 1;
   }
 
-  .destination-story-card-two .destination-story-media {
-    order: 1;
+  .destination-story-card .destination-story-media {
+    order: 2;
   }
 
   .destination-story-copy {
@@ -401,6 +610,32 @@
   .destination-tour-rail .tours-listing-card {
     min-width: 82%;
     flex-basis: 82%;
+  }
+
+  .place-related-section {
+    padding: 68px 0 72px;
+  }
+
+  .place-collection-hero {
+    min-height: 62svh;
+  }
+
+  .place-collection-hero-copy h1 {
+    font-size: clamp(52px, 18vw, 82px);
+  }
+
+  .place-collection-list,
+  .place-collection-map {
+    padding-top: 68px;
+    padding-bottom: 68px;
+  }
+
+  .place-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .place-card-grid .tour-destination-card {
+    height: 420px;
   }
 }
 

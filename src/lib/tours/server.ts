@@ -230,6 +230,7 @@ function graphToEditor(graph: NonNullable<Awaited<ReturnType<typeof fetchTourGra
     })),
     media: graph.media.map((row) => ({
       id: row.id,
+      assetId: row.asset_id ?? undefined,
       role: row.role,
       storagePath: row.storage_path,
       publicUrl: row.public_url,
@@ -415,6 +416,7 @@ async function saveTour(input: TourEditorPayload) {
     tourId,
     input.media.map((item, index) => ({
       tour_id: tourId,
+      asset_id: item.assetId ?? null,
       role: item.role,
       storage_path: item.storagePath,
       public_url: item.publicUrl,
@@ -435,6 +437,7 @@ async function saveTour(input: TourEditorPayload) {
     }
   >();
   for (const item of input.media) {
+    if (item.assetId || !item.storagePath.startsWith("tours/")) continue;
     const current = mediaAssets.get(item.storagePath);
     mediaAssets.set(item.storagePath, {
       tour_id: tourId,
@@ -1302,9 +1305,26 @@ export const confirmTourUploadFn = createServerFn({ method: "POST" })
     );
     throwOnError(assetError);
 
+    const { data: globalAsset, error: globalAssetError } = await client
+      .from("media_assets")
+      .upsert(
+        {
+          source_kind: "upload",
+          bucket_id: "tour-media",
+          storage_path: data.path,
+          public_url: publicUrl,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "public_url" },
+      )
+      .select("id")
+      .single();
+    throwOnError(globalAssetError);
+
     return {
       path: data.path,
       publicUrl,
+      assetId: globalAsset!.id,
     };
   });
 
@@ -1313,41 +1333,28 @@ export const getTourMediaLibraryFn = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     await requireAdminSession();
     const client = createAdminSupabaseClient();
-    const [{ data: objects, error: storageError }, { data: mediaRows, error: mediaError }] =
+    const [{ data: assets, error: assetError }, { data: assigned, error: mediaError }] =
       await Promise.all([
-        client.storage.from("tour-media").list(`tours/${data.tourId}`, {
-          limit: 1000,
-          sortBy: { column: "created_at", order: "desc" },
-        }),
+        client.from("media_assets").select("*").order("created_at", { ascending: false }),
         client
-          .from("tour_media_assets")
-          .select("storage_path,alt_en,alt_fr")
+          .from("tour_media")
+          .select("asset_id,storage_path,alt_en,alt_fr")
           .eq("tour_id", data.tourId),
       ]);
-    throwOnError(storageError);
+    throwOnError(assetError);
     throwOnError(mediaError);
-
-    const metadata = new Map<string, { altEn: string; altFr: string }>();
-    for (const row of mediaRows ?? []) {
-      const current = metadata.get(row.storage_path);
-      metadata.set(row.storage_path, {
-        altEn: current?.altEn || row.alt_en || "",
-        altFr: current?.altFr || row.alt_fr || "",
-      });
-    }
-
-    return (objects ?? [])
-      .filter((object) => object.name && object.id)
-      .map((object): TourMediaAsset => {
-        const storagePath = `tours/${data.tourId}/${object.name}`;
-        const alt = metadata.get(storagePath);
-        return {
-          storagePath,
-          publicUrl: client.storage.from("tour-media").getPublicUrl(storagePath).data.publicUrl,
-          altEn: alt?.altEn ?? "",
-          altFr: alt?.altFr ?? "",
-        };
-      });
+    return (assets ?? []).map((asset): TourMediaAsset => {
+      const row = (assigned ?? []).find(
+        (item) => item.asset_id === asset.id || item.storage_path === asset.storage_path,
+      );
+      return {
+        assetId: asset.id,
+        storagePath: asset.storage_path || `library:${asset.id}`,
+        publicUrl: asset.public_url,
+        altEn: row?.alt_en ?? "",
+        altFr: row?.alt_fr ?? "",
+      };
+    });
   });
 
 export const deleteTourMediaFn = createServerFn({ method: "POST" })

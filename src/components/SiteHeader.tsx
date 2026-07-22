@@ -3,7 +3,9 @@ import { LocaleLocationModal } from "./LocaleLocationModal";
 import { SiteMenu } from "./SiteMenu";
 import { useLocalize, useSiteLocale } from "../i18n";
 
-export function SiteHeader() {
+export type SiteBreadcrumb = { href?: string; label: string };
+
+export function SiteHeader({ breadcrumbs }: { breadcrumbs?: SiteBreadcrumb[] }) {
   const locale = useSiteLocale();
   const localize = useLocalize();
   const homePath = locale === "fr" ? "/fr/" : "/";
@@ -20,15 +22,33 @@ export function SiteHeader() {
       <header className="site-header page-inset site-navigation py-4">
         <div className="flex items-center justify-between gap-4">
           <nav className="hidden md:flex items-center gap-6 text-sm flex-1" aria-label="Primary">
-            <a href={locale === "fr" ? "/fr/#about" : "/about"} className="hover:text-[#1F2528]">
-              About
-            </a>
-            <a href={`${homePath}#offers`} className="hover:text-[#1F2528]">
-              Offers
-            </a>
-            <a href={`${homePath}#destinations`} className="hover:text-[#1F2528]">
-              Destinations
-            </a>
+            {breadcrumbs?.length ? (
+              <ol className="site-header-breadcrumb" aria-label="Breadcrumb">
+                {breadcrumbs.map((item, index) => (
+                  <li key={`${item.label}-${index}`}>
+                    {item.href ? <a href={item.href}>{item.label}</a> : <span>{item.label}</span>}
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <>
+                <a
+                  href={locale === "fr" ? "/fr/#about" : "/about"}
+                  className="hover:text-[#1F2528]"
+                >
+                  About
+                </a>
+                <a href={`${homePath}#offers`} className="hover:text-[#1F2528]">
+                  Offers
+                </a>
+                <a
+                  href={locale === "fr" ? "/fr/destinations" : "/destinations"}
+                  className="hover:text-[#1F2528]"
+                >
+                  Destinations
+                </a>
+              </>
+            )}
           </nav>
           <div className="flex-1 md:flex md:justify-center">
             <a href={homePath} aria-label="WonderAlbania home">

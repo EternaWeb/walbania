@@ -70,6 +70,7 @@ export const tourEditorSchema = z.object({
   media: z.array(
     z.object({
       ...ordered,
+      assetId: z.string().uuid().optional(),
       role: z.enum(["hero", "gallery"]),
       storagePath: z.string().trim().min(1).max(500),
       publicUrl: z.string().url().max(1500),

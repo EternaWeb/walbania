@@ -1000,8 +1000,9 @@ export async function listPublishedPlaceEntries() {
   const { data, error } = await client
     .from("place_translations")
     .select(
-      "place_id,locale,slug,title,seo_description,places(kind,parent_destination_id,updated_at)",
+      "place_id,locale,slug,title,seo_description,places!inner(kind,parent_destination_id,updated_at,status)",
     )
+    .eq("places.status", "published")
     .neq("slug", "");
   throwOnError(error);
   const rows = data ?? [];

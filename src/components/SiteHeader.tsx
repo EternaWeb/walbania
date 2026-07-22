@@ -38,8 +38,8 @@ export function SiteHeader({ breadcrumbs }: { breadcrumbs?: SiteBreadcrumb[] }) 
                 >
                   About
                 </a>
-                <a href={`${homePath}#offers`} className="hover:text-[#1F2528]">
-                  Offers
+                <a href={locale === "fr" ? "/fr/tour" : "/tour"} className="hover:text-[#1F2528]">
+                  Tours
                 </a>
                 <a
                   href={locale === "fr" ? "/fr/destinations" : "/destinations"}

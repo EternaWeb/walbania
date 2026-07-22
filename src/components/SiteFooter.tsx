@@ -66,7 +66,7 @@ export function SiteFooter() {
           </div>
 
           {[
-            ["Explore", ["Destinations", "Offers", "Experiences", "Collections", "Group Travel"]],
+            ["Explore", ["Tours", "Destinations", "Attractions", "Offers", "Experiences"]],
             ["Company", ["About Us", "Our Team", "Careers", "Press", "Contact"]],
             [
               "Support",
@@ -90,7 +90,23 @@ export function SiteFooter() {
                   <li key={label}>
                     <a
                       href={
-                        label === "About Us" ? (locale === "fr" ? "/fr/#about" : "/about") : "#"
+                        label === "Tours"
+                          ? locale === "fr"
+                            ? "/fr/tour"
+                            : "/tour"
+                          : label === "Destinations"
+                            ? locale === "fr"
+                              ? "/fr/destinations"
+                              : "/destinations"
+                            : label === "Attractions"
+                              ? locale === "fr"
+                                ? "/fr/attractions"
+                                : "/attractions"
+                              : label === "About Us"
+                                ? locale === "fr"
+                                  ? "/fr/#about"
+                                  : "/about"
+                                : "#"
                       }
                       className="hover:text-[#1F2528]"
                     >

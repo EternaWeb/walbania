@@ -15,8 +15,7 @@ function escapeXml(value: string) {
 
 type SitemapEntry = {
   loc: string;
-  lastmod: string;
-  priority: string;
+  lastmod?: string;
   alternates?: { en: string; fr: string; default: string };
 };
 
@@ -41,12 +40,25 @@ export const Route = createFileRoute("/sitemap.xml")({
           byTour.set(entry.tour_id, tour);
         }
         const staticEntries: SitemapEntry[] = [
-          { loc: `${baseUrl}/`, lastmod: "", priority: "1.0" },
-          { loc: `${baseUrl}/fr/`, lastmod: "", priority: "1.0" },
+          {
+            loc: `${baseUrl}/`,
+            alternates: {
+              en: `${baseUrl}/`,
+              fr: `${baseUrl}/fr/`,
+              default: `${baseUrl}/`,
+            },
+          },
+          {
+            loc: `${baseUrl}/fr/`,
+            alternates: {
+              en: `${baseUrl}/`,
+              fr: `${baseUrl}/fr/`,
+              default: `${baseUrl}/`,
+            },
+          },
+          { loc: `${baseUrl}/about` },
           {
             loc: `${baseUrl}/tour`,
-            lastmod: "",
-            priority: "0.9",
             alternates: {
               en: `${baseUrl}/tour`,
               fr: `${baseUrl}/fr/tour`,
@@ -55,8 +67,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           },
           {
             loc: `${baseUrl}/fr/tour`,
-            lastmod: "",
-            priority: "0.9",
             alternates: {
               en: `${baseUrl}/tour`,
               fr: `${baseUrl}/fr/tour`,
@@ -65,8 +75,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           },
           {
             loc: `${baseUrl}/destinations`,
-            lastmod: "",
-            priority: "0.9",
             alternates: {
               en: `${baseUrl}/destinations`,
               fr: `${baseUrl}/fr/destinations`,
@@ -75,8 +83,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           },
           {
             loc: `${baseUrl}/fr/destinations`,
-            lastmod: "",
-            priority: "0.9",
             alternates: {
               en: `${baseUrl}/destinations`,
               fr: `${baseUrl}/fr/destinations`,
@@ -85,8 +91,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           },
           {
             loc: `${baseUrl}/attractions`,
-            lastmod: "",
-            priority: "0.9",
             alternates: {
               en: `${baseUrl}/attractions`,
               fr: `${baseUrl}/fr/attractions`,
@@ -95,8 +99,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           },
           {
             loc: `${baseUrl}/fr/attractions`,
-            lastmod: "",
-            priority: "0.9",
             alternates: {
               en: `${baseUrl}/attractions`,
               fr: `${baseUrl}/fr/attractions`,
@@ -112,13 +114,11 @@ export const Route = createFileRoute("/sitemap.xml")({
             {
               loc: enUrl,
               lastmod: tour.en.updatedAt,
-              priority: "0.9",
               alternates: { en: enUrl, fr: frUrl, default: enUrl },
             },
             {
               loc: frUrl,
               lastmod: tour.fr.updatedAt,
-              priority: "0.9",
               alternates: { en: enUrl, fr: frUrl, default: enUrl },
             },
           ];
@@ -135,8 +135,8 @@ export const Route = createFileRoute("/sitemap.xml")({
           const frUrl = `${baseUrl}${place.fr.href}`;
           const alternates = { en: enUrl, fr: frUrl, default: enUrl };
           return [
-            { loc: enUrl, lastmod: place.en.updatedAt, priority: "0.8", alternates },
-            { loc: frUrl, lastmod: place.fr.updatedAt, priority: "0.8", alternates },
+            { loc: enUrl, lastmod: place.en.updatedAt, alternates },
+            { loc: frUrl, lastmod: place.fr.updatedAt, alternates },
           ];
         });
         const urls = [...staticEntries, ...tourEntries, ...placeEntries]
@@ -152,8 +152,6 @@ export const Route = createFileRoute("/sitemap.xml")({
               "  <url>",
               `    <loc>${escapeXml(entry.loc)}</loc>`,
               entry.lastmod ? `    <lastmod>${escapeXml(entry.lastmod)}</lastmod>` : "",
-              "    <changefreq>weekly</changefreq>",
-              `    <priority>${entry.priority}</priority>`,
               alternates,
               "  </url>",
             ]
@@ -165,7 +163,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         return new Response(xml, {
           headers: {
             "Content-Type": "application/xml; charset=utf-8",
-            "Cache-Control": "public, max-age=0, must-revalidate",
+            "Cache-Control": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400",
           },
         });
       },

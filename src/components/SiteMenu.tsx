@@ -24,7 +24,7 @@ const getMenuGroups = (aboutPath: string, localePrefix: string): MenuGroup[] => 
   {
     label: "Experiences",
     items: [
-      { label: "Day Tours", href: "/tour" },
+      { label: "Day Tours", href: `${localePrefix}/tour` },
       { label: "Multi-Day Tours", href: "#multi-day-tours" },
       { label: "Private Tours", href: "#private-tours" },
       { label: "Food & Wine", href: "#food-wine" },
@@ -69,6 +69,7 @@ const getMenuGroups = (aboutPath: string, localePrefix: string): MenuGroup[] => 
       { label: "Personalized Recommendations", href: "#recommendations" },
     ],
   },
+  { label: "Tours", href: `${localePrefix}/tour` },
   { label: "Offers", href: "#offers" },
   { label: "Destinations", href: `${localePrefix}/destinations` },
   { label: "Attractions", href: `${localePrefix}/attractions` },

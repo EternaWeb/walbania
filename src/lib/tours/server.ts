@@ -948,7 +948,8 @@ export async function listPublishedTourEntries() {
   const client = createPublicSupabaseClient();
   const { data, error } = await client
     .from("tour_translations")
-    .select("tour_id,locale,slug,title,seo_description,tours(updated_at)")
+    .select("tour_id,locale,slug,title,seo_description,tours!inner(updated_at,status)")
+    .eq("tours.status", "published")
     .neq("slug", "");
   throwOnError(error);
   return data ?? [];

@@ -127,7 +127,8 @@ const jsonLd = JSON.stringify({
     {
       "@type": "Organization",
       "@id": `${SITE_URL}/#organization`,
-      name: "Wonder Albania",
+      name: "WonderAlbania",
+      alternateName: "Wonder Albania",
       url: SITE_URL,
       logo: `${SITE_URL}/weblogo.png`,
       description:

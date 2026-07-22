@@ -31,6 +31,18 @@ import { SiteHeader } from "../components/SiteHeader";
 import { SiteLocaleProvider, useLocalize, useSiteLocale } from "../i18n";
 import type { SiteLocale } from "../i18n";
 
+const SITE_URL = "https://wonderalbania.com";
+const websiteJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${SITE_URL}/#website`,
+  url: `${SITE_URL}/`,
+  name: "WonderAlbania",
+  alternateName: "Wonder Albania",
+  inLanguage: ["en", "fr"],
+  publisher: { "@id": `${SITE_URL}/#organization` },
+}).replace(/</g, "\\u003c");
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -41,6 +53,7 @@ export const Route = createFileRoute("/")({
           "Curated Albania holidays: couples, family, hiking and summer escapes. All-inclusive deals and unforgettable experiences.",
       },
       { property: "og:title", content: "WonderAlbania — Discover Albania in Wonder" },
+      { property: "og:site_name", content: "WonderAlbania" },
       {
         property: "og:description",
         content: "Curated Albania holidays: couples, family, hiking and summer escapes.",
@@ -60,6 +73,7 @@ export const Route = createFileRoute("/")({
       { rel: "alternate", hrefLang: "fr", href: "https://wonderalbania.com/fr/" },
       { rel: "alternate", hrefLang: "x-default", href: "https://wonderalbania.com/" },
     ],
+    scripts: [{ type: "application/ld+json", children: websiteJsonLd }],
   }),
   component: () => <HomePage locale="en" />,
 });

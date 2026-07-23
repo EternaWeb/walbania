@@ -6,7 +6,7 @@ export const Route = createFileRoute("/tour")({
   loader: () => getPublishedTourListingFn({ data: { locale: "en" } }),
   head: () => ({
     meta: [
-      { title: "Albania Tours & Holiday Packages | WonderAlbania" },
+      { title: "Albania Tours & Holiday Packages | Wonder Albania" },
       {
         name: "description",
         content:

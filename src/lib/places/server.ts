@@ -7,6 +7,7 @@ import {
   getSiteUrl,
   readPublicSupabaseConfig,
 } from "../supabase";
+import { brandedTitle, SITE_NAME } from "../site";
 import type { TourListingCard } from "../tours/types";
 import { placeEditorSchema, publicPlaceLookupSchema, validatePlaceForPublish } from "./schemas";
 import type {
@@ -1104,7 +1105,7 @@ export function placeSeoHead(place: PlaceViewModel) {
   const alternate = `${place.siteUrl}${place.alternateHref}`;
   const englishUrl = place.locale === "en" ? canonical : alternate;
   const frenchUrl = place.locale === "fr" ? canonical : alternate;
-  const title = place.seoTitle || `${place.title} | Wonder Albania`;
+  const title = brandedTitle(place.seoTitle || place.title);
   const imagePreconnects: Array<{ rel: "preconnect"; href: string }> = [];
 
   try {
@@ -1126,7 +1127,7 @@ export function placeSeoHead(place: PlaceViewModel) {
         content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
       },
       { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "Wonder Albania" },
+      { property: "og:site_name", content: SITE_NAME },
       { property: "og:title", content: title },
       { property: "og:description", content: place.seoDescription },
       { property: "og:image", content: place.seoImage },

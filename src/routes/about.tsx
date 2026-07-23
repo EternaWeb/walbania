@@ -20,8 +20,7 @@ import aboutCss from "../about.css?url";
 import { SiteFooter } from "../components/SiteFooter";
 import { SiteHeader } from "../components/SiteHeader";
 import { SiteLocaleProvider } from "../i18n";
-
-const SITE_URL = "https://wonderalbania.com";
+import { SITE_NAME, SITE_URL } from "../lib/site";
 
 const images = {
   hero: "https://images.unsplash.com/photo-1753172512618-92e65807c52d?auto=format&fit=crop&w=2200&q=82",
@@ -127,8 +126,7 @@ const jsonLd = JSON.stringify({
     {
       "@type": "Organization",
       "@id": `${SITE_URL}/#organization`,
-      name: "WonderAlbania",
-      alternateName: "Wonder Albania",
+      name: SITE_NAME,
       url: SITE_URL,
       logo: `${SITE_URL}/weblogo.png`,
       description:
@@ -138,7 +136,7 @@ const jsonLd = JSON.stringify({
       "@type": "AboutPage",
       "@id": `${SITE_URL}/about#about-page`,
       url: `${SITE_URL}/about`,
-      name: "About Wonder Albania",
+      name: `About ${SITE_NAME}`,
       description:
         "Meet Wonder Albania and discover our personal, locally rooted approach to thoughtfully crafted travel.",
       about: { "@id": `${SITE_URL}/#organization` },

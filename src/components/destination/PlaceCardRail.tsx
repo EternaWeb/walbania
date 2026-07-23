@@ -19,7 +19,7 @@ export function PlaceCardTile({ place }: { place: PlaceCard }) {
         />
       ) : (
         <div className="place-card-fallback" aria-hidden="true">
-          WonderAlbania
+          Wonder Albania
         </div>
       )}
       <span aria-hidden="true" />

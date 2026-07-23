@@ -136,7 +136,7 @@ const COPY = {
     storiesWorth: "Travel stories worth opening.",
     join: "Join us",
     thoughtful: "Thoughtful Albania journeys, shaped by people who call it home.",
-    copyright: "© 2026 WonderAlbania.",
+    copyright: "© 2026 Wonder Albania.",
   },
   fr: {
     home: "Accueil",
@@ -201,7 +201,7 @@ const COPY = {
     storiesWorth: "Des histoires de voyage qui méritent d’être ouvertes.",
     join: "S’inscrire",
     thoughtful: "Des voyages en Albanie façonnés par celles et ceux qui y vivent.",
-    copyright: "© 2026 WonderAlbania.",
+    copyright: "© 2026 Wonder Albania.",
   },
 } as const;
 
@@ -280,9 +280,9 @@ function LegacyHeader({ tour }: { tour: TourViewModel }) {
           <a
             className="tour-header-logo"
             href={tour.locale === "fr" ? "/fr/" : "/"}
-            aria-label="WonderAlbania home"
+            aria-label="Wonder Albania home"
           >
-            <img src="/weblogo.png" alt="WonderAlbania" />
+            <img src="/weblogo.png" alt="Wonder Albania" />
           </a>
           <div className="tour-header-tools">
             <LocaleLocationModal />
@@ -615,7 +615,7 @@ function LegacyFooter({ locale }: { locale: TourLocale }) {
       </div>
       <div className="tour-container footer-main">
         <div className="footer-brand">
-          <img src="/weblogo.png" alt="WonderAlbania" />
+          <img src="/weblogo.png" alt="Wonder Albania" />
           <p>{copy.thoughtful}</p>
           <a href="mailto:hello@wonderalbania.com">hello@wonderalbania.com</a>
         </div>

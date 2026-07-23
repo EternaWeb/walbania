@@ -22,7 +22,7 @@ export function SiteFooter() {
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
             <h3 className="text-2xl md:text-3xl font-semibold">
-              Join the WonderAlbania newsletter
+              Join the Wonder Albania newsletter
             </h3>
             <p className="text-muted-foreground mt-2 text-sm md:text-base">
               Fresh itineraries, insider tips, and members-only deals — once a month.
@@ -45,7 +45,7 @@ export function SiteFooter() {
       <div className="page-inset py-16">
         <div className="grid grid-cols-2 md:grid-cols-6 gap-10 text-sm">
           <div className="col-span-2">
-            <img src="/weblogo.png" alt="WonderAlbania" className="h-7 w-auto mb-4" />
+            <img src="/weblogo.png" alt="Wonder Albania" className="h-7 w-auto mb-4" />
             <p className="text-muted-foreground max-w-xs">
               Curated Albania holidays. We design, book and support every journey with local experts
               on the ground.
@@ -147,7 +147,7 @@ export function SiteFooter() {
         <div className="page-inset py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
             <p>
-              © {new Date().getFullYear()} WonderAlbania sh.p.k. — Registered No. K12345678L. All
+              © {new Date().getFullYear()} Wonder Albania sh.p.k. — Registered No. K12345678L. All
               rights reserved.
             </p>
             <div className="flex items-center gap-3">

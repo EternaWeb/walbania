@@ -22,7 +22,7 @@ const french: Record<string, string> = {
   "Discover Albania": "Découvrez l’Albanie",
   "Experience Albania": "Vivez l’Albanie",
   "Beyond the Ordinary.": "Au-delà de l’ordinaire.",
-  "Why travel with WonderAlbania": "Pourquoi voyager avec WonderAlbania",
+  "Why travel with Wonder Albania": "Pourquoi voyager avec Wonder Albania",
   "Tailor-made journeys": "Voyages sur mesure",
   "Designed around you": "Pensés autour de vous",
   "Albanian expertise": "Expertise albanaise",
@@ -65,7 +65,7 @@ const french: Record<string, string> = {
   "Not sure where to go?": "Vous ne savez pas où partir ?",
   "Get ideas": "Trouver des idées",
   "Get Ideas": "Trouver des idées",
-  "How do I book a trip with WonderAlbania?": "Comment réserver un voyage avec WonderAlbania ?",
+  "How do I book a trip with Wonder Albania?": "Comment réserver un voyage avec Wonder Albania ?",
   "Choose a collection or deal, click through to the detail page, and follow the booking steps. Our team confirms every reservation within 24 hours.":
     "Choisissez une collection ou une offre, consultez sa page puis suivez les étapes de réservation. Notre équipe confirme chaque réservation sous 24 heures.",
   "Are flights included in the packages?": "Les vols sont-ils inclus dans les forfaits ?",
@@ -80,7 +80,7 @@ const french: Record<string, string> = {
   "Do you offer group discounts?": "Proposez-vous des réductions pour les groupes ?",
   "Groups of 6 or more receive automatic discounts. Reach out for tailored quotes.":
     "Les groupes de 6 personnes ou plus bénéficient automatiquement de réductions. Contactez-nous pour un devis personnalisé.",
-  "Join the WonderAlbania newsletter": "Inscrivez-vous à la newsletter WonderAlbania",
+  "Join the Wonder Albania newsletter": "Inscrivez-vous à la newsletter Wonder Albania",
   "Fresh itineraries, insider tips, and members-only deals — once a month.":
     "De nouveaux itinéraires, des conseils d’initiés et des offres réservées aux membres, une fois par mois.",
   Subscribe: "S’inscrire",
@@ -114,8 +114,8 @@ const french: Record<string, string> = {
   "Travelife Certified": "Certifié Travelife",
   "Registered No. K12345678L. All rights reserved.":
     "N° d’immatriculation K12345678L. Tous droits réservés.",
-  "WonderAlbania sh.p.k. — Registered No. K12345678L. All rights reserved.":
-    "WonderAlbania sh.p.k. — N° d’immatriculation K12345678L. Tous droits réservés.",
+  "Wonder Albania sh.p.k. — Registered No. K12345678L. All rights reserved.":
+    "Wonder Albania sh.p.k. — N° d’immatriculation K12345678L. Tous droits réservés.",
   "Rr. Deshmoret e 4 Shkurtit, Tirana, Albania": "Rr. Deshmoret e 4 Shkurtit, Tirana, Albanie",
   "Scroll left": "Faire défiler vers la gauche",
   "Scroll right": "Faire défiler vers la droite",
@@ -138,8 +138,8 @@ const french: Record<string, string> = {
   "2 hr": "2 h",
   "Check availability": "Vérifier les disponibilités",
   "Share tour": "Partager le circuit",
-  "A private day along Albania’s wild southern coast with WonderAlbania.":
-    "Une journée privée sur la côte sauvage du sud de l’Albanie avec WonderAlbania.",
+  "A private day along Albania’s wild southern coast with Wonder Albania.":
+    "Une journée privée sur la côte sauvage du sud de l’Albanie avec Wonder Albania.",
   "Tour link copied": "Lien du circuit copié",
   "Link copied": "Lien copié",
   Overview: "Aperçu",
@@ -329,8 +329,8 @@ const french: Record<string, string> = {
   Stories: "Récits",
   "Booking terms": "Conditions de réservation",
   "Design preview.": "Aperçu du design.",
-  "© 2026 WonderAlbania. Design preview.": "© 2026 WonderAlbania. Aperçu du design.",
-  "WonderAlbania home": "Accueil WonderAlbania",
+  "© 2026 Wonder Albania. Design preview.": "© 2026 Wonder Albania. Aperçu du design.",
+  "Wonder Albania home": "Accueil Wonder Albania",
   "Tour sections": "Sections du circuit",
   "Quick tour facts": "Informations essentielles du circuit",
   "Booking preview": "Aperçu de la réservation",

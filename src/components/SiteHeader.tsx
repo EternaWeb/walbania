@@ -51,8 +51,8 @@ export function SiteHeader({ breadcrumbs }: { breadcrumbs?: SiteBreadcrumb[] }) 
             )}
           </nav>
           <div className="flex-1 md:flex md:justify-center">
-            <a href={homePath} aria-label="WonderAlbania home">
-              <img src="/weblogo.png" alt="WonderAlbania" className="h-6 md:h-7 w-auto" />
+            <a href={homePath} aria-label="Wonder Albania home">
+              <img src="/weblogo.png" alt="Wonder Albania" className="h-6 md:h-7 w-auto" />
             </a>
           </div>
           <div className="flex items-center gap-[10px] flex-1 justify-end">

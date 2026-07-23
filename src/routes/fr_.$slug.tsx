@@ -1,5 +1,6 @@
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import { DynamicTourPage } from "../components/tour/DynamicTourPage";
+import { brandedTitle } from "../lib/site";
 import { getPublicTourFn } from "../lib/tours/server";
 import type { TourViewModel } from "../lib/tours/types";
 
@@ -99,19 +100,20 @@ export const Route = createFileRoute("/fr_/$slug")({
     if (!loaderData) return {};
     const canonical = `${loaderData.siteUrl}${loaderData.href}`;
     const alternate = `${loaderData.siteUrl}${loaderData.alternateHref}`;
+    const title = brandedTitle(loaderData.seoTitle || loaderData.title);
     return {
       meta: [
-        { title: loaderData.seoTitle || loaderData.title },
+        { title },
         { name: "description", content: loaderData.seoDescription },
         { property: "og:type", content: "website" },
-        { property: "og:title", content: loaderData.seoTitle || loaderData.title },
+        { property: "og:title", content: title },
         { property: "og:description", content: loaderData.seoDescription },
         { property: "og:url", content: canonical },
         { property: "og:image", content: loaderData.heroImage },
         { property: "og:image:alt", content: loaderData.heroAlt },
         { property: "og:locale", content: "fr_FR" },
         { property: "og:locale:alternate", content: "en_US" },
-        { name: "twitter:title", content: loaderData.seoTitle || loaderData.title },
+        { name: "twitter:title", content: title },
         { name: "twitter:description", content: loaderData.seoDescription },
         { name: "twitter:image", content: loaderData.heroImage },
       ],

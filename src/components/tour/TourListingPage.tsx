@@ -588,7 +588,7 @@ export function TourCard({ tour, locale }: { tour: TourListingCard; locale: Site
           />
         ) : (
           <span className="tours-listing-image-fallback" aria-hidden="true">
-            WonderAlbania
+            Wonder Albania
           </span>
         )}
         <span className="tours-listing-meta">

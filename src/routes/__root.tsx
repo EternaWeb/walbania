@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
+import { SITE_DESCRIPTION, SITE_NAME } from "../lib/site";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -64,8 +65,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: SITE_NAME },
+      { name: "description", content: SITE_DESCRIPTION },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: SITE_NAME },
+      { property: "og:title", content: SITE_NAME },
+      { property: "og:description", content: SITE_DESCRIPTION },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: SITE_NAME },
+      { name: "twitter:description", content: SITE_DESCRIPTION },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

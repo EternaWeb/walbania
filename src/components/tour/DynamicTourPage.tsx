@@ -34,6 +34,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LocaleLocationModal } from "../LocaleLocationModal";
+import { FaqSection } from "../FaqSection";
 import { SiteMenu } from "../SiteMenu";
 import { SiteFooter as SharedSiteFooter } from "../SiteFooter";
 import { SiteHeader } from "../SiteHeader";
@@ -919,20 +920,14 @@ function TourContent({ tour }: { tour: TourViewModel }) {
             )}
 
             {tour.faqs.length > 0 && (
-              <section className="content-section faq-section">
-                <SectionHeading eyebrow={copy.before} title={copy.faq} />
-                <div className="faq-list">
-                  {tour.faqs.map((faq, index) => (
-                    <details key={`${faq.question}-${index}`} open={index === 0}>
-                      <summary>
-                        <span>{faq.question}</span>
-                        <ChevronDown size={20} />
-                      </summary>
-                      <p>{faq.answer}</p>
-                    </details>
-                  ))}
-                </div>
-              </section>
+              <FaqSection
+                className="content-section"
+                eyebrow={copy.before}
+                title={copy.faq}
+                image={tour.heroImage}
+                imageAlt={tour.heroAlt}
+                items={tour.faqs}
+              />
             )}
           </div>
           <div id="booking" className="booking-column">

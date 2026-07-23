@@ -1,4 +1,4 @@
-import { Landmark, MapPin } from "lucide-react";
+import { ArrowUpRight, Landmark, MapPin } from "lucide-react";
 import type { SiteLocale } from "../../i18n";
 import type { PlaceCard } from "../../lib/places/types";
 import { Rail } from "../tour/TourListingPage";
@@ -33,6 +33,9 @@ export function PlaceCardTile({ place }: { place: PlaceCard }) {
               : "Destination"}
         </small>
         <h3>{place.title}</h3>
+        <span className="place-card-arrow" aria-hidden="true">
+          <ArrowUpRight size={18} />
+        </span>
       </div>
     </a>
   );

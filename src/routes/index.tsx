@@ -13,7 +13,6 @@ import {
   Sun,
   Tent,
   Camera,
-  ChevronDown,
   Award,
   ShieldCheck,
   Leaf,
@@ -28,6 +27,7 @@ import {
 import { useRef, useState, useEffect, useCallback } from "react";
 import { SiteFooter as SharedSiteFooter } from "../components/SiteFooter";
 import { SiteHeader } from "../components/SiteHeader";
+import { DEFAULT_FAQS, FaqSection } from "../components/FaqSection";
 import { SiteLocaleProvider, useLocalize, useSiteLocale } from "../i18n";
 import type { SiteLocale } from "../i18n";
 import { SITE_NAME, SITE_URL } from "../lib/site";
@@ -202,29 +202,6 @@ const testimonials = [
   "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&q=80",
   "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&q=80",
   "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80",
-];
-
-const faqs = [
-  {
-    q: "How do I book a trip with Wonder Albania?",
-    a: "Choose a collection or deal, click through to the detail page, and follow the booking steps. Our team confirms every reservation within 24 hours.",
-  },
-  {
-    q: "Are flights included in the packages?",
-    a: "Most all-inclusive deals include stays, transfers and experiences. Flights are optional and can be added at checkout.",
-  },
-  {
-    q: "Can I customize an itinerary?",
-    a: "Yes — every experience can be tailored. Use the 'Not sure where to go?' section or contact us directly.",
-  },
-  {
-    q: "What is the cancellation policy?",
-    a: "Free cancellation up to 30 days before departure on most bookings. Details are shown on each package.",
-  },
-  {
-    q: "Do you offer group discounts?",
-    a: "Groups of 6 or more receive automatic discounts. Reach out for tailored quotes.",
-  },
 ];
 
 // ---- Horizontal scroller with smart arrows (desktop only) ----
@@ -433,36 +410,6 @@ function NotSure() {
             Get Ideas
           </button>
         </div>
-      </div>
-    </section>,
-  );
-}
-
-function FAQ() {
-  const locale = useSiteLocale();
-  const localize = useLocalize();
-  const [open, setOpen] = useState<number | null>(0);
-  return localize(
-    <section className="page-inset py-16 bg-white">
-      <h2 className="text-center text-3xl md:text-4xl mb-10">
-        {locale === "fr" ? "Questions fréquentes" : "Frequently Asked Questions"}
-      </h2>
-      <div className="max-w-3xl mx-auto divide-y" style={{ borderColor: "#E5E7EB" }}>
-        {faqs.map((f, i) => (
-          <div key={i} className="py-4">
-            <button
-              onClick={() => setOpen(open === i ? null : i)}
-              className="w-full flex items-center justify-between text-left"
-            >
-              <span className="font-medium text-base md:text-lg">{f.q}</span>
-              <ChevronDown
-                size={20}
-                className={`transition-transform ${open === i ? "rotate-180" : ""}`}
-              />
-            </button>
-            {open === i && <p className="mt-3 text-sm text-muted-foreground">{f.a}</p>}
-          </div>
-        ))}
       </div>
     </section>,
   );
@@ -952,7 +899,7 @@ function Index() {
       </section>
 
       <NotSure />
-      <FAQ />
+      <FaqSection items={DEFAULT_FAQS} />
       <SharedSiteFooter />
     </div>,
   );

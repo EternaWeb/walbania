@@ -8,6 +8,8 @@ const header = read("src/components/SiteHeader.tsx");
 const footer = read("src/components/SiteFooter.tsx");
 const faq = read("src/components/FaqSection.tsx");
 const home = read("src/routes/index.tsx");
+const travelerReviews = read("src/components/TravelerReviewsSection.tsx");
+const travelIdeas = read("src/components/TravelIdeasSection.tsx");
 const bookingTerms = read("src/routes/booking-terms.tsx");
 const cancellation = read("src/routes/cancelation.tsx");
 const privacy = read("src/routes/privacy-policy.tsx");
@@ -26,10 +28,15 @@ describe("requested public-site updates", () => {
   });
 
   test("rotates traveler stories and only fully opens photos on press", () => {
-    expect(home).toContain("window.setInterval");
-    expect(home).toContain("}, 4000)");
-    expect(home).toContain('isExpanded ? " is-expanded"');
+    expect(home).toContain("<TravelerReviewsSection />");
+    expect(home).toContain("<TravelIdeasSection />");
+    expect(travelerReviews).toContain("window.setInterval");
+    expect(travelerReviews).toContain("}, 4000)");
+    expect(travelerReviews).toContain('isExpanded ? " is-expanded"');
+    expect(travelerReviews).toContain('isOpening ? " is-opening"');
+    expect(travelIdeas).toContain("Not sure where to go?");
     expect(styles).toContain(".tly-stack.is-expanded .tly-card-0");
+    expect(styles).toContain(".tly-stack.is-opening .tly-card-0");
     expect(styles).not.toContain(".tly-stack:hover .tly-card-0");
   });
 

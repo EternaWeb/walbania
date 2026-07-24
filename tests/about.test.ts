@@ -7,24 +7,33 @@ const aboutRoute = readFileSync(resolve(import.meta.dir, "../src/routes/about.ts
 describe("about page", () => {
   test("defines the static about route and essential metadata", () => {
     expect(aboutRoute).toContain('createFileRoute("/about")');
-    expect(aboutRoute).toContain("About Wonder Albania | Travel, Made Personal");
+    expect(aboutRoute).toContain("About Wonder Albania | People Who Know It Personally");
     expect(aboutRoute).toContain('"@type": "AboutPage"');
+    expect(aboutRoute).toContain('foundingDate: "2025"');
     expect(aboutRoute).toContain('rel: "canonical"');
   });
 
-  test("includes the identity themes and requested sections", () => {
+  test("includes the agency, founder and vision story", () => {
     for (const content of [
       "Personal by design",
-      "Local knowledge, modern service",
-      "Flexible, not rigid",
-      "Quality you can feel",
-      "Details that matter",
-      "Respect for place",
-      "Journeys that feel personal",
-      "Our trusted network",
-      "Let’s shape your Albania",
+      "By people who know it personally.",
+      "2025 as Albatross",
+      "Meet Alfred.",
+      "/about/alfred-founder.jpg",
+      "Alfred Cekja — Founder &amp; Lead Guide",
+      "Help shape a better kind of tourism.",
+      "Better local visibility",
+      "Useful technology",
+      "TravelerReviewsSection",
+      "TravelIdeasSection",
     ]) {
       expect(aboutRoute).toContain(content);
     }
+
+    expect(aboutRoute).toContain("destination-story-stack");
+    expect(aboutRoute).not.toContain("Local knowledge, modern service");
+    expect(aboutRoute).not.toContain("about-hero-intro");
+    expect(aboutRoute).not.toContain("overview-copy");
+    expect(aboutRoute).not.toContain("ReviewRail");
   });
 });

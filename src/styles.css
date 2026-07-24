@@ -1387,11 +1387,13 @@ h2 {
   background: white;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   transition:
-    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.32s ease;
+    transform 0.72s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.46s ease;
+  will-change: transform, opacity;
 }
 .tly-card img {
-  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: scale(1);
+  transition: transform 0.72s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .tly-card-0 {
   transform: rotate(-7deg) translateX(-58px);
@@ -1414,11 +1416,20 @@ h2 {
 .tly-stack.is-changing .tly-card {
   opacity: 0;
 }
-.tly-stack.is-changing .tly-card-0 {
+.tly-stack.is-changing .tly-card-0,
+.tly-stack.is-opening .tly-card-0 {
   transform: rotate(-2deg) translateX(-18px) translateY(8px);
 }
-.tly-stack.is-changing .tly-card-2 {
+.tly-stack.is-changing .tly-card-2,
+.tly-stack.is-opening .tly-card-2 {
   transform: rotate(2deg) translateX(18px) translateY(8px);
+}
+.tly-stack.is-opening .tly-card {
+  opacity: 0;
+}
+.tly-stack.is-changing .tly-card img,
+.tly-stack.is-opening .tly-card img {
+  transform: scale(1.035);
 }
 .tly-stack:focus-visible {
   outline: 2px solid var(--ink);
@@ -1430,12 +1441,52 @@ h2 {
   opacity: 1;
   transform: translateY(0);
   transition:
-    opacity 0.32s ease,
-    transform 0.32s ease;
+    opacity 0.46s ease,
+    transform 0.46s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.tly-review.is-changing {
+.tly-review.is-changing,
+.tly-review.is-opening {
   opacity: 0;
   transform: translateY(5px);
+}
+
+.traveler-reviews-panel {
+  padding: clamp(54px, 7vw, 78px) 24px;
+  border-radius: 2px;
+  background: #ccdab8;
+  text-align: center;
+}
+
+.traveler-reviews-panel h2 {
+  margin: 0;
+  font-size: clamp(32px, 4vw, 52px);
+}
+
+.traveler-reviews-panel .tly-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.traveler-reviews-quote {
+  max-width: 620px;
+  min-height: 52px;
+  margin: 32px auto 0;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(14px, 1.4vw, 17px);
+  font-style: italic;
+}
+
+.traveler-reviews-quote span {
+  font-style: normal;
+}
+
+.traveler-reviews-button,
+.travel-ideas-button {
+  display: inline-flex;
+  margin-top: 24px;
+  background: var(--ink);
+  color: white;
 }
 
 @media (max-width: 520px) {
@@ -1462,6 +1513,31 @@ h2 {
 }
 .marquee:hover .marquee-track {
   animation-duration: 80s;
+}
+
+.travel-ideas-panel {
+  padding: clamp(54px, 7vw, 76px) 16px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--ink);
+  text-align: center;
+}
+
+.travel-ideas-panel > p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 13px;
+}
+
+.travel-ideas-panel > h2 {
+  margin: 5px 0 0;
+  color: white;
+  font-size: clamp(34px, 5vw, 64px);
+}
+
+.travel-ideas-button {
+  background: white;
+  color: var(--ink);
 }
 .marquee-item {
   width: 130px;

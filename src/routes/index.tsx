@@ -28,6 +28,8 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import { SiteFooter as SharedSiteFooter } from "../components/SiteFooter";
 import { SiteHeader } from "../components/SiteHeader";
 import { DEFAULT_FAQS, FaqSection } from "../components/FaqSection";
+import { TravelerReviewsSection } from "../components/TravelerReviewsSection";
+import { TravelIdeasSection } from "../components/TravelIdeasSection";
 import { SiteLocaleProvider, useLocalize, useSiteLocale } from "../i18n";
 import type { SiteLocale } from "../i18n";
 import { SITE_NAME, SITE_URL } from "../lib/site";
@@ -201,61 +203,6 @@ const experiences = [
   },
 ];
 
-const ideaImgs = [
-  "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=500&q=80",
-  "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=500&q=80",
-  "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=500&q=80",
-  "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=500&q=80",
-  "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=500&q=80",
-  "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=500&q=80",
-  "https://images.unsplash.com/photo-1470114716159-e389f8712fda?w=500&q=80",
-  "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?w=500&q=80",
-  "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=500&q=80",
-];
-
-const travelerStories = [
-  {
-    quote:
-      "A brilliant first Wonder Albania trip, with a perfect mix of relaxing, cultural and adventure activities.",
-    author: "Andre, France",
-    photos: [
-      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=82",
-      "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=600&q=82",
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=82",
-    ],
-  },
-  {
-    quote:
-      "Every day felt personal and effortless. The mountain guide and family lunch were unforgettable.",
-    author: "Mia, Germany",
-    photos: [
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=82",
-      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=82",
-      "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=600&q=82",
-    ],
-  },
-  {
-    quote:
-      "We saw a side of the Riviera we would never have found alone, without ever feeling rushed.",
-    author: "Sophie, United Kingdom",
-    photos: [
-      "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=600&q=82",
-      "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&q=82",
-      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&q=82",
-    ],
-  },
-  {
-    quote:
-      "Thoughtful planning, warm local hosts and just the right amount of adventure for our family.",
-    author: "Elena, Italy",
-    photos: [
-      "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?w=600&q=82",
-      "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=600&q=82",
-      "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=600&q=82",
-    ],
-  },
-];
-
 // ---- Horizontal scroller with smart arrows (desktop only) ----
 function Scroller({ children }: { children: React.ReactNode[] }) {
   const localize = useLocalize();
@@ -315,80 +262,6 @@ function Scroller({ children }: { children: React.ReactNode[] }) {
         </button>
       )}
     </div>,
-  );
-}
-
-function TravelersLoveUs() {
-  const locale = useSiteLocale();
-  const localize = useLocalize();
-  const [storyIndex, setStoryIndex] = useState(0);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isChanging, setIsChanging] = useState(false);
-  const story = travelerStories[storyIndex];
-
-  useEffect(() => {
-    let changeTimer: ReturnType<typeof setTimeout> | undefined;
-    const interval = window.setInterval(() => {
-      setIsChanging(true);
-      changeTimer = window.setTimeout(() => {
-        setStoryIndex((current) => (current + 1) % travelerStories.length);
-        setIsChanging(false);
-      }, 320);
-    }, 4000);
-
-    return () => {
-      window.clearInterval(interval);
-      if (changeTimer) window.clearTimeout(changeTimer);
-    };
-  }, []);
-
-  return localize(
-    <section className="page-inset pb-14 md:pb-20" id="reviews">
-      <div
-        className="mx-auto py-14 md:py-16 px-6"
-        style={{ background: "#CCDAB8", borderRadius: 2 }}
-      >
-        <h2 className="text-center text-3xl md:text-4xl">
-          {locale === "fr" ? "Nos voyageurs nous adorent" : "Travelers Love Us"}
-        </h2>
-
-        <div className="mt-10 flex justify-center">
-          <button
-            type="button"
-            className={`tly-stack${isExpanded ? " is-expanded" : ""}${
-              isChanging ? " is-changing" : ""
-            }`}
-            aria-label={isExpanded ? "Close traveler photos" : "Open traveler photos"}
-            aria-expanded={isExpanded}
-            onClick={() => setIsExpanded((expanded) => !expanded)}
-          >
-            {story.photos.map((src, i) => (
-              <div key={`${storyIndex}-${src}`} className={`tly-card tly-card-${i}`}>
-                <img
-                  src={src}
-                  alt={`Traveler moment ${i + 1} from ${story.author}`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
-          </button>
-        </div>
-
-        <p
-          className={`tly-review text-center mt-8 max-w-xl mx-auto text-sm md:text-base font-italic-inter${
-            isChanging ? " is-changing" : ""
-          }`}
-          aria-live="polite"
-        >
-          “{story.quote}” <span className="not-italic">— {story.author}</span>
-        </p>
-        <div className="flex justify-center mt-6">
-          <button className="btn-brand" style={{ background: "#1F2528", color: "white" }}>
-            Read Reviews
-          </button>
-        </div>
-      </div>
-    </section>,
   );
 }
 
@@ -459,48 +332,6 @@ function CollectionCard({
         {label}
       </a>
     </article>,
-  );
-}
-
-function NotSure() {
-  const localize = useLocalize();
-  const openIdea = () => {
-    /* same as button */ window.location.hash = "#get-ideas";
-  };
-  return localize(
-    <section className="page-inset pb-14">
-      <div
-        className="py-14 md:py-16 px-4 relative overflow-hidden"
-        style={{ background: "#1F2528", borderRadius: 2 }}
-      >
-        <p className="text-center text-white/80 text-sm">Get wonderful ideas</p>
-        <h2 className="text-center text-white text-3xl md:text-5xl mt-1">Not sure where to go?</h2>
-
-        <div className="mt-10 relative marquee-mask">
-          <div className="marquee group">
-            <div className="marquee-track">
-              {[...ideaImgs, ...ideaImgs].map((src, i) => (
-                <button
-                  key={i}
-                  onClick={openIdea}
-                  className="marquee-item card-zoom overflow-hidden bg-white/20"
-                  style={{ borderRadius: 10 }}
-                  aria-label="Get ideas"
-                >
-                  <img src={src} alt="" className="card-zoom-img w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="flex justify-center mt-8">
-          <button id="get-ideas" className="btn-brand">
-            Get Ideas
-          </button>
-        </div>
-      </div>
-    </section>,
   );
 }
 
@@ -902,7 +733,7 @@ function Index() {
         </div>
       </section>
 
-      <TravelersLoveUs />
+      <TravelerReviewsSection />
 
       {/* All Inclusive Deals */}
       <section className="py-6 md:py-10 page-max">
@@ -989,7 +820,7 @@ function Index() {
         </div>
       </section>
 
-      <NotSure />
+      <TravelIdeasSection />
       <FaqSection items={DEFAULT_FAQS} />
       <SharedSiteFooter />
     </div>,

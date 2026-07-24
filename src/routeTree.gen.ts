@@ -10,11 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TourRouteImport } from './routes/tour'
-import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as FrRouteImport } from './routes/fr'
 import { Route as DestinationsRouteImport } from './routes/destinations'
+import { Route as CancelationRouteImport } from './routes/cancelation'
+import { Route as BookingTermsRouteImport } from './routes/booking-terms'
 import { Route as AttractionsRouteImport } from './routes/attractions'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
@@ -52,14 +54,14 @@ const TourRoute = TourRouteImport.update({
   path: '/tour',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
-  id: '/terms-of-service',
-  path: '/terms-of-service',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
@@ -75,6 +77,16 @@ const FrRoute = FrRouteImport.update({
 const DestinationsRoute = DestinationsRouteImport.update({
   id: '/destinations',
   path: '/destinations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CancelationRoute = CancelationRouteImport.update({
+  id: '/cancelation',
+  path: '/cancelation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookingTermsRoute = BookingTermsRouteImport.update({
+  id: '/booking-terms',
+  path: '/booking-terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AttractionsRoute = AttractionsRouteImport.update({
@@ -242,11 +254,13 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/attractions': typeof AttractionsRoute
+  '/booking-terms': typeof BookingTermsRoute
+  '/cancelation': typeof CancelationRoute
   '/destinations': typeof DestinationsRoute
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/terms-of-service': typeof TermsOfServiceRoute
   '/tour': typeof TourRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/reviews': typeof AdminReviewsRoute
@@ -280,11 +294,13 @@ export interface FileRoutesByTo {
   '/$slug': typeof SlugRoute
   '/about': typeof AboutRoute
   '/attractions': typeof AttractionsRoute
+  '/booking-terms': typeof BookingTermsRoute
+  '/cancelation': typeof CancelationRoute
   '/destinations': typeof DestinationsRoute
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/terms-of-service': typeof TermsOfServiceRoute
   '/tour': typeof TourRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/reviews': typeof AdminReviewsRoute
@@ -320,11 +336,13 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/attractions': typeof AttractionsRoute
+  '/booking-terms': typeof BookingTermsRoute
+  '/cancelation': typeof CancelationRoute
   '/destinations': typeof DestinationsRoute
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/terms-of-service': typeof TermsOfServiceRoute
   '/tour': typeof TourRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/reviews': typeof AdminReviewsRoute
@@ -361,11 +379,13 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/attractions'
+    | '/booking-terms'
+    | '/cancelation'
     | '/destinations'
     | '/fr'
     | '/llms.txt'
+    | '/privacy-policy'
     | '/sitemap.xml'
-    | '/terms-of-service'
     | '/tour'
     | '/admin/media'
     | '/admin/reviews'
@@ -399,11 +419,13 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/about'
     | '/attractions'
+    | '/booking-terms'
+    | '/cancelation'
     | '/destinations'
     | '/fr'
     | '/llms.txt'
+    | '/privacy-policy'
     | '/sitemap.xml'
-    | '/terms-of-service'
     | '/tour'
     | '/admin/media'
     | '/admin/reviews'
@@ -438,11 +460,13 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/attractions'
+    | '/booking-terms'
+    | '/cancelation'
     | '/destinations'
     | '/fr'
     | '/llms.txt'
+    | '/privacy-policy'
     | '/sitemap.xml'
-    | '/terms-of-service'
     | '/tour'
     | '/admin/media'
     | '/admin/reviews'
@@ -478,11 +502,13 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
   AttractionsRoute: typeof AttractionsRoute
+  BookingTermsRoute: typeof BookingTermsRoute
+  CancelationRoute: typeof CancelationRoute
   DestinationsRoute: typeof DestinationsRoute
   FrRoute: typeof FrRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  TermsOfServiceRoute: typeof TermsOfServiceRoute
   TourRoute: typeof TourRoute
   AdminLoginRoute: typeof AdminLoginRoute
   DestinationBeratRoute: typeof DestinationBeratRoute
@@ -508,18 +534,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TourRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/terms-of-service': {
-      id: '/terms-of-service'
-      path: '/terms-of-service'
-      fullPath: '/terms-of-service'
-      preLoaderRoute: typeof TermsOfServiceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/llms.txt': {
@@ -541,6 +567,20 @@ declare module '@tanstack/react-router' {
       path: '/destinations'
       fullPath: '/destinations'
       preLoaderRoute: typeof DestinationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cancelation': {
+      id: '/cancelation'
+      path: '/cancelation'
+      fullPath: '/cancelation'
+      preLoaderRoute: typeof CancelationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/booking-terms': {
+      id: '/booking-terms'
+      path: '/booking-terms'
+      fullPath: '/booking-terms'
+      preLoaderRoute: typeof BookingTermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/attractions': {
@@ -803,11 +843,13 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
   AttractionsRoute: AttractionsRoute,
+  BookingTermsRoute: BookingTermsRoute,
+  CancelationRoute: CancelationRoute,
   DestinationsRoute: DestinationsRoute,
   FrRoute: FrRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  TermsOfServiceRoute: TermsOfServiceRoute,
   TourRoute: TourRoute,
   AdminLoginRoute: AdminLoginRoute,
   DestinationBeratRoute: DestinationBeratRoute,

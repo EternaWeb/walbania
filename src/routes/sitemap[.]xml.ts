@@ -57,7 +57,9 @@ export const Route = createFileRoute("/sitemap.xml")({
             },
           },
           { loc: `${baseUrl}/about` },
-          { loc: `${baseUrl}/terms-of-service` },
+          { loc: `${baseUrl}/booking-terms` },
+          { loc: `${baseUrl}/cancelation` },
+          { loc: `${baseUrl}/privacy-policy` },
           {
             loc: `${baseUrl}/tour`,
             alternates: {

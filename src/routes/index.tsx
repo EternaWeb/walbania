@@ -32,6 +32,8 @@ import { SiteLocaleProvider, useLocalize, useSiteLocale } from "../i18n";
 import type { SiteLocale } from "../i18n";
 import { SITE_NAME, SITE_URL } from "../lib/site";
 
+const HOME_OG_IMAGE = `${SITE_URL}/og-home.jpg`;
+
 const websiteJsonLd = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -39,6 +41,7 @@ const websiteJsonLd = JSON.stringify({
   url: `${SITE_URL}/`,
   name: SITE_NAME,
   inLanguage: ["en", "fr"],
+  image: HOME_OG_IMAGE,
 }).replace(/</g, "\\u003c");
 
 export const Route = createFileRoute("/")({
@@ -50,17 +53,29 @@ export const Route = createFileRoute("/")({
         content:
           "Curated Albania holidays: couples, family, hiking and summer escapes. All-inclusive deals and unforgettable experiences.",
       },
+      { name: "robots", content: "max-image-preview:large" },
       { property: "og:title", content: `${SITE_NAME} — Discover Albania in Wonder` },
       { property: "og:site_name", content: SITE_NAME },
       {
         property: "og:description",
         content: "Curated Albania holidays: couples, family, hiking and summer escapes.",
       },
+      { property: "og:image", content: HOME_OG_IMAGE },
+      { property: "og:image:secure_url", content: HOME_OG_IMAGE },
+      { property: "og:image:type", content: "image/jpeg" },
+      { property: "og:image:width", content: "1600" },
+      { property: "og:image:height", content: "840" },
+      {
+        property: "og:image:alt",
+        content: "Valbona Valley and the Albanian Alps",
+      },
       { name: "twitter:title", content: `${SITE_NAME} — Discover Albania in Wonder` },
       {
         name: "twitter:description",
         content: "Curated Albania holidays, local experiences and unforgettable escapes.",
       },
+      { name: "twitter:image", content: HOME_OG_IMAGE },
+      { name: "twitter:image:alt", content: "Valbona Valley and the Albanian Alps" },
       { property: "og:locale", content: "en_US" },
       { property: "og:locale:alternate", content: "fr_FR" },
       { property: "og:url", content: "https://wonderalbania.com/" },
@@ -544,8 +559,8 @@ function LegacySiteFooter() {
                 </a>
               </p>
               <p>
-                <a href="tel:0682778037" className="hover:text-[#1F2528]">
-                  0682778037
+                <a href="tel:+355682778037" className="hover:text-[#1F2528]">
+                  +355 682778037
                 </a>
               </p>
             </div>
@@ -706,10 +721,7 @@ function LegacySiteFooter() {
       <div className="border-t" style={{ borderColor: "#E5E7EB" }}>
         <div className="page-inset py-6">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-            <p>
-              © {new Date().getFullYear()} Wonder Albania sh.p.k. — Registered No. K12345678L. All
-              rights reserved.
-            </p>
+            <p>© 2026 Wonder Albania. All rights reserved.</p>
             <div className="flex items-center gap-3">
               <a
                 href="#"

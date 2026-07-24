@@ -1,20 +1,21 @@
-import { Facebook, Instagram, Linkedin, Music2, Youtube } from "lucide-react";
 import { useLocalize, useSiteLocale } from "../i18n";
 
 const socialLinks = [
   {
     label: "Instagram",
-    icon: Instagram,
+    icon: "/social/instagram.svg",
     href: "https://www.instagram.com/wonder.albania/",
   },
-  { label: "Facebook", icon: Facebook, href: "#" },
-  { label: "YouTube", icon: Youtube, href: "#" },
   {
     label: "LinkedIn",
-    icon: Linkedin,
+    icon: "/social/linkedin.svg",
     href: "https://www.linkedin.com/company/wonderalbania",
   },
-  { label: "TikTok", icon: Music2, href: "#" },
+  {
+    label: "Google",
+    icon: "/social/google.svg",
+    href: "https://share.google/OUJlx4oikDh8jftuK",
+  },
 ];
 
 export function SiteFooter() {
@@ -44,8 +45,8 @@ export function SiteFooter() {
                 </a>
               </p>
               <p>
-                <a href="tel:0682778037" className="hover:text-[#1F2528]">
-                  0682778037
+                <a href="tel:+355682778037" className="hover:text-[#1F2528]">
+                  +355 682778037
                 </a>
               </p>
             </div>
@@ -54,19 +55,14 @@ export function SiteFooter() {
           {[
             ["Explore", ["Tours", "Destinations", "Attractions", "Offers", "Experiences"]],
             ["Company", ["About Us", "Our Team", "Careers", "Press", "Contact"]],
-            [
-              "Support",
-              [
-                "Help Center",
-                "Travel Insurance",
-                "Booking Terms",
-                "Cancellations",
-                "Sustainability",
-              ],
-            ],
+            ["Support", ["Help Center", "Travel Insurance", "Sustainability", "Contact"]],
             [
               "Legal",
-              ["Privacy Policy", "Terms of Service", "Cookie Policy", "GDPR", "Modern Slavery"],
+              [
+                "Booking Terms and Conditions",
+                "Cancellation Terms and Conditions",
+                "Privacy and Cookie Policy",
+              ],
             ],
           ].map(([heading, links]) => (
             <div key={heading as string}>
@@ -90,9 +86,13 @@ export function SiteFooter() {
                             ? locale === "fr"
                               ? "/fr/#about"
                               : "/about"
-                            : label === "Terms of Service"
-                              ? "/terms-of-service"
-                              : "#";
+                            : label === "Booking Terms and Conditions"
+                              ? "/booking-terms"
+                              : label === "Cancellation Terms and Conditions"
+                                ? "/cancelation"
+                                : label === "Privacy and Cookie Policy"
+                                  ? "/privacy-policy"
+                                  : "#";
 
                   return (
                     <li key={label}>
@@ -111,21 +111,19 @@ export function SiteFooter() {
       <div className="border-t">
         <div className="page-inset py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-            <p>
-              © {new Date().getFullYear()} Wonder Albania sh.p.k. — Registered No. K12345678L. All
-              rights reserved.
-            </p>
+            <p>© 2026 Wonder Albania. All rights reserved.</p>
             <div className="flex items-center gap-3">
-              {socialLinks.map(({ label, icon: Icon, href }) => (
+              {socialLinks.map(({ label, icon, href }) => (
                 <a
                   key={label}
                   href={href}
                   aria-label={label}
                   className="icon-chip"
                   style={{ width: 34, height: 34 }}
-                  {...(href !== "#" ? { target: "_blank", rel: "noreferrer" } : {})}
+                  target="_blank"
+                  rel="noreferrer"
                 >
-                  <Icon size={16} />
+                  <img src={icon} alt="" width={16} height={16} aria-hidden="true" />
                 </a>
               ))}
             </div>

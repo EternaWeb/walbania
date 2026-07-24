@@ -231,11 +231,10 @@ export const Route = createFileRoute("/terms-of-service")({
 function TermsPage() {
   return (
     <div className="legal-page min-h-screen bg-background text-foreground">
-      <SiteHeader breadcrumbs={[{ href: "/", label: "Home" }, { label: "Terms of Service" }]} />
+      <SiteHeader />
       <main>
         <header className="legal-intro page-inset">
           <div className="legal-intro-copy">
-            <span className="legal-kicker">Legal</span>
             <h1>Terms of Service</h1>
             <p>
               Clear terms for planning and traveling with Wonder Albania, from your first inquiry

@@ -70,6 +70,7 @@ const getMenuGroups = (aboutPath: string, localePrefix: string): MenuGroup[] => 
     ],
   },
   { label: "Tours", href: `${localePrefix}/tour` },
+  { label: "Collections", href: "/collection" },
   { label: "Offers", href: "#offers" },
   { label: "Destinations", href: `${localePrefix}/destinations` },
   { label: "Attractions", href: `${localePrefix}/attractions` },

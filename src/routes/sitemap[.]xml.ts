@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { listPublicCollectionEntries } from "../lib/collections/server";
 import { getSiteUrl } from "../lib/supabase";
 import { listPublishedTourEntries } from "../lib/tours/server";
 import { listPublishedPlaceEntries } from "../lib/places/server";
@@ -24,9 +25,10 @@ export const Route = createFileRoute("/sitemap.xml")({
     handlers: {
       GET: async () => {
         const baseUrl = getSiteUrl();
-        const [entries, placeRows] = await Promise.all([
+        const [entries, placeRows, collectionRows] = await Promise.all([
           listPublishedTourEntries(),
           listPublishedPlaceEntries(),
+          listPublicCollectionEntries(),
         ]);
         const byTour = new Map<
           string,
@@ -60,6 +62,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { loc: `${baseUrl}/booking-terms` },
           { loc: `${baseUrl}/cancelation` },
           { loc: `${baseUrl}/privacy-policy` },
+          { loc: `${baseUrl}/collection` },
           {
             loc: `${baseUrl}/tour`,
             alternates: {
@@ -142,7 +145,10 @@ export const Route = createFileRoute("/sitemap.xml")({
             { loc: frUrl, lastmod: place.fr.updatedAt, alternates },
           ];
         });
-        const urls = [...staticEntries, ...tourEntries, ...placeEntries]
+        const collectionEntries: SitemapEntry[] = collectionRows.map((collection) => ({
+          loc: `${baseUrl}${collection.href}`,
+        }));
+        const urls = [...staticEntries, ...tourEntries, ...placeEntries, ...collectionEntries]
           .map((entry) => {
             const alternates = entry.alternates
               ? [

@@ -15,6 +15,7 @@ import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as FrRouteImport } from './routes/fr'
 import { Route as DestinationsRouteImport } from './routes/destinations'
+import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as CancelationRouteImport } from './routes/cancelation'
 import { Route as BookingTermsRouteImport } from './routes/booking-terms'
 import { Route as AttractionsRouteImport } from './routes/attractions'
@@ -30,10 +31,12 @@ import { Route as FrAttractionsRouteImport } from './routes/fr_.attractions'
 import { Route as FrSlugRouteImport } from './routes/fr_.$slug'
 import { Route as DestinationsSlugRouteImport } from './routes/destinations_.$slug'
 import { Route as DestinationBeratRouteImport } from './routes/destination.berat'
+import { Route as CollectionSlugRouteImport } from './routes/collection_.$slug'
 import { Route as AdminLoginRouteImport } from './routes/admin_.login'
 import { Route as AdminTaxonomiesRouteImport } from './routes/admin.taxonomies'
 import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
+import { Route as AdminCollectionsRouteImport } from './routes/admin.collections'
 import { Route as AdminToursIndexRouteImport } from './routes/admin.tours.index'
 import { Route as AdminDestinationsIndexRouteImport } from './routes/admin.destinations.index'
 import { Route as AdminAttractionsIndexRouteImport } from './routes/admin.attractions.index'
@@ -77,6 +80,11 @@ const FrRoute = FrRouteImport.update({
 const DestinationsRoute = DestinationsRouteImport.update({
   id: '/destinations',
   path: '/destinations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectionRoute = CollectionRouteImport.update({
+  id: '/collection',
+  path: '/collection',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CancelationRoute = CancelationRouteImport.update({
@@ -154,6 +162,11 @@ const DestinationBeratRoute = DestinationBeratRouteImport.update({
   path: '/destination/berat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CollectionSlugRoute = CollectionSlugRouteImport.update({
+  id: '/collection_/$slug',
+  path: '/collection/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin_/login',
   path: '/admin/login',
@@ -172,6 +185,11 @@ const AdminReviewsRoute = AdminReviewsRouteImport.update({
 const AdminMediaRoute = AdminMediaRouteImport.update({
   id: '/media',
   path: '/media',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCollectionsRoute = AdminCollectionsRouteImport.update({
+  id: '/collections',
+  path: '/collections',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminToursIndexRoute = AdminToursIndexRouteImport.update({
@@ -256,16 +274,19 @@ export interface FileRoutesByFullPath {
   '/attractions': typeof AttractionsRoute
   '/booking-terms': typeof BookingTermsRoute
   '/cancelation': typeof CancelationRoute
+  '/collection': typeof CollectionRoute
   '/destinations': typeof DestinationsRoute
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tour': typeof TourRoute
+  '/admin/collections': typeof AdminCollectionsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/taxonomies': typeof AdminTaxonomiesRoute
   '/admin/login': typeof AdminLoginRoute
+  '/collection/$slug': typeof CollectionSlugRoute
   '/destination/berat': typeof DestinationBeratRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/fr/$slug': typeof FrSlugRoute
@@ -296,16 +317,19 @@ export interface FileRoutesByTo {
   '/attractions': typeof AttractionsRoute
   '/booking-terms': typeof BookingTermsRoute
   '/cancelation': typeof CancelationRoute
+  '/collection': typeof CollectionRoute
   '/destinations': typeof DestinationsRoute
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tour': typeof TourRoute
+  '/admin/collections': typeof AdminCollectionsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/taxonomies': typeof AdminTaxonomiesRoute
   '/admin/login': typeof AdminLoginRoute
+  '/collection/$slug': typeof CollectionSlugRoute
   '/destination/berat': typeof DestinationBeratRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/fr/$slug': typeof FrSlugRoute
@@ -338,16 +362,19 @@ export interface FileRoutesById {
   '/attractions': typeof AttractionsRoute
   '/booking-terms': typeof BookingTermsRoute
   '/cancelation': typeof CancelationRoute
+  '/collection': typeof CollectionRoute
   '/destinations': typeof DestinationsRoute
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tour': typeof TourRoute
+  '/admin/collections': typeof AdminCollectionsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/reviews': typeof AdminReviewsRoute
   '/admin/taxonomies': typeof AdminTaxonomiesRoute
   '/admin_/login': typeof AdminLoginRoute
+  '/collection_/$slug': typeof CollectionSlugRoute
   '/destination/berat': typeof DestinationBeratRoute
   '/destinations_/$slug': typeof DestinationsSlugRoute
   '/fr_/$slug': typeof FrSlugRoute
@@ -381,16 +408,19 @@ export interface FileRouteTypes {
     | '/attractions'
     | '/booking-terms'
     | '/cancelation'
+    | '/collection'
     | '/destinations'
     | '/fr'
     | '/llms.txt'
     | '/privacy-policy'
     | '/sitemap.xml'
     | '/tour'
+    | '/admin/collections'
     | '/admin/media'
     | '/admin/reviews'
     | '/admin/taxonomies'
     | '/admin/login'
+    | '/collection/$slug'
     | '/destination/berat'
     | '/destinations/$slug'
     | '/fr/$slug'
@@ -421,16 +451,19 @@ export interface FileRouteTypes {
     | '/attractions'
     | '/booking-terms'
     | '/cancelation'
+    | '/collection'
     | '/destinations'
     | '/fr'
     | '/llms.txt'
     | '/privacy-policy'
     | '/sitemap.xml'
     | '/tour'
+    | '/admin/collections'
     | '/admin/media'
     | '/admin/reviews'
     | '/admin/taxonomies'
     | '/admin/login'
+    | '/collection/$slug'
     | '/destination/berat'
     | '/destinations/$slug'
     | '/fr/$slug'
@@ -462,16 +495,19 @@ export interface FileRouteTypes {
     | '/attractions'
     | '/booking-terms'
     | '/cancelation'
+    | '/collection'
     | '/destinations'
     | '/fr'
     | '/llms.txt'
     | '/privacy-policy'
     | '/sitemap.xml'
     | '/tour'
+    | '/admin/collections'
     | '/admin/media'
     | '/admin/reviews'
     | '/admin/taxonomies'
     | '/admin_/login'
+    | '/collection_/$slug'
     | '/destination/berat'
     | '/destinations_/$slug'
     | '/fr_/$slug'
@@ -504,6 +540,7 @@ export interface RootRouteChildren {
   AttractionsRoute: typeof AttractionsRoute
   BookingTermsRoute: typeof BookingTermsRoute
   CancelationRoute: typeof CancelationRoute
+  CollectionRoute: typeof CollectionRoute
   DestinationsRoute: typeof DestinationsRoute
   FrRoute: typeof FrRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
@@ -511,6 +548,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TourRoute: typeof TourRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  CollectionSlugRoute: typeof CollectionSlugRoute
   DestinationBeratRoute: typeof DestinationBeratRoute
   DestinationsSlugRoute: typeof DestinationsSlugRoute
   FrSlugRoute: typeof FrSlugRoute
@@ -567,6 +605,13 @@ declare module '@tanstack/react-router' {
       path: '/destinations'
       fullPath: '/destinations'
       preLoaderRoute: typeof DestinationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collection': {
+      id: '/collection'
+      path: '/collection'
+      fullPath: '/collection'
+      preLoaderRoute: typeof CollectionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cancelation': {
@@ -674,6 +719,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DestinationBeratRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/collection_/$slug': {
+      id: '/collection_/$slug'
+      path: '/collection/$slug'
+      fullPath: '/collection/$slug'
+      preLoaderRoute: typeof CollectionSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin_/login': {
       id: '/admin_/login'
       path: '/admin/login'
@@ -700,6 +752,13 @@ declare module '@tanstack/react-router' {
       path: '/media'
       fullPath: '/admin/media'
       preLoaderRoute: typeof AdminMediaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/collections': {
+      id: '/admin/collections'
+      path: '/collections'
+      fullPath: '/admin/collections'
+      preLoaderRoute: typeof AdminCollectionsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/tours/': {
@@ -804,6 +863,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminCollectionsRoute: typeof AdminCollectionsRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminReviewsRoute: typeof AdminReviewsRoute
   AdminTaxonomiesRoute: typeof AdminTaxonomiesRoute
@@ -820,6 +880,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminCollectionsRoute: AdminCollectionsRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminReviewsRoute: AdminReviewsRoute,
   AdminTaxonomiesRoute: AdminTaxonomiesRoute,
@@ -845,6 +906,7 @@ const rootRouteChildren: RootRouteChildren = {
   AttractionsRoute: AttractionsRoute,
   BookingTermsRoute: BookingTermsRoute,
   CancelationRoute: CancelationRoute,
+  CollectionRoute: CollectionRoute,
   DestinationsRoute: DestinationsRoute,
   FrRoute: FrRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
@@ -852,6 +914,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TourRoute: TourRoute,
   AdminLoginRoute: AdminLoginRoute,
+  CollectionSlugRoute: CollectionSlugRoute,
   DestinationBeratRoute: DestinationBeratRoute,
   DestinationsSlugRoute: DestinationsSlugRoute,
   FrSlugRoute: FrSlugRoute,

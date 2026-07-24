@@ -1,6 +1,7 @@
 import {
   Compass,
   Images,
+  Layers3,
   Landmark,
   LayoutDashboard,
   LogOut,
@@ -17,6 +18,7 @@ import { logoutAdminFn } from "../../lib/admin/auth";
 const NAVIGATION = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/tours", label: "Tours", icon: Compass },
+  { href: "/admin/collections", label: "Collections", icon: Layers3 },
   { href: "/admin/destinations", label: "Destinations", icon: MapPinned },
   { href: "/admin/attractions", label: "Attractions", icon: Landmark },
   { href: "/admin/media", label: "Media library", icon: Images },

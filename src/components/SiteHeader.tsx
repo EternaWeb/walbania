@@ -41,6 +41,9 @@ export function SiteHeader({ breadcrumbs }: { breadcrumbs?: SiteBreadcrumb[] }) 
                 <a href={locale === "fr" ? "/fr/tour" : "/tour"} className="hover:text-[#1F2528]">
                   Tours
                 </a>
+                <a href="/collection" className="hover:text-[#1F2528]">
+                  Collections
+                </a>
                 <a
                   href={locale === "fr" ? "/fr/destinations" : "/destinations"}
                   className="hover:text-[#1F2528]"

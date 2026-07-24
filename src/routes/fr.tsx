@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { getPublicCollectionsFn } from "../lib/collections/server";
 import { HomePage } from "./index";
 
 export const Route = createFileRoute("/fr")({
+  loader: () => getPublicCollectionsFn({ data: { locale: "fr" } }),
   head: () => ({
     meta: [
       { title: "Wonder Albania — Découvrez l’Albanie autrement" },
@@ -31,5 +33,9 @@ export const Route = createFileRoute("/fr")({
       { rel: "alternate", hrefLang: "x-default", href: "https://wonderalbania.com/" },
     ],
   }),
-  component: () => <HomePage locale="fr" />,
+  component: FrenchHomeRoute,
 });
+
+function FrenchHomeRoute() {
+  return <HomePage locale="fr" collections={Route.useLoaderData()} />;
+}

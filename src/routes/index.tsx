@@ -22,16 +22,18 @@ import {
   Youtube,
   Linkedin,
   Music2,
-  type LucideIcon,
 } from "lucide-react";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { SiteFooter as SharedSiteFooter } from "../components/SiteFooter";
 import { SiteHeader } from "../components/SiteHeader";
 import { DEFAULT_FAQS, FaqSection } from "../components/FaqSection";
+import { HolidayCollectionCard } from "../components/collection/HolidayCollectionCard";
 import { TravelerReviewsSection } from "../components/TravelerReviewsSection";
 import { TravelIdeasSection } from "../components/TravelIdeasSection";
 import { SiteLocaleProvider, useLocalize, useSiteLocale } from "../i18n";
 import type { SiteLocale } from "../i18n";
+import { getPublicCollectionsFn } from "../lib/collections/server";
+import type { CollectionSummary } from "../lib/collections/types";
 import { SITE_NAME, SITE_URL } from "../lib/site";
 
 const HOME_OG_IMAGE = `${SITE_URL}/og-home.jpg`;
@@ -47,6 +49,7 @@ const websiteJsonLd = JSON.stringify({
 }).replace(/</g, "\\u003c");
 
 export const Route = createFileRoute("/")({
+  loader: () => getPublicCollectionsFn({ data: { locale: "en" } }),
   head: () => ({
     meta: [
       { title: `${SITE_NAME} — Discover Albania in Wonder` },
@@ -90,8 +93,12 @@ export const Route = createFileRoute("/")({
     ],
     scripts: [{ type: "application/ld+json", children: websiteJsonLd }],
   }),
-  component: () => <HomePage locale="en" />,
+  component: HomeRoute,
 });
+
+function HomeRoute() {
+  return <HomePage locale="en" collections={Route.useLoaderData()} />;
+}
 
 const HERO_POSTER = "https://images.unsplash.com/photo-1601581875309-fafbf2d3ed3a?w=1800&q=80";
 const HERO_VIDEO_DESKTOP = "/videos/hero-1080.mp4";
@@ -113,45 +120,6 @@ const agencyFeatures = [
     number: "03",
     title: "With you all the way",
     detail: "Personal support, 24/7",
-  },
-];
-
-const collections = [
-  {
-    label: "Couples Travel",
-    img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=800&q=80",
-    ribbon: null,
-    icon: Heart,
-    detail: "Private stays · Made for two",
-    description:
-      "Slow coastal days, romantic hideaways and thoughtful experiences designed for two.",
-  },
-  {
-    label: "Family Travel",
-    img: "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?w=800&q=80",
-    ribbon: "Popular",
-    icon: Users,
-    detail: "Flexible days · All ages",
-    description:
-      "Easy-paced itineraries with family-friendly stays, transfers and memorable activities.",
-  },
-  {
-    label: "Hiking",
-    img: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=80",
-    ribbon: null,
-    icon: Mountain,
-    detail: "Guided routes · Local experts",
-    description:
-      "Walk Albania's wildest trails with expert guides, characterful lodges and luggage support.",
-  },
-  {
-    label: "Summer Secrets",
-    img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
-    ribbon: "New",
-    icon: Sun,
-    detail: "Hidden coast · Local access",
-    description:
-      "Quiet coves, small seaside towns and warm summer evenings away from the obvious routes.",
   },
 ];
 
@@ -291,47 +259,6 @@ function Card({
       </a>
       <p className="text-sm text-muted-foreground">{price}</p>
     </div>,
-  );
-}
-
-function CollectionCard({
-  label,
-  img,
-  ribbon,
-  icon: Icon,
-  detail,
-  description,
-}: {
-  label: string;
-  img: string;
-  ribbon: string | null;
-  icon: LucideIcon;
-  detail: string;
-  description: string;
-}) {
-  const localize = useLocalize();
-  return localize(
-    <article className="collection-card">
-      <div className="collection-card-media">
-        <img src={img} alt={label} className="card-zoom-img w-full h-full object-cover" />
-        {ribbon && <span className="ribbon">{ribbon}</span>}
-        <div className="collection-card-overlay">
-          <span className="collection-card-icon">
-            <Icon size={18} strokeWidth={1.8} />
-          </span>
-          <span className="collection-card-detail">{detail}</span>
-          <h3>{label}</h3>
-          <p>{description}</p>
-          <a href="#" className="collection-card-button">
-            Explore
-            <ArrowUpRight size={15} />
-          </a>
-        </div>
-      </div>
-      <a href="#" className="collection-card-mobile-label">
-        {label}
-      </a>
-    </article>,
   );
 }
 
@@ -678,7 +605,7 @@ function LazyHeroVideo({ children }: { children?: React.ReactNode }) {
   );
 }
 
-function Index() {
+function Index({ collections }: { collections: CollectionSummary[] }) {
   const locale = useSiteLocale();
   const localize = useLocalize();
   const [selectedKind, setSelectedKind] = useState("Hiking Alps");
@@ -719,16 +646,13 @@ function Index() {
         <h2 className="text-center text-3xl md:text-4xl mb-8 md:mb-12">
           {locale === "fr" ? "Nos collections de séjours" : "Our Holiday Collections"}
         </h2>
-        <div className="collection-desktop-grid hidden md:grid grid-cols-4 gap-4">
-          {collections.map((c) => (
-            <CollectionCard key={c.label} {...c} />
-          ))}
-        </div>
-        <div className="md:hidden flex gap-4 overflow-x-auto scroll-hide snap-x -mx-4 px-4">
-          {collections.map((c) => (
-            <div key={c.label} className="flex-shrink-0 snap-start w-[64%]">
-              <CollectionCard {...c} />
-            </div>
+        <div className="holiday-collection-grid">
+          {collections.map((collection, index) => (
+            <HolidayCollectionCard
+              collection={collection}
+              priority={index < 4}
+              key={collection.id}
+            />
           ))}
         </div>
       </section>
@@ -827,10 +751,16 @@ function Index() {
   );
 }
 
-export function HomePage({ locale }: { locale: SiteLocale }) {
+export function HomePage({
+  locale,
+  collections,
+}: {
+  locale: SiteLocale;
+  collections: CollectionSummary[];
+}) {
   return (
     <SiteLocaleProvider locale={locale}>
-      <Index />
+      <Index collections={collections} />
     </SiteLocaleProvider>
   );
 }

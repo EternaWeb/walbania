@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TourRouteImport } from './routes/tour'
+import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as FrRouteImport } from './routes/fr'
@@ -49,6 +50,11 @@ import { Route as AdminToursTourIdPreviewRouteImport } from './routes/admin_.tou
 const TourRoute = TourRouteImport.update({
   id: '/tour',
   path: '/tour',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
+  id: '/terms-of-service',
+  path: '/terms-of-service',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -240,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
   '/tour': typeof TourRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/reviews': typeof AdminReviewsRoute
@@ -277,6 +284,7 @@ export interface FileRoutesByTo {
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
   '/tour': typeof TourRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/reviews': typeof AdminReviewsRoute
@@ -316,6 +324,7 @@ export interface FileRoutesById {
   '/fr': typeof FrRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
   '/tour': typeof TourRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/reviews': typeof AdminReviewsRoute
@@ -356,6 +365,7 @@ export interface FileRouteTypes {
     | '/fr'
     | '/llms.txt'
     | '/sitemap.xml'
+    | '/terms-of-service'
     | '/tour'
     | '/admin/media'
     | '/admin/reviews'
@@ -393,6 +403,7 @@ export interface FileRouteTypes {
     | '/fr'
     | '/llms.txt'
     | '/sitemap.xml'
+    | '/terms-of-service'
     | '/tour'
     | '/admin/media'
     | '/admin/reviews'
@@ -431,6 +442,7 @@ export interface FileRouteTypes {
     | '/fr'
     | '/llms.txt'
     | '/sitemap.xml'
+    | '/terms-of-service'
     | '/tour'
     | '/admin/media'
     | '/admin/reviews'
@@ -470,6 +482,7 @@ export interface RootRouteChildren {
   FrRoute: typeof FrRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TermsOfServiceRoute: typeof TermsOfServiceRoute
   TourRoute: typeof TourRoute
   AdminLoginRoute: typeof AdminLoginRoute
   DestinationBeratRoute: typeof DestinationBeratRoute
@@ -493,6 +506,13 @@ declare module '@tanstack/react-router' {
       path: '/tour'
       fullPath: '/tour'
       preLoaderRoute: typeof TourRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms-of-service': {
+      id: '/terms-of-service'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof TermsOfServiceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -787,6 +807,7 @@ const rootRouteChildren: RootRouteChildren = {
   FrRoute: FrRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TermsOfServiceRoute: TermsOfServiceRoute,
   TourRoute: TourRoute,
   AdminLoginRoute: AdminLoginRoute,
   DestinationBeratRoute: DestinationBeratRoute,

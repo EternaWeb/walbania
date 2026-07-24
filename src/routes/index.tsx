@@ -198,10 +198,47 @@ const ideaImgs = [
   "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=500&q=80",
 ];
 
-const testimonials = [
-  "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&q=80",
-  "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&q=80",
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80",
+const travelerStories = [
+  {
+    quote:
+      "A brilliant first Wonder Albania trip, with a perfect mix of relaxing, cultural and adventure activities.",
+    author: "Andre, France",
+    photos: [
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=82",
+      "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=600&q=82",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=82",
+    ],
+  },
+  {
+    quote:
+      "Every day felt personal and effortless. The mountain guide and family lunch were unforgettable.",
+    author: "Mia, Germany",
+    photos: [
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=82",
+      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=82",
+      "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=600&q=82",
+    ],
+  },
+  {
+    quote:
+      "We saw a side of the Riviera we would never have found alone, without ever feeling rushed.",
+    author: "Sophie, United Kingdom",
+    photos: [
+      "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=600&q=82",
+      "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&q=82",
+      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&q=82",
+    ],
+  },
+  {
+    quote:
+      "Thoughtful planning, warm local hosts and just the right amount of adventure for our family.",
+    author: "Elena, Italy",
+    photos: [
+      "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?w=600&q=82",
+      "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=600&q=82",
+      "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=600&q=82",
+    ],
+  },
 ];
 
 // ---- Horizontal scroller with smart arrows (desktop only) ----
@@ -269,8 +306,29 @@ function Scroller({ children }: { children: React.ReactNode[] }) {
 function TravelersLoveUs() {
   const locale = useSiteLocale();
   const localize = useLocalize();
+  const [storyIndex, setStoryIndex] = useState(0);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isChanging, setIsChanging] = useState(false);
+  const story = travelerStories[storyIndex];
+
+  useEffect(() => {
+    let changeTimer: ReturnType<typeof setTimeout> | undefined;
+    const interval = window.setInterval(() => {
+      setIsChanging(true);
+      changeTimer = window.setTimeout(() => {
+        setStoryIndex((current) => (current + 1) % travelerStories.length);
+        setIsChanging(false);
+      }, 320);
+    }, 4000);
+
+    return () => {
+      window.clearInterval(interval);
+      if (changeTimer) window.clearTimeout(changeTimer);
+    };
+  }, []);
+
   return localize(
-    <section className="page-inset pb-14 md:pb-20">
+    <section className="page-inset pb-14 md:pb-20" id="reviews">
       <div
         className="mx-auto py-14 md:py-16 px-6"
         style={{ background: "#CCDAB8", borderRadius: 2 }}
@@ -280,18 +338,34 @@ function TravelersLoveUs() {
         </h2>
 
         <div className="mt-10 flex justify-center">
-          <div className="tly-stack group">
-            {testimonials.map((src, i) => (
-              <div key={i} className={`tly-card tly-card-${i}`}>
-                <img src={src} alt="" className="w-full h-full object-cover" />
+          <button
+            type="button"
+            className={`tly-stack${isExpanded ? " is-expanded" : ""}${
+              isChanging ? " is-changing" : ""
+            }`}
+            aria-label={isExpanded ? "Close traveler photos" : "Open traveler photos"}
+            aria-expanded={isExpanded}
+            onClick={() => setIsExpanded((expanded) => !expanded)}
+          >
+            {story.photos.map((src, i) => (
+              <div key={`${storyIndex}-${src}`} className={`tly-card tly-card-${i}`}>
+                <img
+                  src={src}
+                  alt={`Traveler moment ${i + 1} from ${story.author}`}
+                  className="w-full h-full object-cover"
+                />
               </div>
             ))}
-          </div>
+          </button>
         </div>
 
-        <p className="text-center mt-8 max-w-xl mx-auto text-sm md:text-base font-italic-inter">
-          "A brilliant first Original Travel trip, with a perfect mix of relaxing, cultural and
-          adventure activities." <span className="not-italic">— Andre, France</span>
+        <p
+          className={`tly-review text-center mt-8 max-w-xl mx-auto text-sm md:text-base font-italic-inter${
+            isChanging ? " is-changing" : ""
+          }`}
+          aria-live="polite"
+        >
+          “{story.quote}” <span className="not-italic">— {story.author}</span>
         </p>
         <div className="flex justify-center mt-6">
           <button className="btn-brand" style={{ background: "#1F2528", color: "white" }}>
@@ -465,8 +539,13 @@ function LegacySiteFooter() {
                 </a>
               </p>
               <p>
-                <a href="tel:+355691234567" className="hover:text-[#1F2528]">
-                  +355 69 123 45 67
+                <a href="tel:+355692290036" className="hover:text-[#1F2528]">
+                  +355 692290036
+                </a>
+              </p>
+              <p>
+                <a href="tel:0682778037" className="hover:text-[#1F2528]">
+                  0682778037
                 </a>
               </p>
             </div>

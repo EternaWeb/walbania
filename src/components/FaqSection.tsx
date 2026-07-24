@@ -97,11 +97,16 @@ export function FaqSection({
                     <span>{item.question}</span>
                     <ChevronDown size={19} />
                   </button>
-                  {expanded && (
-                    <p id={answerId} role="region">
-                      {item.answer}
-                    </p>
-                  )}
+                  <div
+                    id={answerId}
+                    className="shared-faq-answer"
+                    role="region"
+                    aria-hidden={!expanded}
+                  >
+                    <div>
+                      <p>{item.answer}</p>
+                    </div>
+                  </div>
                 </div>
               );
             })}

@@ -1,16 +1,21 @@
-import {
-  Award,
-  BadgeCheck,
-  Facebook,
-  Globe,
-  Instagram,
-  Leaf,
-  Linkedin,
-  Music2,
-  ShieldCheck,
-  Youtube,
-} from "lucide-react";
+import { Facebook, Instagram, Linkedin, Music2, Youtube } from "lucide-react";
 import { useLocalize, useSiteLocale } from "../i18n";
+
+const socialLinks = [
+  {
+    label: "Instagram",
+    icon: Instagram,
+    href: "https://www.instagram.com/wonder.albania/",
+  },
+  { label: "Facebook", icon: Facebook, href: "#" },
+  { label: "YouTube", icon: Youtube, href: "#" },
+  {
+    label: "LinkedIn",
+    icon: Linkedin,
+    href: "https://www.linkedin.com/company/wonderalbania",
+  },
+  { label: "TikTok", icon: Music2, href: "#" },
+];
 
 export function SiteFooter() {
   const locale = useSiteLocale();
@@ -18,30 +23,6 @@ export function SiteFooter() {
 
   return localize(
     <footer id="contact" className="site-footer bg-white border-t">
-      <div className="page-inset py-12 border-b">
-        <div className="grid md:grid-cols-2 gap-8 items-center">
-          <div>
-            <h3 className="text-2xl md:text-3xl font-semibold">
-              Join the Wonder Albania newsletter
-            </h3>
-            <p className="text-muted-foreground mt-2 text-sm md:text-base">
-              Fresh itineraries, insider tips, and members-only deals — once a month.
-            </p>
-          </div>
-          <form className="flex gap-2 w-full" onSubmit={(event) => event.preventDefault()}>
-            <input
-              type="email"
-              aria-label="Email address"
-              placeholder="your@email.com"
-              className="flex-1 min-w-0 px-4 py-3 rounded-[2px] border text-sm outline-none focus:border-[#1F2528]"
-            />
-            <button type="submit" className="btn-brand bg-[#1F2528] text-white">
-              Subscribe
-            </button>
-          </form>
-        </div>
-      </div>
-
       <div className="page-inset py-16">
         <div className="grid grid-cols-2 md:grid-cols-6 gap-10 text-sm">
           <div className="col-span-2">
@@ -58,8 +39,13 @@ export function SiteFooter() {
                 </a>
               </p>
               <p>
-                <a href="tel:+355691234567" className="hover:text-[#1F2528]">
-                  +355 69 123 45 67
+                <a href="tel:+355692290036" className="hover:text-[#1F2528]">
+                  +355 692290036
+                </a>
+              </p>
+              <p>
+                <a href="tel:0682778037" className="hover:text-[#1F2528]">
+                  0682778037
                 </a>
               </p>
             </div>
@@ -86,60 +72,39 @@ export function SiteFooter() {
             <div key={heading as string}>
               <h4 className="font-semibold mb-4">{heading}</h4>
               <ul className="space-y-2 text-muted-foreground">
-                {(links as string[]).map((label) => (
-                  <li key={label}>
-                    <a
-                      href={
-                        label === "Tours"
+                {(links as string[]).map((label) => {
+                  const href =
+                    label === "Tours"
+                      ? locale === "fr"
+                        ? "/fr/tour"
+                        : "/tour"
+                      : label === "Destinations"
+                        ? locale === "fr"
+                          ? "/fr/destinations"
+                          : "/destinations"
+                        : label === "Attractions"
                           ? locale === "fr"
-                            ? "/fr/tour"
-                            : "/tour"
-                          : label === "Destinations"
+                            ? "/fr/attractions"
+                            : "/attractions"
+                          : label === "About Us"
                             ? locale === "fr"
-                              ? "/fr/destinations"
-                              : "/destinations"
-                            : label === "Attractions"
-                              ? locale === "fr"
-                                ? "/fr/attractions"
-                                : "/attractions"
-                              : label === "About Us"
-                                ? locale === "fr"
-                                  ? "/fr/#about"
-                                  : "/about"
-                                : "#"
-                      }
-                      className="hover:text-[#1F2528]"
-                    >
-                      {label}
-                    </a>
-                  </li>
-                ))}
+                              ? "/fr/#about"
+                              : "/about"
+                            : label === "Terms of Service"
+                              ? "/terms-of-service"
+                              : "#";
+
+                  return (
+                    <li key={label}>
+                      <a href={href} className="hover:text-[#1F2528]">
+                        {label}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}
-        </div>
-
-        <div className="mt-14 pt-10 border-t">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground mb-5 text-center md:text-left">
-            Certifications & Memberships
-          </p>
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-            {[
-              { label: "IATA Accredited", icon: Award },
-              { label: "ATTA Member", icon: Globe },
-              { label: "ABTOT Protected", icon: ShieldCheck },
-              { label: "Travelife Certified", icon: Leaf },
-              { label: "ISO 9001:2015", icon: BadgeCheck },
-            ].map(({ label, icon: Icon }) => (
-              <div
-                key={label}
-                className="flex items-center gap-2 px-4 py-2 rounded-[2px] border text-xs text-muted-foreground"
-              >
-                <Icon size={14} className="text-[#1F2528]" />
-                <span>{label}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 
@@ -151,19 +116,14 @@ export function SiteFooter() {
               rights reserved.
             </p>
             <div className="flex items-center gap-3">
-              {[
-                { label: "Instagram", icon: Instagram },
-                { label: "Facebook", icon: Facebook },
-                { label: "YouTube", icon: Youtube },
-                { label: "LinkedIn", icon: Linkedin },
-                { label: "TikTok", icon: Music2 },
-              ].map(({ label, icon: Icon }) => (
+              {socialLinks.map(({ label, icon: Icon, href }) => (
                 <a
                   key={label}
-                  href="#"
+                  href={href}
                   aria-label={label}
                   className="icon-chip"
                   style={{ width: 34, height: 34 }}
+                  {...(href !== "#" ? { target: "_blank", rel: "noreferrer" } : {})}
                 >
                   <Icon size={16} />
                 </a>

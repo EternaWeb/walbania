@@ -1,4 +1,4 @@
-import { Search, Sparkle } from "lucide-react";
+import { Search } from "lucide-react";
 import { LocaleLocationModal } from "./LocaleLocationModal";
 import { SiteMenu } from "./SiteMenu";
 import { useLocalize, useSiteLocale } from "../i18n";
@@ -60,9 +60,12 @@ export function SiteHeader({ breadcrumbs }: { breadcrumbs?: SiteBreadcrumb[] }) 
             <button type="button" aria-label="Search" className="icon-chip">
               <Search size={18} />
             </button>
-            <button type="button" aria-label="AI" className="icon-chip">
-              <Sparkle size={19} fill="black" strokeWidth={1.7} />
-            </button>
+            {/*
+              AI navigation button — intentionally hidden until the assistant experience is ready.
+              <button type="button" aria-label="AI" className="icon-chip">
+                <Sparkle size={19} fill="black" strokeWidth={1.7} />
+              </button>
+            */}
             <SiteMenu />
           </div>
         </div>

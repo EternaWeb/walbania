@@ -466,7 +466,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(0.78) contrast(0.94) sepia(0.1);
+  filter: none;
 }
 
 .place-collection-hero .index-hero-film {
